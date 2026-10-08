@@ -1,8 +1,141 @@
 @prefix adms: <http://www.w3.org/ns/adms#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix spdx: <http://spdx.org/rdf/terms#> .
+@prefix sssom: <https://w3id.org/sssom/> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <>
     a dcat:Catalog ;
     adms:status <http://purl.org/adms/status/UnderDevelopment> ;
+    dcat:dataset <urn:uuid:25623afd-6445-4394-8174-93ffacaea90e>,
+        <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>,
+        <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> ;
+    dct:modified "2026-10-08T19:57:14Z"^^xsd:dateTime ;
     dct:title "Cascade reference tables (DRAFT)" .
+
+<ni:///sha-256;5_uyiQaVbIiSdYxJsLag5SiqlzI7Z5OUSh13hrkXsw0>
+    a prov:Entity ;
+    dct:modified "2026-09-17T21:01:41Z"^^xsd:dateTime ;
+    dct:title "VG.txt" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "e7fbb28906956c8892758c49b0b6a0e528aa97323b6793944a1d7786b917b30d" ] .
+
+<ni:///sha-256;5dWeRk7uMU99fQf7D_sevXBkDSnLV3SDzndu9jxA1fc>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "258 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/9a43e56efd682723321755f7e23ea5d1a505c92f6d48140edc0c04f1a4290753.nq.gz> ;
+    dcat:version "2026-09-17" ;
+    dct:issued "2026-10-08T19:57:14Z"^^xsd:dateTime ;
+    pav:version "2026-09-17" ;
+    prov:specializationOf <urn:uuid:25623afd-6445-4394-8174-93ffacaea90e> ;
+    prov:wasAttributedTo <urn:uuid:13935fd3-979f-4138-b25a-04f32f12155f> ;
+    prov:wasDerivedFrom <ni:///sha-256;5_uyiQaVbIiSdYxJsLag5SiqlzI7Z5OUSh13hrkXsw0>,
+        <ni:///sha-256;79Kmdw8PZIznbhCsKIlgKy6o-oyktj3rM8qIPn0NdBM> ;
+    sssom:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    sssom:mapping_set_version "2026-09-17" ;
+    sssom:mapping_tool "cdc-cvx" ;
+    sssom:mapping_tool_version "1" ;
+    sssom:subject_source_version "2026-09-17" ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;79Kmdw8PZIznbhCsKIlgKy6o-oyktj3rM8qIPn0NdBM>
+    a prov:Entity ;
+    dct:modified "2026-09-17T22:04:21Z"^^xsd:dateTime ;
+    dct:title "CVX.txt" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "efd2a6770f0f648ce76e10ac2889602b2ea8fa8ca4b63deb33ca883e7d0d7413" ] .
+
+<ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "290 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/93d5a200279668eb333cdd021b752f3fbb3248496c76f0fcfa3e5f2b54cf5134.nq.gz> ;
+    dcat:version "2026-09-17" ;
+    dct:issued "2026-10-08T19:57:14Z"^^xsd:dateTime ;
+    pav:version "2026-09-17" ;
+    prov:specializationOf <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> ;
+    prov:wasAttributedTo <urn:uuid:13935fd3-979f-4138-b25a-04f32f12155f> ;
+    prov:wasDerivedFrom <ni:///sha-256;5_uyiQaVbIiSdYxJsLag5SiqlzI7Z5OUSh13hrkXsw0>,
+        <ni:///sha-256;79Kmdw8PZIznbhCsKIlgKy6o-oyktj3rM8qIPn0NdBM> ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;tjAJHzXlxhRB4xsChH6CrnVIADVMekpg0Ywr2BJ06xk>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "18 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/5317b49cea0b92fe52c0e329f0481f842a8073306933fdec2e3c4463b74b4fd4.nq.gz> ;
+    dcat:version "2026-09-17" ;
+    dct:issued "2026-10-08T19:57:14Z"^^xsd:dateTime ;
+    pav:version "2026-09-17" ;
+    prov:specializationOf <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79> ;
+    prov:wasAttributedTo <urn:uuid:13935fd3-979f-4138-b25a-04f32f12155f> ;
+    prov:wasDerivedFrom <ni:///sha-256;5_uyiQaVbIiSdYxJsLag5SiqlzI7Z5OUSh13hrkXsw0>,
+        <ni:///sha-256;79Kmdw8PZIznbhCsKIlgKy6o-oyktj3rM8qIPn0NdBM> ;
+    tables:builderVersion "1" .
+
+<rows/5317b49cea0b92fe52c0e329f0481f842a8073306933fdec2e3c4463b74b4fd4.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/5317b49cea0b92fe52c0e329f0481f842a8073306933fdec2e3c4463b74b4fd4.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "5317b49cea0b92fe52c0e329f0481f842a8073306933fdec2e3c4463b74b4fd4" ] .
+
+<rows/93d5a200279668eb333cdd021b752f3fbb3248496c76f0fcfa3e5f2b54cf5134.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/93d5a200279668eb333cdd021b752f3fbb3248496c76f0fcfa3e5f2b54cf5134.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "93d5a200279668eb333cdd021b752f3fbb3248496c76f0fcfa3e5f2b54cf5134" ] .
+
+<rows/9a43e56efd682723321755f7e23ea5d1a505c92f6d48140edc0c04f1a4290753.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/9a43e56efd682723321755f7e23ea5d1a505c92f6d48140edc0c04f1a4290753.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "9a43e56efd682723321755f7e23ea5d1a505c92f6d48140edc0c04f1a4290753" ] .
+
+<urn:uuid:13935fd3-979f-4138-b25a-04f32f12155f>
+    a tables:Builder ;
+    rdfs:label "cdc-cvx" .
+
+<urn:uuid:25623afd-6445-4394-8174-93ffacaea90e>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;5dWeRk7uMU99fQf7D_sevXBkDSnLV3SDzndu9jxA1fc> ;
+    dcat:hasVersion <ni:///sha-256;5dWeRk7uMU99fQf7D_sevXBkDSnLV3SDzndu9jxA1fc> ;
+    dct:bibliographicCitation "Source: CDC" ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/042twtr12> ;
+    dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> ;
+    rdfs:label "CDC CVX vaccine groups" ;
+    rec:tableKind rec:VaccineGroups .
+
+<urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;tjAJHzXlxhRB4xsChH6CrnVIADVMekpg0Ywr2BJ06xk> ;
+    dcat:hasVersion <ni:///sha-256;tjAJHzXlxhRB4xsChH6CrnVIADVMekpg0Ywr2BJ06xk> ;
+    dct:bibliographicCitation "Source: CDC" ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/042twtr12> ;
+    dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> ;
+    rdfs:label "CDC CVX code status" ;
+    rec:tableKind rec:CodeStatus .
+
+<urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE> ;
+    dcat:hasVersion <ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE> ;
+    dct:bibliographicCitation "Source: CDC" ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/042twtr12> ;
+    dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> ;
+    rdfs:label "CDC CVX names" ;
+    rec:tableKind rec:CodeNames .
