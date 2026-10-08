@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync } from "node:fs";
-import { mkdtemp, readdir, rm } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
@@ -9,10 +9,13 @@ import { conformanceExamples, runConformance } from "./conformance.js";
 import { buildLatest, check } from "./detection.js";
 import { Feed } from "./feed.js";
 import { build, readContract } from "./pipeline.js";
+import { type Checked, mergeChecked, publish } from "./publish.js";
 import { loadBuild, readSource, sourceFolder } from "./source.js";
+import { folderStore, releaseStore } from "./stores.js";
 
 const USAGE = `host check <source> [--feed <file>]
-host build <source> [--release <folder> --label <text>] [--out <folder>] [--feed <file>]
+host build <source> [--release <folder> --label <text>] [--out <folder>] [--feed <file>] [--releases <owner/repo>]
+host publish --site <folder> [--feed <file>] [--releases <owner/repo>] [--rows <folder>]... [<checked.json>...]
 host test [<source>...]`;
 
 function now(): string {
@@ -52,6 +55,7 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
       label: { type: "string" },
       out: { type: "string", default: "build" },
       feed: { type: "string", default: join(root, "feed", "feed.ttl") },
+      releases: { type: "string" },
     },
   });
   const [name] = positionals;
@@ -71,6 +75,9 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
     feed: resolve(values.feed),
     out: resolve(values.out),
     now: now(),
+    ...(values.releases === undefined
+      ? {}
+      : { rows: releaseStore(values.releases, process.env.GITHUB_TOKEN) }),
   };
   const outcomes =
     values.release === undefined || values.label === undefined
@@ -90,6 +97,43 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
         ? `${o.label}: nothing new`
         : `${o.label}: ${o.version}`,
     );
+  return 0;
+}
+
+async function publishCommand(root: string, args: string[]): Promise<number> {
+  const { values, positionals } = parseArgs({
+    args,
+    allowPositionals: true,
+    options: {
+      site: { type: "string" },
+      feed: { type: "string", default: join(root, "feed", "feed.ttl") },
+      releases: { type: "string" },
+      rows: { type: "string", multiple: true, default: [] },
+    },
+  });
+  if (values.site === undefined) {
+    console.error(USAGE);
+    return 2;
+  }
+  const checks: Checked[] = [];
+  for (const path of positionals)
+    checks.push(JSON.parse(await readFile(path, "utf8")) as Checked);
+  const folders = folderStore(values.rows.map((folder) => resolve(folder)));
+  const releases =
+    values.releases === undefined
+      ? undefined
+      : releaseStore(values.releases, process.env.GITHUB_TOKEN);
+  const placed = await publish({
+    feed: resolve(values.feed),
+    site: resolve(values.site),
+    store: {
+      async get(file) {
+        return (await folders.get(file)) ?? (await releases?.get(file));
+      },
+    },
+    checked: mergeChecked(...checks),
+  });
+  for (const file of placed) console.log(file);
   return 0;
 }
 
@@ -131,6 +175,7 @@ async function main(argv: string[]): Promise<number> {
   try {
     if (command === "check") return await checkCommand(root, args);
     if (command === "build") return await buildCommand(root, args);
+    if (command === "publish") return await publishCommand(root, args);
     if (command === "test") return await testCommand(root, args);
   } catch (error) {
     if (!(error instanceof Refusal)) throw error;

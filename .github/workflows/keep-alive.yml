@@ -1,0 +1,36 @@
+name: keep-alive
+
+# GitHub disables a public repository's schedules after 60 days without activity, and a disabled workflow cannot say
+# so. Every push and pull request enables watch.yml again and reports a source not checked lately.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Enable watch.yml
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # Before watch.yml reaches the default branch, GitHub knows no such workflow; that is a warning, not a failure.
+        run: |
+          gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/watch.yml/enable" ||
+            echo "::warning::watch.yml could not be enabled"
+      - name: Warn of a source not checked in three days
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          url="https://${owner,,}.github.io/${GITHUB_REPOSITORY#*/}/checked.json"
+          if ! curl -fsS "$url" -o checked.json; then
+            echo "::warning::$url cannot be read: no check has been published"
+            exit 0
+          fi
+          jq -r '.checked[] | select(now - (.at | fromdateiso8601) > 3 * 86400)
+            | "::warning::\(.label) was last checked at \(.at)"' checked.json

@@ -48,3 +48,18 @@ its `Last-Modified`, otherwise 200 with the file and its `Last-Modified`.
 | `the check finds a new release labelled {string}`                                   |                                                                              |
 | `the publisher was last asked with no If-Modified-Since`                            |                                                                              |
 | `the publisher was last asked with If-Modified-Since {string}`                      |                                                                              |
+
+## Publishing
+
+The releases of a publishing example are the rows files its builds wrote; the site is a folder of its own.
+
+| Step                                                                                                | What happens, or must hold                                                                          |
+| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `the site's checks are:`                                                                            | before a publish, the live site's `checked.json`; after it, what the published `checked.json` holds |
+| `the site is published`                                                                             | the site is written from the feed, the releases and the checks, the last build's among them         |
+| `a byte of the rows file of {string} {string} is changed`                                           | the rows file of that series' version of that label, in the releases, loses its checksum            |
+| `the rows file of {string} {string} holds the rows of {string} {string}, and the feed its checksum` | that rows file is replaced by another version's, and the feed's checksum for it follows             |
+| `the rows file of {string} {string} is in no release`                                               | it is removed from the releases                                                                     |
+| `the site holds the rows files of these versions of {string}: {string}, {string}`                   | of the series' versions, exactly those labelled have their rows files on the site                   |
+| `the publish is stopped, saying {string}`                                                           | the publish stopped with a reason containing the text                                               |
+| `the site holds nothing`                                                                            | the site's folder was never written                                                                 |

@@ -85,3 +85,41 @@ test("a feed breaking one constraint is refused with its message", async () => {
     );
   }
 });
+
+test("a build's checked.json conforms to its schema", async () => {
+  const { Ajv2020 } = await import("ajv/dist/2020.js");
+  const { readFile } = await import("node:fs/promises");
+  const schema = JSON.parse(
+    await readFile(join(ROOT, "shapes", "checked.schema.json"), "utf8"),
+  ) as object;
+  const validate = new Ajv2020().compile(schema);
+  const cases: [unknown, boolean][] = [
+    [
+      {
+        checked: {
+          "urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d": {
+            label: "CDC CVX",
+            at: "2026-10-08T06:23:00Z",
+            found: "nothing new",
+          },
+        },
+      },
+      true,
+    ],
+    [
+      {
+        checked: {
+          "CDC CVX": {
+            label: "CDC CVX",
+            at: "2026-10-08T06:23:00Z",
+            found: "new",
+          },
+        },
+      },
+      false,
+    ],
+    [{ checked: {}, extra: 1 }, false],
+  ];
+  for (const [checked, valid] of cases)
+    assert.equal(validate(checked), valid, JSON.stringify(checked));
+});

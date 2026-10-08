@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import {
   type Build,
   Refusal,
@@ -13,6 +13,7 @@ import { documentName, sha256, versionName } from "./names.js";
 import { delimited, fixedWidth, jsonLines } from "./readers.js";
 import { keyed, RowSchema, SeriesRows, toRdf } from "./rows.js";
 import { Shapes } from "./shapes.js";
+import { folderStore, type RowsStore } from "./stores.js";
 import type { Source } from "./source.js";
 import { resolveVocabulary, Vocabulary } from "./vocabulary.js";
 
@@ -161,8 +162,8 @@ export interface BuildOptions {
   readonly label: string;
   readonly feed: string;
   readonly out: string;
-  /** Folders holding `rows/`, where the current versions' rows files are looked for after `out` and the feed's folder. */
-  readonly rowsFolders?: readonly string[];
+  /** Where the current versions' rows files are looked for after `out` and the feed's folder: the releases. */
+  readonly rows?: RowsStore;
   readonly now: string;
   /** Each release file's `Last-Modified`, by name, where the publisher gave one. */
   readonly modified?: ReadonlyMap<string, string>;
@@ -171,13 +172,30 @@ export interface BuildOptions {
 async function rowsAtHand(
   file: string,
   checksum: string,
-  folders: readonly string[],
+  stores: readonly RowsStore[],
 ) {
-  for (const folder of folders) {
-    const path = join(folder, file);
-    if (existsSync(path)) return readRowsFile(await readFile(path), checksum);
+  for (const store of stores) {
+    const bytes = await store.get(file);
+    if (bytes !== undefined) return readRowsFile(bytes, checksum);
   }
-  throw new Error(`${file} is not at hand in ${folders.join(", ")}`);
+  throw new Error(`${file} is not at hand`);
+}
+
+/** Writes `<out>/checked.json`: when the source was checked, and whether it gave a new version. */
+export async function writeChecked(
+  out: string,
+  source: Source,
+  at: string,
+  found: "new" | "nothing new",
+): Promise<void> {
+  await mkdir(out, { recursive: true });
+  const checked = {
+    checked: { [source.iri]: { label: source.label, at, found } },
+  };
+  await writeFile(
+    join(out, "checked.json"),
+    `${JSON.stringify(checked, null, 2)}\n`,
+  );
 }
 
 /**
@@ -192,16 +210,20 @@ export async function build(
   const series = await rowsOf(contract, source, options.build, options.release);
   const feed = await Feed.readOrEmpty(options.feed);
   const folders = [
-    options.out,
-    dirname(options.feed),
-    ...(options.rowsFolders ?? []),
+    folderStore([options.out, dirname(options.feed)]),
+    ...(options.rows === undefined ? [] : [options.rows]),
   ];
   const inputs: Input[] = [];
+  const inputFiles: { file: string; bytes: Buffer }[] = [];
   for (const title of [...source.files.keys()].sort()) {
     const path = join(options.release, title);
     if (!existsSync(path)) throw new Refusal(`the release has no ${title}`);
     const bytes = await readFile(path);
     const modified = options.modified?.get(title);
+    inputFiles.push({
+      file: `inputs/${sha256(bytes).toString("hex")}-${title}`,
+      bytes,
+    });
     inputs.push({
       name: documentName(bytes),
       title,
@@ -268,14 +290,32 @@ export async function build(
     const violations = await contract.feedShapes.violations(feed.triples);
     if (violations.length > 0)
       throw new Error(`the feed would not conform:\n${violations.join("\n")}`);
-    await mkdir(join(options.out, "rows"), { recursive: true });
-    for (const { file, bytes } of files)
+    const archived = [...files, ...inputFiles];
+    for (const { file, bytes } of archived) {
+      await mkdir(dirname(join(options.out, file)), { recursive: true });
       await writeFile(join(options.out, file), bytes);
+    }
     await mkdir(dirname(options.feed), { recursive: true });
     await feed.write(options.feed);
+    const inputsSum = sha256(inputs.map((i) => i.checksum).join("\n"));
+    const release = {
+      tag: `${basename(source.folder)}-${inputsSum.toString("hex").slice(0, 12)}`,
+      title: `${source.label} ${options.label}`,
+      files: archived.map(({ file }) => file),
+    };
+    await writeFile(
+      join(options.out, "release.json"),
+      `${JSON.stringify(release, null, 2)}\n`,
+    );
   }
   await mkdir(options.out, { recursive: true });
   await writeFile(join(options.out, "differences.md"), markdown(outcomes));
+  await writeChecked(
+    options.out,
+    source,
+    options.now,
+    outcomes.some((o) => o.version !== undefined) ? "new" : "nothing new",
+  );
   return outcomes;
 }
 
