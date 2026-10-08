@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { basename, dirname, join } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import {
   type Build,
   Refusal,
@@ -28,9 +28,19 @@ export interface Contract {
   /** Where the vocabulary was read from. */
   readonly said: string;
 }
-
-export async function readContract(root: string): Promise<Contract> {
-  const resolved = await resolveVocabulary(root);
+/** The contract at `root`, read with the vocabulary in `vocabularyFolder` when one is given. */
+/** The contract at `root`, read with the vocabulary in the folder `vocabulary` when one is given. */
+export async function readContract(
+  root: string,
+  vocabularyFolder?: string,
+): Promise<Contract> {
+  const resolved =
+    vocabularyFolder === undefined
+      ? await resolveVocabulary(root)
+      : {
+          folder: resolve(vocabularyFolder),
+          said: `cascade-vocabulary: ${resolve(vocabularyFolder)}, as given`,
+        };
   const vocabulary = await Vocabulary.read(resolved.folder);
   const shapes = (file: string): string => join(root, "shapes", file);
   return {
