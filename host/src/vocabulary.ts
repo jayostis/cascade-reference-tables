@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, rename, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rename, rm } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { promisify } from "node:util";
 import { Graph, parseTurtle, type Quad, REC, VOID } from "./rdf.js";
@@ -44,9 +44,8 @@ export async function resolveVocabulary(root: string): Promise<Resolved> {
   }
   const folder = join(root, ".cache", "cascade-vocabulary", pin.commit);
   if (!existsSync(join(folder, RECORDS))) {
-    const partial = `${folder}.partial`;
-    await rm(partial, { recursive: true, force: true });
-    await mkdir(partial, { recursive: true });
+    await mkdir(dirname(folder), { recursive: true });
+    const partial = await mkdtemp(`${folder}.partial-`);
     await git(partial, "init", "--quiet");
     await git(
       partial,
@@ -65,7 +64,11 @@ export async function resolveVocabulary(root: string): Promise<Resolved> {
       "--quiet",
       "FETCH_HEAD",
     );
-    await rename(partial, folder);
+    // Another run fetching the same commit may have put it in place first.
+    await rename(partial, folder).catch(async (error: unknown) => {
+      if (!existsSync(join(folder, RECORDS))) throw error;
+      await rm(partial, { recursive: true, force: true });
+    });
   }
   return {
     folder,
