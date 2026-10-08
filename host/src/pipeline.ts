@@ -220,19 +220,17 @@ export async function build(
     if (!existsSync(path)) throw new Refusal(`the release has no ${title}`);
     const bytes = await readFile(path);
     const modified = options.modified?.get(title);
-    inputFiles.push({
-      file: `inputs/${sha256(bytes).toString("hex")}-${title}`,
-      bytes,
-    });
+    const checksum = sha256(bytes).toString("hex");
+    inputFiles.push({ file: `inputs/${checksum}-${title}`, bytes });
     inputs.push({
       name: documentName(bytes),
       title,
-      checksum: sha256(bytes).toString("hex"),
+      checksum,
       ...(modified === undefined ? {} : { modified }),
     });
   }
   const outcomes: Outcome[] = [];
-  const files: { file: string; bytes: Buffer }[] = [];
+  const files: { file: string; bytes: Buffer; checksum: string }[] = [];
   for (const description of source.series) {
     const rows = series.get(description.iri)!;
     const previous = feed.current(description.iri);
@@ -297,9 +295,11 @@ export async function build(
     }
     await mkdir(dirname(options.feed), { recursive: true });
     await feed.write(options.feed);
-    const inputsSum = sha256(inputs.map((i) => i.checksum).join("\n"));
+    const sum = sha256(
+      [...inputs, ...files].map(({ checksum }) => checksum).join("\n"),
+    );
     const release = {
-      tag: `${basename(source.folder)}-${inputsSum.toString("hex").slice(0, 12)}`,
+      tag: `${basename(source.folder)}-${sum.toString("hex").slice(0, 12)}`,
       title: `${source.label} ${options.label}`,
       files: archived.map(({ file }) => file),
     };

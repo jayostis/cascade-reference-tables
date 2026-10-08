@@ -48,7 +48,13 @@ jobs:
           owner="${GITHUB_REPOSITORY%%/*}"
           url="https://${owner,,}.github.io/${GITHUB_REPOSITORY#*/}/checked.json"
           mkdir -p build/checked
-          curl -fsS "$url" -o build/live-checked.json || echo '{"checked":{}}' > build/live-checked.json
+          status=$(curl -sS -o build/live-checked.json -w '%{http_code}' "$url?run=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT")
+          if [ "$status" = 404 ]; then
+            echo '{"checked":{}}' > build/live-checked.json
+          elif [ "$status" != 200 ]; then
+            echo "::error::$url answered $status"
+            exit 1
+          fi
       - name: The site, every rows file checked against its checksum and its version's name
         env:
           GITHUB_TOKEN: ${{ github.token }}

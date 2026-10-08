@@ -47,7 +47,6 @@ jobs:
           cache: npm
           cache-dependency-path: cascade-reference-tables/package-lock.json
       - run: npm ci
-      # A pull request opened with GITHUB_TOKEN starts no workflow, so the checks run here, before it is opened.
       - name: Check each source, and build what is new
         id: build
         env:
@@ -56,18 +55,35 @@ jobs:
         run: |
           set -euo pipefail
           built=""
+          failed=""
           for folder in builders/*/; do
             name=$(basename "$folder")
             if [ -n "${SOURCE:-}" ] && [ "$SOURCE" != "$name" ]; then continue; fi
             mkdir -p "build/$name"
             cp feed/feed.ttl "build/$name/feed.ttl"
-            npm run --silent host -- build "$name" --out "build/$name" --feed "build/$name/feed.ttl" \
-              --releases "$GITHUB_REPOSITORY"
+            if ! npm run --silent host -- build "$name" --out "build/$name" --feed "build/$name/feed.ttl" \
+              --releases "$GITHUB_REPOSITORY"; then
+              echo "::error::$name could not be checked"
+              failed="$failed $name"
+              continue
+            fi
             if [ -f "build/$name/release.json" ]; then built="$built $name"; fi
           done
           echo "built=${built# }" >> "$GITHUB_OUTPUT"
-      - if: ${{ steps.build.outputs.built != '' }}
-        run: npm run typecheck && npm run lint && npm test
+          echo "failed=${failed# }" >> "$GITHUB_OUTPUT"
+      - name: The checks, on each new feed
+        if: ${{ steps.build.outputs.built != '' }}
+        env:
+          BUILT: ${{ steps.build.outputs.built }}
+        run: |
+          set -euo pipefail
+          npm run typecheck
+          npm run lint
+          for name in $BUILT; do
+            cp "build/$name/feed.ttl" feed/feed.ttl
+            npm test
+          done
+          git checkout -- feed/feed.ttl
       - name: A release, a branch and a pull request for each source with new versions
         if: ${{ steps.build.outputs.built != '' }}
         env:
@@ -105,14 +121,21 @@ jobs:
           name: build
           path: cascade-reference-tables/build
       - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
         with:
           name: checked
           path: cascade-reference-tables/build/*/checked.json
           if-no-files-found: error
+      - if: ${{ steps.build.outputs.failed != '' }}
+        env:
+          FAILED: ${{ steps.build.outputs.failed }}
+        run: |
+          echo "::error::not checked: $FAILED"
+          exit 1
 
   publish:
     needs: watch
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ !cancelled() && github.ref_name == 'main' }}
     permissions:
       contents: read
       pages: write
