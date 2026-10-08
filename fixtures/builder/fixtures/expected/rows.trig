@@ -1,0 +1,44 @@
+@prefix cvx: <http://hl7.org/fhir/sid/cvx/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix semapv: <https://w3id.org/semapv/vocab/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sssom: <https://w3id.org/sssom/> .
+
+<urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> {
+    <urn:uuid:682b4f66-ad68-80e4-a154-8952fb415368> a owl:Axiom ;
+        owl:annotatedSource cvx:141 ;
+        owl:annotatedProperty skos:broadMatch ;
+        owl:annotatedTarget cvx:88 ;
+        sssom:mapping_justification semapv:ManualMappingCuration .
+
+    <urn:uuid:6f01bf63-3d03-8b5b-abda-630660d5045d> a owl:Axiom ;
+        owl:annotatedSource cvx:150 ;
+        owl:annotatedProperty skos:broadMatch ;
+        owl:annotatedTarget cvx:88 ;
+        sssom:mapping_justification semapv:ManualMappingCuration .
+
+    <urn:uuid:5947096a-81cf-892f-8a82-c68ebfb55b83> a owl:Axiom ;
+        owl:annotatedSource cvx:88 ;
+        owl:annotatedProperty skos:broadMatch ;
+        owl:annotatedTarget cvx:88 ;
+        sssom:mapping_justification semapv:ManualMappingCuration .
+
+    <urn:uuid:771d7cee-44ad-804e-8d17-e0e02260a6b2> a owl:Axiom ;
+        owl:annotatedSource cvx:03 ;
+        owl:annotatedProperty skos:broadMatch ;
+        owl:annotatedTarget cvx:03 ;
+        sssom:mapping_justification semapv:ManualMappingCuration .
+}
+
+<urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> {
+    cvx:141 skos:prefLabel "flu, split" ; skos:altLabel "Influenza, split virus" ; skos:notation "141" .
+    cvx:150 skos:prefLabel "flu, quadrivalent" ; skos:altLabel "Influenza, quadrivalent" ; skos:notation "150" .
+    cvx:88 skos:prefLabel "flu" ; skos:notation "88" .
+    cvx:03 skos:prefLabel "MMR" ; skos:altLabel "measles, mumps and rubella" ; skos:notation "03" .
+    cvx:57 skos:prefLabel "hantavirus" ; skos:altLabel "hantavirus vaccine" ; skos:notation "57" .
+}
+
+<urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> {
+    cvx:57 owl:deprecated true .
+}

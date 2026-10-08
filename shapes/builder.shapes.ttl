@@ -1,0 +1,28 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+tables:BuilderShape a sh:NodeShape ;
+    sh:targetClass tables:Builder ;
+    sh:pattern "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" ;
+    sh:message "A builder is named by a urn:uuid:."@en ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A builder has one name."@en
+    ] , [
+        sh:path tables:builderVersion ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A builder states its one version."@en
+    ] , [
+        sh:path tables:builds ;
+        sh:class tables:Source ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A builder builds one source."@en
+    ] .

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ns.cascadeprotocol.org/tables/v1-draft/builder/interface.schema.json",
+  "title": "A row a builder yields",
+  "oneOf": [
+    { "$ref": "#/$defs/mapping" },
+    { "$ref": "#/$defs/names" },
+    { "$ref": "#/$defs/status" }
+  ],
+  "$defs": {
+    "iri": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9+.-]*:[^\\s<>\"{}|\\\\^`]+$"
+    },
+    "text": { "type": "string", "minLength": 1 },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "series",
+        "subject_id",
+        "predicate_id",
+        "object_id",
+        "mapping_justification"
+      ],
+      "properties": {
+        "series": { "$ref": "#/$defs/iri" },
+        "subject_id": { "$ref": "#/$defs/iri" },
+        "predicate_id": { "$ref": "#/$defs/iri" },
+        "object_id": { "$ref": "#/$defs/iri" },
+        "mapping_justification": { "$ref": "#/$defs/iri" }
+      }
+    },
+    "names": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["series", "subject", "prefLabel", "notation"],
+      "properties": {
+        "series": { "$ref": "#/$defs/iri" },
+        "subject": { "$ref": "#/$defs/iri" },
+        "prefLabel": { "$ref": "#/$defs/text" },
+        "altLabel": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+        "notation": { "$ref": "#/$defs/text" }
+      }
+    },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["series", "subject"],
+      "properties": {
+        "series": { "$ref": "#/$defs/iri" },
+        "subject": { "$ref": "#/$defs/iri" },
+        "replacedBy": { "type": "array", "items": { "$ref": "#/$defs/iri" } }
+      }
+    }
+  }
+}

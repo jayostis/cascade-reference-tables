@@ -1,0 +1,77 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+tables:SourceShape a sh:NodeShape ;
+    sh:targetClass tables:Source ;
+    sh:class dcat:Dataset ;
+    sh:message "A source is also a dcat:Dataset."@en ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A source has one name."@en
+    ] , [
+        sh:path dct:publisher ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A source names its one publisher."@en
+    ] , [
+        sh:path dct:license ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A source names its one licence."@en
+    ] , [
+        sh:path dct:bibliographicCitation ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A source states the credit its publisher asks for."@en
+    ] , [
+        sh:path tables:detectedBy ;
+        sh:in ( tables:ConditionalGet tables:ReleaseApi tables:FolderListing ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A source is detected by one of the host's methods."@en
+    ] , [
+        sh:path dcat:distribution ;
+        sh:minCount 1 ;
+        sh:node tables:SourceFileShape ;
+        sh:message "A source has at least one file, each with one download URL."@en
+    ] , [
+        sh:path [ sh:inversePath dct:source ] ;
+        sh:minCount 1 ;
+        sh:node tables:SeriesDeclarationShape ;
+        sh:message "A source fills at least one series, each a urn:uuid: with one name and one table kind."@en
+    ] .
+
+tables:SourceFileShape a sh:NodeShape ;
+    sh:property [
+        sh:path dcat:downloadURL ;
+        sh:nodeKind sh:IRI ;
+        sh:pattern "^https://[^/]+/.*[^/]$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] .
+
+tables:SeriesDeclarationShape a sh:NodeShape ;
+    sh:class rec:ReferenceSeries ;
+    sh:pattern "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path rec:tableKind ;
+        sh:class rec:TableKind ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] .
