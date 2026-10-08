@@ -1,0 +1,53 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://ns.cascadeprotocol.org/tables/v1-draft#> a owl:Ontology ;
+    rdfs:label "Cascade reference tables"@en ;
+    dct:license <https://www.apache.org/licenses/LICENSE-2.0> ;
+    owl:versionInfo "v1-draft" .
+
+tables:Source a owl:Class ;
+    rdfs:subClassOf dcat:Dataset ;
+    rdfs:label "source"@en ;
+    rdfs:comment "A publisher's release line that a builder reads, and the series it fills name with dct:source."@en .
+
+tables:detectedBy a owl:ObjectProperty ;
+    rdfs:label "detected by"@en ;
+    rdfs:domain tables:Source ;
+    rdfs:range tables:DetectionMethod .
+
+tables:DetectionMethod a owl:Class ;
+    rdfs:label "detection method"@en ;
+    rdfs:comment "How a host notices a new release of a source."@en .
+
+tables:ConditionalGet a tables:DetectionMethod ;
+    rdfs:label "conditional GET"@en ;
+    rdfs:comment "Each file is requested with If-Modified-Since its last Last-Modified; a 304, or a 200 with the checksum already held, is nothing new."@en .
+
+tables:ReleaseApi a tables:DetectionMethod ;
+    rdfs:label "release API"@en ;
+    rdfs:comment "The publisher's API lists its releases, each with its download URL."@en .
+
+tables:FolderListing a tables:DetectionMethod ;
+    rdfs:label "folder listing"@en ;
+    rdfs:comment "The publisher's folder lists one folder per release."@en .
+
+tables:Builder a owl:Class ;
+    rdfs:subClassOf prov:SoftwareAgent ;
+    rdfs:label "builder"@en ;
+    rdfs:comment "The code that turns one source's release into rows of the series that source fills."@en .
+
+tables:builds a owl:ObjectProperty ;
+    rdfs:label "builds"@en ;
+    rdfs:domain tables:Builder ;
+    rdfs:range tables:Source .
+
+tables:builderVersion a owl:DatatypeProperty ;
+    rdfs:label "builder version"@en ;
+    rdfs:comment "On a builder, its version now; on a table version, the builder's version that built it."@en ;
+    rdfs:range xsd:string .

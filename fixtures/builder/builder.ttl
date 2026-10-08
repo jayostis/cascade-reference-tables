@@ -1,0 +1,7 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> a tables:Builder ;
+    rdfs:label "example" ;
+    tables:builderVersion "1" ;
+    tables:builds <urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19> .

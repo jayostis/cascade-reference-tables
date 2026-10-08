@@ -1,0 +1,49 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: check-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cascade-reference-tables
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: cascade-reference-tables
+          persist-credentials: false
+      - name: The vocabulary at the commit vocabulary.json pins, beside this repository
+        id: vocabulary
+        run: |
+          echo "repository=$(jq -r '.repository | sub("^https://github.com/"; "")' vocabulary.json)" >> "$GITHUB_OUTPUT"
+          echo "commit=$(jq -r .commit vocabulary.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ steps.vocabulary.outputs.repository }}
+          ref: ${{ steps.vocabulary.outputs.commit }}
+          path: cascade-vocabulary
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: cascade-reference-tables/package-lock.json
+      - run: npm ci
+      - if: ${{ !cancelled() }}
+        run: npm run typecheck
+      - if: ${{ !cancelled() }}
+        run: npm run lint
+      - if: ${{ !cancelled() }}
+        run: npm test

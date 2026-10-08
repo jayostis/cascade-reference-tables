@@ -1,0 +1,244 @@
+@prefix adms: <http://www.w3.org/ns/adms#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix spdx: <http://spdx.org/rdf/terms#> .
+@prefix sssom: <https://w3id.org/sssom/> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+tables:CatalogShape a sh:NodeShape ;
+    sh:targetClass dcat:Catalog ;
+    sh:property [
+        sh:path dct:title ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "The catalog has one title."@en
+    ] , [
+        sh:path adms:status ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "The catalog states its one status."@en
+    ] , [
+        sh:path dct:modified ;
+        sh:datatype xsd:dateTime ;
+        sh:maxCount 1 ;
+        sh:message "The catalog states when it last changed, once."@en
+    ] , [
+        sh:path dcat:dataset ;
+        sh:class rec:ReferenceSeries ;
+        sh:message "Each dataset of the catalog is a reference series."@en
+    ] .
+
+tables:SeriesShape a sh:NodeShape ;
+    sh:targetClass rec:ReferenceSeries ;
+    sh:class dcat:Dataset ;
+    sh:pattern "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" ;
+    sh:message "A series is a dcat:Dataset named by a urn:uuid:."@en ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A series has one name."@en
+    ] , [
+        sh:path rec:tableKind ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A series is of one table kind."@en
+    ] , [
+        sh:path dct:license ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A series names its one licence."@en
+    ] , [
+        sh:path dct:publisher ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A series names its one publisher."@en
+    ] , [
+        sh:path dct:bibliographicCitation ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A series states its publisher's credit."@en
+    ] , [
+        sh:path dcat:hasVersion ;
+        sh:minCount 1 ;
+        sh:message "A series has at least one version."@en
+    ] , [
+        sh:path dcat:hasCurrentVersion ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A series has one current version."@en
+    ] .
+
+tables:VersionShape a sh:NodeShape ;
+    sh:targetSubjectsOf prov:specializationOf ;
+    sh:pattern "^ni:///sha-256;[A-Za-z0-9_-]{43}$" ;
+    sh:message "A version is named by its content, an ni:///sha-256; name."@en ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:hasValue dcat:Dataset ;
+        sh:message "A version is a dcat:Dataset."@en
+    ] , [
+        sh:path rdf:type ;
+        sh:hasValue prov:Entity ;
+        sh:message "A version is a prov:Entity."@en
+    ] , [
+        sh:path [ sh:inversePath dcat:hasVersion ] ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A version is listed by one series."@en
+    ] , [
+        sh:path prov:specializationOf ;
+        sh:class rec:ReferenceSeries ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A version is of one series."@en
+    ] , [
+        sh:path dcat:version ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A version has its publisher's one release label."@en
+    ] , [
+        sh:path pav:version ;
+        sh:equals dcat:version ;
+        sh:message "A version's pav:version is its dcat:version."@en
+    ] , [
+        sh:path prov:wasRevisionOf ;
+        sh:nodeKind sh:IRI ;
+        sh:maxCount 1 ;
+        sh:message "A version revises at most one version."@en
+    ] , [
+        sh:path adms:versionNotes ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[0-9]+ added, [0-9]+ removed, [0-9]+ changed$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A version's notes count the rows it added, removed and changed."@en
+    ] , [
+        sh:path dct:issued ;
+        sh:datatype xsd:dateTime ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A version states when it was built."@en
+    ] , [
+        sh:path prov:wasDerivedFrom ;
+        sh:minCount 1 ;
+        sh:node tables:InputShape ;
+        sh:message "A version names the files it was built from, each by its content, with its one title and checksum."@en
+    ] , [
+        sh:path prov:wasAttributedTo ;
+        sh:class tables:Builder ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A version names its one builder."@en
+    ] , [
+        sh:path tables:builderVersion ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A version states its builder's version."@en
+    ] , [
+        sh:path dcat:distribution ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:node tables:DistributionShape ;
+        sh:message "A version has one distribution, its rows file: a gzipped N-Quads file with one download URL and one SHA-256 checksum."@en
+    ] .
+
+tables:InputShape a sh:NodeShape ;
+    sh:pattern "^ni:///sha-256;[A-Za-z0-9_-]{43}$" ;
+    sh:property [
+        sh:path dct:title ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path dct:modified ;
+        sh:datatype xsd:dateTime ;
+        sh:maxCount 1
+    ] , [
+        sh:path spdx:checksum ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:node tables:ChecksumShape
+    ] .
+
+tables:DistributionShape a sh:NodeShape ;
+    sh:class dcat:Distribution ;
+    sh:property [
+        sh:path dcat:downloadURL ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path dcat:mediaType ;
+        sh:hasValue <https://www.iana.org/assignments/media-types/application/n-quads> ;
+        sh:maxCount 1
+    ] , [
+        sh:path dcat:compressFormat ;
+        sh:hasValue <https://www.iana.org/assignments/media-types/application/gzip> ;
+        sh:maxCount 1
+    ] , [
+        sh:path spdx:checksum ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:node tables:ChecksumShape
+    ] .
+
+tables:ChecksumShape a sh:NodeShape ;
+    sh:property [
+        sh:path spdx:algorithm ;
+        sh:hasValue spdx:checksumAlgorithm_sha256 ;
+        sh:maxCount 1
+    ] , [
+        sh:path spdx:checksumValue ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[0-9a-f]{64}$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] .
+
+tables:MappingSetShape a sh:NodeShape ;
+    sh:targetClass sssom:MappingSet ;
+    sh:property [
+        sh:path sssom:mapping_set_version ;
+        sh:minCount 1 ;
+        sh:equals dcat:version ;
+        sh:message "A mapping set's version is its dcat:version."@en
+    ] , [
+        sh:path sssom:subject_source_version ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A mapping set states its source's version."@en
+    ] , [
+        sh:path sssom:license ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A mapping set names its licence."@en
+    ] , [
+        sh:path sssom:mapping_tool ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A mapping set names its builder as its mapping tool."@en
+    ] , [
+        sh:path sssom:mapping_tool_version ;
+        sh:minCount 1 ;
+        sh:equals tables:builderVersion ;
+        sh:message "A mapping set's tool version is its builder's version."@en
+    ] .
