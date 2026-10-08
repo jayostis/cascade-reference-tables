@@ -31,3 +31,20 @@ The `n`th build of an example happens on 2026-10-0`n` at 00:00 UTC.
 | `each version's rows file is named rows/<its SHA-256 in hex>.nq.gz, and its checksum is that hex` | for the last build's versions                                                                                    |
 | `each rows file's gzip header has no time and the OS byte 255`                                    | bytes 4 to 7 are zero and byte 9 is 255                                                                          |
 | `each rows file holds its version's rows in the graph named by the version, and nothing else`     | its quads, graph dropped, are the series' rows in `fixtures/builder/fixtures/expected/rows.trig`                 |
+
+## Detection
+
+The publisher of a detection example answers a conditional GET as CDC does: 304 when `If-Modified-Since` is at or after
+its `Last-Modified`, otherwise 200 with the file and its `Last-Modified`.
+
+| Step                                                                                | What happens, or must hold                                                   |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `the publisher serves {string}, last modified {string}`                             | the publisher serves the files of that release folder of the example builder |
+| `the publisher serves {string}, last modified {string}, ignoring If-Modified-Since` | and answers 200 to every request                                             |
+| `the example source is checked`                                                     | the example source is checked against the feed                               |
+| `the example source, with a series added, is checked`                               | the same, its declaration holding one more series                            |
+| `the example source is built from the publisher`                                    | the example source is checked, and what is new is built                      |
+| `the check finds nothing new`                                                       |                                                                              |
+| `the check finds a new release labelled {string}`                                   |                                                                              |
+| `the publisher was last asked with no If-Modified-Since`                            |                                                                              |
+| `the publisher was last asked with If-Modified-Since {string}`                      |                                                                              |
