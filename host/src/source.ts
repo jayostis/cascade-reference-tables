@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import { join, relative, resolve } from "node:path";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { Build } from "./builder.js";
 import type { SeriesDescription } from "./feed.js";
@@ -101,11 +101,20 @@ export async function readSource(folder: string): Promise<Source> {
   };
 }
 
-/** The builder's code, as `tsc` compiled it under `dist/`. */
+/** The builder's code: as `tsc` compiled it under `dist/` for a folder in `root`, else the folder's own `build.js`. */
 export async function loadBuild(root: string, folder: string): Promise<Build> {
-  const compiled = join(root, "dist", relative(root, folder), "build.js");
+  const inside = relative(resolve(root), resolve(folder));
+  const outside =
+    inside === ".." || inside.startsWith(`..${sep}`) || isAbsolute(inside);
+  const compiled = outside
+    ? join(folder, "build.js")
+    : join(root, "dist", inside, "build.js");
   if (!existsSync(compiled))
-    throw new Error(`${compiled} is not built; run npm run build`);
+    throw new Error(
+      outside
+        ? `${compiled} does not exist; a builder outside the repository provides its compiled build.js beside its source.ttl`
+        : `${compiled} is not built; run npm run build`,
+    );
   const module = (await import(pathToFileURL(compiled).href)) as {
     default: Build;
   };

@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { before, describe, test } from "node:test";
+import { pathToFileURL } from "node:url";
+import { after, before, describe, test } from "node:test";
 import { gunzipSync } from "node:zlib";
 import { type Build, Refusal, type Row } from "../src/builder.js";
 import { conformanceExamples, runConformance } from "../src/conformance.js";
@@ -42,6 +43,7 @@ import {
 import { keyed } from "../src/rows.js";
 import { folderStore } from "../src/stores.js";
 import { loadBuild, readSource, type Source } from "../src/source.js";
+import { resolveVocabulary } from "../src/vocabulary.js";
 
 const ROOT = join(import.meta.dirname, "..", "..", "..");
 const EXAMPLE = join(ROOT, "fixtures", "builder");
@@ -654,3 +656,27 @@ for (const folder of builders)
     for (const ex of await conformanceExamples(ROOT))
       test(ex.name, () => runConformance(contract, folder, ex));
   });
+
+describe("builder/conformance.feature on a builder outside the repository, with the vocabulary given", async () => {
+  let outside: string;
+  let given: Contract;
+  before(async () => {
+    outside = await mkdtemp(join(tmpdir(), "outside-builder-"));
+    await cp(EXAMPLE, outside, {
+      recursive: true,
+      filter: (path) => !path.endsWith(".ts"),
+    });
+    const compiled = pathToFileURL(
+      join(ROOT, "dist", "fixtures", "builder", "build.js"),
+    ).href;
+    await writeFile(
+      join(outside, "build.js"),
+      `export { default } from ${JSON.stringify(compiled)};\n`,
+    );
+    given = await readContract(ROOT, (await resolveVocabulary(ROOT)).folder);
+    assert.match(given.said, /as given$/);
+  });
+  after(() => rm(outside, { recursive: true, force: true }));
+  for (const ex of await conformanceExamples(ROOT))
+    test(ex.name, () => runConformance(given, outside, ex));
+});

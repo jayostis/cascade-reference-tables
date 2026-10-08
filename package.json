@@ -7,7 +7,27 @@
   "engines": {
     "node": ">=22"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/host/src/index.d.ts",
+      "default": "./dist/host/src/index.js"
+    },
+    "./builder": {
+      "types": "./dist/host/src/builder.d.ts",
+      "default": "./dist/host/src/builder.js"
+    }
+  },
+  "files": [
+    "dist",
+    "shapes",
+    "vocab",
+    "builder",
+    "builders",
+    "fixtures",
+    "vocabulary.json"
+  ],
   "scripts": {
+    "prepare": "tsc -b",
     "build": "tsc -b",
     "typecheck": "tsc -b",
     "lint": "eslint . && prettier --check .",

@@ -34,6 +34,13 @@ it has when it is new, keeping its files in `<out>/release/`; `--checked` reads 
 `$CASCADE_VOCABULARY`, else the sibling checkout `../cascade-vocabulary`, else the pinned commit, fetched into
 `.cache/`.
 
+A Node program uses the host as a package, depending on a commit:
+`npm install --save-exact github:jayostis/cascade-reference-tables#<commit>`. It imports `readContract`,
+`readSource`, `sourceFolder`, `loadBuild` and `buildLatest` from `cascade-reference-tables`, and passes
+`readContract` the vocabulary folder it uses. A builder outside this repository imports from
+`cascade-reference-tables/builder` and is loaded from the compiled `build.js` it provides beside its
+`source.ttl`.
+
 ## The feed
 
 **https://jayostis.github.io/cascade-reference-tables/feed.ttl**, a DRAFT. Beside it, `checked.json` says when each
