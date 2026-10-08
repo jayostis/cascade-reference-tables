@@ -1,7 +1,8 @@
 Feature: Detection by conditional GET
   A source detected by `tables:ConditionalGet` is checked by asking for each of its files with `If-Modified-Since` set
-  to the `Last-Modified` the feed records for that file. A publisher may ignore the header and answer 200 with the same
-  bytes; the file's checksum then tells it apart.
+  to the `Last-Modified` the feed records for that file, or the last check recorded in `checked.json` when its build
+  found no new rows. A publisher may ignore the header and answer 200 with the same bytes; the file's checksum then
+  tells it apart.
 
   The publisher of the examples serves the example builder's `codes.txt` from one of the release folders under
   `fixtures/builder/fixtures/`, as `Last-Modified` the time given.
@@ -40,6 +41,15 @@ Feature: Detection by conditional GET
       And the publisher serves "release", last modified "Fri, 18 Sep 2026 08:00:00 GMT", ignoring If-Modified-Since
       When the example source is checked
       Then the check finds nothing new
+
+    Example: bytes a build found no new rows in are nothing new at the next check
+      Given the publisher serves "release", last modified "Thu, 17 Sep 2026 21:01:41 GMT"
+      And the example source is built from the publisher
+      And the publisher serves "release-reordered", last modified "Fri, 18 Sep 2026 08:00:00 GMT"
+      And the example source is built from the publisher
+      When the example source is checked
+      Then the check finds nothing new
+      And the publisher was last asked with If-Modified-Since "Fri, 18 Sep 2026 08:00:00 GMT"
 
     Example: with no Last-Modified, the bytes any current version holds are nothing new
       Given the publisher serves "release-2", last modified "not a date"

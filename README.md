@@ -23,13 +23,14 @@ On Node 22:
 npm ci
 npm test
 npm run host -- test [<source>...]
-npm run host -- check <source>
-npm run host -- build <source> [--release <folder> --label <text>] [--out build] [--feed feed/feed.ttl] [--releases <owner/repo>]
+npm run host -- check <source> [--checked <checked.json>]
+npm run host -- build <source> [--release <folder> --label <text>] [--out build] [--feed feed/feed.ttl] [--releases <owner/repo>] [--checked <checked.json>]
 npm run host -- publish --site <folder> [--releases <owner/repo>] [--rows <folder>]... [<checked.json>...]
 ```
 
 A source is a folder under `builders/`, or a path. Without `--release`, `build` checks the publisher and builds what
-it has when it is new, keeping its files in `<out>/release/`. The host reads the vocabulary from
+it has when it is new, keeping its files in `<out>/release/`; `--checked` reads what the last check saw from a
+`checked.json`. The host reads the vocabulary from
 `$CASCADE_VOCABULARY`, else the sibling checkout `../cascade-vocabulary`, else the pinned commit, fetched into
 `.cache/`.
 

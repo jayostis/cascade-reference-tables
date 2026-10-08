@@ -21,6 +21,7 @@ import {
   type Contract,
   type Outcome,
   readContract,
+  type Seen,
 } from "../src/pipeline.js";
 import {
   DCAT,
@@ -403,6 +404,7 @@ const steps = new Steps<World>()
       await Feed.readOrEmpty(world.feed),
       publisher(world),
       join(world.dir, "checked"),
+      lastSeen(world),
     );
   })
   .define(
@@ -428,6 +430,7 @@ const steps = new Steps<World>()
       out: world.out,
       now: `2026-10-0${world.builds.length + 1}T00:00:00Z`,
       fetch: publisher(world),
+      seen: lastSeen(world),
     });
     world.builds.push(outcomes === "nothing new" ? [] : outcomes);
     world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
@@ -574,6 +577,13 @@ function checksOf(table: readonly (readonly string[])[]): SiteChecks {
 }
 
 /** A publisher serving the example builder's files from a release folder, answering a conditional GET as CDC does. */
+function lastSeen(world: World): Seen {
+  const file = join(world.out, "checked.json");
+  if (!existsSync(file)) return {};
+  const { checked } = JSON.parse(readFileSync(file, "utf8")) as SiteChecks;
+  return checked[example.iri]?.inputs ?? {};
+}
+
 function publisher(world: World): Fetch {
   return async (input, init) => {
     const { release, modified, ignoresSince } = world.publisher!;

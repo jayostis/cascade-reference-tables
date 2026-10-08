@@ -181,16 +181,29 @@ async function rowsAtHand(
   throw new Error(`${file} is not at hand`);
 }
 
-/** Writes `<out>/checked.json`: when the source was checked, and whether it gave a new version. */
+/** Each release file's checksum and `Last-Modified`, by name, as the last check that built no new version saw them. */
+export type Seen = Readonly<
+  Record<string, { readonly checksum: string; readonly modified?: string }>
+>;
+
+/** Writes `<out>/checked.json`: when the source was checked, whether it gave a new version, and what it saw if not. */
 export async function writeChecked(
   out: string,
   source: Source,
   at: string,
   found: "new" | "nothing new",
+  inputs?: Seen,
 ): Promise<void> {
   await mkdir(out, { recursive: true });
   const checked = {
-    checked: { [source.iri]: { label: source.label, at, found } },
+    checked: {
+      [source.iri]: {
+        label: source.label,
+        at,
+        found,
+        ...(inputs === undefined ? {} : { inputs }),
+      },
+    },
   };
   await writeFile(
     join(out, "checked.json"),
@@ -310,11 +323,20 @@ export async function build(
   }
   await mkdir(options.out, { recursive: true });
   await writeFile(join(options.out, "differences.md"), markdown(outcomes));
+  const built = outcomes.some((o) => o.version !== undefined);
   await writeChecked(
     options.out,
     source,
     options.now,
-    outcomes.some((o) => o.version !== undefined) ? "new" : "nothing new",
+    built ? "new" : "nothing new",
+    built
+      ? undefined
+      : Object.fromEntries(
+          inputs.map(({ title, checksum, modified }) => [
+            title,
+            modified === undefined ? { checksum } : { checksum, modified },
+          ]),
+        ),
   );
   return outcomes;
 }
