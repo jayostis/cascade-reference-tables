@@ -7,7 +7,13 @@ import { before, describe, test } from "node:test";
 import { gunzipSync } from "node:zlib";
 import { type Build, Refusal, type Row } from "../src/builder.js";
 import { conformanceExamples, runConformance } from "../src/conformance.js";
-import { Feed } from "../src/feed.js";
+import {
+  buildLatest,
+  check,
+  type Checked,
+  type Fetch,
+} from "../src/detection.js";
+import { emptyFeed, Feed } from "../src/feed.js";
 import { readFeature, Steps } from "../src/features.js";
 import { sha256, versionName } from "../src/names.js";
 import {
@@ -40,6 +46,10 @@ interface World {
   readonly feeds: string[];
   readonly builds: Outcome[][];
   refusal?: Error;
+  publisher?: { release: string; modified: string; ignoresSince: boolean };
+  /** Each request's `If-Modified-Since`, in order. */
+  readonly asked: (string | undefined)[];
+  checked?: Checked;
 }
 
 let contract: Contract;
@@ -198,6 +208,16 @@ const steps = new Steps<World>()
   .define("the last build made these versions:", async (world, _, step) => {
     const feed = await feedOf(world);
     const outcomes = lastBuild(world);
+    assert.deepEqual(
+      outcomes
+        .filter((o) => o.version !== undefined)
+        .map((o) => o.label)
+        .sort(),
+      step
+        .table!.slice(1)
+        .map(([label]) => label)
+        .sort(),
+    );
     for (const [label, revises, notes] of step.table!.slice(1)) {
       const series = seriesNamed(label!);
       const outcome = outcomes.find((o) => o.series === series);
@@ -347,7 +367,91 @@ const steps = new Steps<World>()
         );
       }
     },
+  )
+  .define(
+    "the publisher serves {string}, last modified {string}",
+    (world, [release, modified]) => {
+      world.publisher = {
+        release: release as string,
+        modified: modified as string,
+        ignoresSince: false,
+      };
+    },
+  )
+  .define(
+    "the publisher serves {string}, last modified {string}, ignoring If-Modified-Since",
+    (world, [release, modified]) => {
+      world.publisher = {
+        release: release as string,
+        modified: modified as string,
+        ignoresSince: true,
+      };
+    },
+  )
+  .define("the example source is checked", async (world) => {
+    world.checked = await check(
+      example,
+      existsSync(world.feed) ? await Feed.read(world.feed) : emptyFeed(),
+      publisher(world),
+      join(world.dir, "checked"),
+    );
+  })
+  .define("the example source is built from the publisher", async (world) => {
+    const outcomes = await buildLatest(contract, {
+      source: example,
+      build: await loadBuild(ROOT, EXAMPLE),
+      feed: world.feed,
+      out: world.out,
+      now: `2026-10-0${world.builds.length + 1}T00:00:00Z`,
+      fetch: publisher(world),
+    });
+    world.builds.push(outcomes === "nothing new" ? [] : outcomes);
+    world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
+  })
+  .define("the check finds nothing new", ({ checked }) => {
+    assert.equal(checked?.found, "nothing new");
+  })
+  .define(
+    "the check finds a new release labelled {string}",
+    ({ checked }, [label]) => {
+      assert.equal(checked?.found, "new");
+      assert.equal(checked.label, label);
+    },
+  )
+  .define(
+    "the publisher was last asked with no If-Modified-Since",
+    ({ asked }) => {
+      assert.ok(asked.length > 0);
+      assert.equal(asked.at(-1), undefined);
+    },
+  )
+  .define(
+    "the publisher was last asked with If-Modified-Since {string}",
+    ({ asked }, [since]) => {
+      assert.equal(asked.at(-1), since);
+    },
   );
+
+/** A publisher serving the example builder's files from a release folder, answering a conditional GET as CDC does. */
+function publisher(world: World): Fetch {
+  return async (input, init) => {
+    const { release, modified, ignoresSince } = world.publisher!;
+    const since =
+      new Headers(init?.headers).get("If-Modified-Since") ?? undefined;
+    world.asked.push(since);
+    if (
+      since !== undefined &&
+      !ignoresSince &&
+      Date.parse(since) >= Date.parse(modified)
+    )
+      return new Response(null, { status: 304 });
+    const name = String(input).split("/").pop()!;
+    return new Response(
+      await readFile(join(EXAMPLE, "fixtures", release, name)),
+      { status: 200, headers: { "Last-Modified": modified } },
+    );
+  };
+}
 
 function dropGraph(q: Quad): Quad {
   return quad(q.subject, q.predicate, q.object);
@@ -375,6 +479,7 @@ for (const file of rules) {
             out: join(dir, "out"),
             feeds: [],
             builds: [],
+            asked: [],
           });
         } finally {
           await rm(dir, { recursive: true, force: true });

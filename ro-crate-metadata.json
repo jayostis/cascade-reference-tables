@@ -24,6 +24,7 @@
         { "@id": "rules/rows.feature" },
         { "@id": "rules/versions.feature" },
         { "@id": "rules/feed.feature" },
+        { "@id": "rules/detection.feature" },
         { "@id": "rules/steps.md" },
         { "@id": "builder/interface.schema.json" },
         { "@id": "builder/conformance.feature" },

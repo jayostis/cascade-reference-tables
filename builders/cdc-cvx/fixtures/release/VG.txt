@@ -1,0 +1,16 @@
+MMR|03        |Active|MMR|03
+Hep B, adolescent or pediatric|08        |Active|HepB|45
+DTP-Hib-Hep B|102       |Non-US|DTAP|107
+DTP-Hib-Hep B|102       |Non-US|HIB|17
+DTP-Hib-Hep B|102       |Non-US|HepB|45
+DTaP, unspecified formulation|107       |Inactive|DTAP|107
+Influenza, split virus, trivalent, PF|140       |Active|FLU|88
+Influenza, split virus, trivalent, preservative|141       |Active|FLU|88
+Influenza, split virus, quadrivalent, PF|150       |Active|FLU|88
+Hib, unspecified formulation|17        |Inactive|HIB|17
+Tick-borne encephalitis, unspecified|222       |Inactive|Tick-borne encephalitis|222
+Respiratory syncytial virus (RSV), unspecified|304       |Inactive|RSV|304
+RSV, mAb, nirsevimab-alip, 0.5 mL, neonate to 24 months|306       |Active|RSV|304
+Hep B, unspecified formulation|45        |Inactive|HepB|45
+Tick-borne encephalitis vaccine (non-US)|77        |Non-US|Tick-borne encephalitis|222
+influenza, unspecified formulation|88        |Inactive|FLU|88

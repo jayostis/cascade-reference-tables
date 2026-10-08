@@ -1,0 +1,5 @@
+141|flu, split, preservative|Influenza, split virus|88|Active
+150|flu, quadrivalent, PF|Influenza, quadrivalent, preservative free|88|Active
+140|flu, split, PF|Influenza, split virus, preservative free|88|Active
+88|flu|flu|88|Active
+03|MMR|measles, mumps and rubella|03|Retired

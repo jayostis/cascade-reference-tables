@@ -1,0 +1,32 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> a tables:Source, dcat:Dataset ;
+    rdfs:label "CDC CVX" ;
+    dct:publisher <https://ror.org/042twtr12> ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:bibliographicCitation "Source: CDC" ;
+    tables:detectedBy tables:ConditionalGet ;
+    dcat:distribution
+        [ dcat:downloadURL <https://www2a.cdc.gov/vaccines/iis/iisstandards/downloads/VG.txt> ] ,
+        [ dcat:downloadURL <https://www2a.cdc.gov/vaccines/iis/iisstandards/downloads/CVX.txt> ] .
+
+<https://ror.org/042twtr12> rdfs:label "Centers for Disease Control and Prevention" .
+
+<urn:uuid:25623afd-6445-4394-8174-93ffacaea90e> a rec:ReferenceSeries ;
+    rdfs:label "CDC CVX vaccine groups" ;
+    rec:tableKind rec:VaccineGroups ;
+    dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> .
+
+<urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> a rec:ReferenceSeries ;
+    rdfs:label "CDC CVX names" ;
+    rec:tableKind rec:CodeNames ;
+    dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> .
+
+<urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79> a rec:ReferenceSeries ;
+    rdfs:label "CDC CVX code status" ;
+    rec:tableKind rec:CodeStatus ;
+    dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> .
