@@ -77,7 +77,6 @@ export async function resolveVocabulary(root: string): Promise<Resolved> {
 export interface Kind {
   readonly iri: string;
   readonly rowShape: string;
-  readonly foundBy: readonly string[];
 }
 
 /** What the host reads from the vocabulary: the table kinds, their row shapes and the code systems. */
@@ -104,11 +103,7 @@ export class Vocabulary {
   kind(iri: string): Kind {
     const rowShape = this.terms.value(iri, `${REC}rowShape`);
     if (rowShape === undefined) throw new Error(`${iri} is not a table kind`);
-    return {
-      iri,
-      rowShape,
-      foundBy: this.terms.objects(iri, `${REC}foundBy`).map((t) => t.value),
-    };
+    return { iri, rowShape };
   }
 
   /** A code's IRI: its system's `void:uriSpace` followed by the code. */

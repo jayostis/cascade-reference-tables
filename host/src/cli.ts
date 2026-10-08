@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { existsSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
@@ -52,16 +53,19 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
 }
 
 async function testCommand(root: string, names: string[]): Promise<number> {
+  const builders = join(root, "builders");
   const folders =
     names.length > 0
       ? names.map((name) => sourceFolder(root, name))
-      : (
-          await readdir(join(root, "builders"), { withFileTypes: true }).catch(
-            () => [],
-          )
-        )
-          .filter((entry) => entry.isDirectory())
-          .map((entry) => join(root, "builders", entry.name));
+      : existsSync(builders)
+        ? (await readdir(builders, { withFileTypes: true }))
+            .filter((entry) => entry.isDirectory())
+            .map((entry) => join(builders, entry.name))
+        : [];
+  if (folders.length === 0) {
+    console.error(`no builder to test: ${builders} holds none`);
+    return 1;
+  }
   const contract = await readContract(root);
   console.error(contract.said);
   let failed = 0;

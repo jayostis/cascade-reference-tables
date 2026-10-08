@@ -114,6 +114,10 @@ export class Feed {
     const hex = sum && graph.value(sum, `${SPDX}checksumValue`);
     if (url === undefined || hex === undefined || url === "" || hex === "")
       throw new Error(`the feed gives no rows file for ${version}`);
+    if (!url.startsWith(FEED_BASE))
+      throw new Error(
+        `${version}'s rows file ${url} is not relative to the feed`,
+      );
     return { file: url.slice(FEED_BASE.length), checksum: hex };
   }
 
@@ -141,6 +145,10 @@ export class Feed {
   add(version: NewVersion, now: string): void {
     const { series } = version;
     const catalog = FEED_BASE;
+    const has = (subject: string, predicate: string): boolean =>
+      this.quads.some(
+        (q) => q.subject.value === subject && q.predicate.value === predicate,
+      );
     const add = (...quads: Quad[]): void => {
       for (const q of quads)
         if (!this.quads.some((held) => held.equals(q))) this.quads.push(q);
@@ -156,7 +164,7 @@ export class Feed {
       triple(catalog, `${DCT}modified`, literal(now, `${XSD}dateTime`)),
       triple(catalog, `${DCAT}dataset`, series.iri),
     );
-    if (this.graph.value(series.iri, `${RDFS}label`) === undefined)
+    if (!has(series.iri, `${RDFS}label`))
       add(
         triple(series.iri, `${RDF}type`, `${DCAT}Dataset`),
         triple(series.iri, `${RDF}type`, `${REC}ReferenceSeries`),
@@ -195,7 +203,6 @@ export class Feed {
       triple(distribution, `${DCAT}downloadURL`, distribution),
       triple(distribution, `${DCAT}mediaType`, N_QUADS),
       triple(distribution, `${DCAT}compressFormat`, GZIP),
-      ...checksum(distribution, version.checksum),
       triple(version.builder.iri, `${RDF}type`, `${TABLES}Builder`),
       triple(
         version.builder.iri,
@@ -203,9 +210,12 @@ export class Feed {
         literal(version.builder.label),
       ),
     );
+    if (!has(distribution, `${SPDX}checksum`))
+      add(...checksum(distribution, version.checksum));
     for (const input of version.inputs) {
+      add(triple(v, `${PROV}wasDerivedFrom`, input.name));
+      if (has(input.name, `${DCT}title`)) continue;
       add(
-        triple(v, `${PROV}wasDerivedFrom`, input.name),
         triple(input.name, `${RDF}type`, `${PROV}Entity`),
         triple(input.name, `${DCT}title`, literal(input.title)),
         ...(input.modified === undefined
@@ -217,9 +227,8 @@ export class Feed {
                 literal(input.modified, `${XSD}dateTime`),
               ),
             ]),
+        ...checksum(input.name, input.checksum),
       );
-      if (this.graph.one(input.name, `${SPDX}checksum`) === undefined)
-        add(...checksum(input.name, input.checksum));
     }
     if (version.mapping)
       add(

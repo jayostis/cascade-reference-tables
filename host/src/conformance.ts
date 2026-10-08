@@ -30,6 +30,11 @@ function sameRows(
   return differing;
 }
 
+function built({ builds, refusal }: World): Map<string, SeriesRows>[] {
+  if (refusal !== undefined) throw refusal;
+  return builds;
+}
+
 const steps = new Steps<World>()
   .define("its declarations conform", async ({ contract, source }) => {
     const found = await declarationViolations(contract, source);
@@ -54,30 +59,28 @@ const steps = new Steps<World>()
   .define("it is not refused", ({ refusal }) => {
     if (refusal !== undefined) throw refusal;
   })
-  .define(
-    "each series' rows equal its expected rows",
-    async ({ source, builds }) => {
-      const expected = new Map<string, Map<string, string>>();
-      const quads = parseTrig(
-        await readFile(
-          join(source.folder, "fixtures", "expected", "rows.trig"),
-          "utf8",
-        ),
+  .define("each series' rows equal its expected rows", async (world) => {
+    const { source } = world;
+    const expected = new Map<string, Map<string, string>>();
+    const quads = parseTrig(
+      await readFile(
+        join(source.folder, "fixtures", "expected", "rows.trig"),
+        "utf8",
+      ),
+    );
+    for (const series of source.series)
+      expected.set(
+        series.iri,
+        keyed(quads.filter((q) => q.graph.value === series.iri)),
       );
-      for (const series of source.series)
-        expected.set(
-          series.iri,
-          keyed(quads.filter((q) => q.graph.value === series.iri)),
-        );
-      const differing = sameRows(builds[0]!, expected);
-      if (differing.length > 0)
-        throw new Error(
-          `rows differing from fixtures/expected:\n${differing.join("\n")}`,
-        );
-    },
-  )
-  .define("both builds give the same rows", ({ builds }) => {
-    const [first, second] = builds;
+    const differing = sameRows(built(world)[0]!, expected);
+    if (differing.length > 0)
+      throw new Error(
+        `rows differing from fixtures/expected:\n${differing.join("\n")}`,
+      );
+  })
+  .define("both builds give the same rows", (world) => {
+    const [first, second] = built(world);
     const differing = sameRows(
       first!,
       new Map([...second!].map(([series, rows]) => [series, rows.byKey()])),

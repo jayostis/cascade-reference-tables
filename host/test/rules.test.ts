@@ -105,18 +105,21 @@ const steps = new Steps<World>()
     (world, [release, label]) =>
       runBuild(world, release as string, label as string),
   )
-  .define("the example builder yields {}", async (world, [rows]) => {
-    const yielded = JSON.parse(rows as string) as Row[];
-    const code: Build = async function* () {
-      yield* yielded;
-    };
-    try {
-      await runBuild(world, "release", "refused", code);
-    } catch (error) {
-      if (!(error instanceof Refusal)) throw error;
-      world.refusal = error;
-    }
-  })
+  .define(
+    "the example builder, given the release {string}, yields {}",
+    async (world, [release, rows]) => {
+      const yielded = JSON.parse(rows as string) as Row[];
+      const code: Build = async function* () {
+        yield* yielded;
+      };
+      try {
+        await runBuild(world, release as string, "refused", code);
+      } catch (error) {
+        if (!(error instanceof Refusal)) throw error;
+        world.refusal = error;
+      }
+    },
+  )
   .define("the build is refused, saying {string}", ({ refusal }, [reason]) => {
     assert.ok(refusal, "the build was not refused");
     assert.ok(refusal.message.includes(reason as string), refusal.message);

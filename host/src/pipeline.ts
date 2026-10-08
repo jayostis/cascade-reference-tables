@@ -161,7 +161,7 @@ export interface BuildOptions {
   readonly label: string;
   readonly feed: string;
   readonly out: string;
-  /** Folders holding `rows/`, where the current versions' rows files are looked for; `out` first. */
+  /** Folders holding `rows/`, where the current versions' rows files are looked for after `out` and the feed's folder. */
   readonly rowsFolders?: readonly string[];
   readonly now: string;
   /** Each release file's `Last-Modified`, by name, where the publisher gave one. */
@@ -193,10 +193,16 @@ export async function build(
   const feed = existsSync(options.feed)
     ? await Feed.read(options.feed)
     : emptyFeed();
-  const folders = [options.out, ...(options.rowsFolders ?? [])];
+  const folders = [
+    options.out,
+    dirname(options.feed),
+    ...(options.rowsFolders ?? []),
+  ];
   const inputs: Input[] = [];
   for (const title of [...source.files.keys()].sort()) {
-    const bytes = await readFile(join(options.release, title));
+    const path = join(options.release, title);
+    if (!existsSync(path)) throw new Refusal(`the release has no ${title}`);
+    const bytes = await readFile(path);
     const modified = options.modified?.get(title);
     inputs.push({
       name: documentName(bytes),
@@ -206,19 +212,15 @@ export async function build(
     });
   }
   const outcomes: Outcome[] = [];
+  const files: { file: string; bytes: Buffer }[] = [];
   for (const description of source.series) {
     const rows = series.get(description.iri)!;
     const previous = feed.current(description.iri);
+    const held = previous === undefined ? undefined : feed.rowsOf(previous);
     const before =
-      previous === undefined
+      held === undefined
         ? new Map<string, string>()
-        : keyed(
-            await rowsAtHand(
-              feed.rowsOf(previous).file,
-              feed.rowsOf(previous).checksum,
-              folders,
-            ),
-          );
+        : keyed(await rowsAtHand(held.file, held.checksum, folders));
     const after = rows.byKey();
     const found = differences(before, after);
     const same =
@@ -239,8 +241,7 @@ export async function build(
       rows.triples(),
     );
     const file = await rowsFile(version, rows.triples());
-    await mkdir(join(options.out, "rows"), { recursive: true });
-    await writeFile(join(options.out, file.file), file.bytes);
+    files.push(file);
     feed.add(
       {
         series: description,
@@ -269,6 +270,9 @@ export async function build(
     const violations = await contract.feedShapes.violations(feed.triples);
     if (violations.length > 0)
       throw new Error(`the feed would not conform:\n${violations.join("\n")}`);
+    await mkdir(join(options.out, "rows"), { recursive: true });
+    for (const { file, bytes } of files)
+      await writeFile(join(options.out, file), bytes);
     await mkdir(dirname(options.feed), { recursive: true });
     await feed.write(options.feed);
   }

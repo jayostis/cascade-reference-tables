@@ -7,10 +7,10 @@ The `n`th build of an example happens on 2026-10-0`n` at 00:00 UTC.
 
 ## When
 
-| Step                                                          | What happens                                                                                                              |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `the example builder's release {string} is built as {string}` | the release folder of that name under `fixtures/builder/fixtures/` is built, its versions labelled with the second string |
-| `the example builder yields {}`                               | a build whose builder yields the rows of the JSON array given, of the example source                                      |
+| Step                                                          | What happens                                                                                                                              |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `the example builder's release {string} is built as {string}` | the release folder of that name under `fixtures/builder/fixtures/` is built, its versions labelled with the second string                 |
+| `the example builder, given the release {string}, yields {}`  | a build of the release folder of that name, which need not exist, whose builder yields the rows of the JSON array given and opens no file |
 
 ## Then
 
