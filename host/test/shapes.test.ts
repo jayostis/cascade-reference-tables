@@ -125,6 +125,12 @@ test("the checked.json a build and a publish write conforms to its schema", asyn
             label: "CDC CVX",
             at: "2026-10-07T06:23:00Z",
             found: "nothing new",
+            inputs: {
+              "CVX.txt": {
+                checksum: "0".repeat(64),
+                modified: "2026-10-06T21:01:41Z",
+              },
+            },
           },
         },
       }),

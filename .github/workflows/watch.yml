@@ -47,6 +47,16 @@ jobs:
           cache: npm
           cache-dependency-path: cascade-reference-tables/package-lock.json
       - run: npm ci
+      - name: The site's last checks
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          url="https://${owner,,}.github.io/${GITHUB_REPOSITORY#*/}/checked.json"
+          mkdir -p build
+          status=$(curl -sS -o build/live-checked.json -w '%{http_code}' "$url?run=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" || true)
+          if [ "$status" != 200 ]; then
+            if [ "$status" != 404 ]; then echo "::warning::$url answered $status; checking against the feed alone"; fi
+            echo '{"checked":{}}' > build/live-checked.json
+          fi
       - name: Check each source, and build what is new
         id: build
         env:
@@ -62,7 +72,7 @@ jobs:
             mkdir -p "build/$name"
             cp feed/feed.ttl "build/$name/feed.ttl"
             if ! npm run --silent host -- build "$name" --out "build/$name" --feed "build/$name/feed.ttl" \
-              --releases "$GITHUB_REPOSITORY"; then
+              --releases "$GITHUB_REPOSITORY" --checked build/live-checked.json; then
               echo "::error::$name could not be checked"
               failed="$failed $name"
               continue

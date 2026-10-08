@@ -8,18 +8,27 @@ import { Refusal } from "./builder.js";
 import { conformanceExamples, runConformance } from "./conformance.js";
 import { buildLatest, check } from "./detection.js";
 import { Feed } from "./feed.js";
-import { build, readContract } from "./pipeline.js";
+import { build, readContract, type Seen } from "./pipeline.js";
 import { type Checked, mergeChecked, publish } from "./publish.js";
-import { loadBuild, readSource, sourceFolder } from "./source.js";
+import { loadBuild, readSource, type Source, sourceFolder } from "./source.js";
 import { folderStore, releaseStore } from "./stores.js";
 
-const USAGE = `host check <source> [--feed <file>]
-host build <source> [--release <folder> --label <text>] [--out <folder>] [--feed <file>] [--releases <owner/repo>]
+const USAGE = `host check <source> [--feed <file>] [--checked <file>]
+host build <source> [--release <folder> --label <text>] [--out <folder>] [--feed <file>] [--releases <owner/repo>] [--checked <file>]
 host publish --site <folder> [--feed <file>] [--releases <owner/repo>] [--rows <folder>]... [<checked.json>...]
 host test [<source>...]`;
 
 function now(): string {
   return new Date().toISOString().replace(/\.\d+Z$/, "Z");
+}
+
+async function seenBy(
+  file: string | undefined,
+  source: Source,
+): Promise<Seen | undefined> {
+  if (file === undefined) return undefined;
+  const { checked } = JSON.parse(await readFile(file, "utf8")) as Checked;
+  return checked[source.iri]?.inputs;
 }
 
 async function checkCommand(root: string, args: string[]): Promise<number> {
@@ -28,6 +37,7 @@ async function checkCommand(root: string, args: string[]): Promise<number> {
     allowPositionals: true,
     options: {
       feed: { type: "string", default: join(root, "feed", "feed.ttl") },
+      checked: { type: "string" },
     },
   });
   const [name] = positionals;
@@ -39,7 +49,8 @@ async function checkCommand(root: string, args: string[]): Promise<number> {
   const feed = await Feed.readOrEmpty(values.feed);
   const folder = await mkdtemp(join(tmpdir(), "check-"));
   try {
-    console.log((await check(source, feed, fetch, folder)).found);
+    const seen = await seenBy(values.checked, source);
+    console.log((await check(source, feed, fetch, folder, seen)).found);
   } finally {
     await rm(folder, { recursive: true, force: true });
   }
@@ -56,6 +67,7 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
       out: { type: "string", default: "build" },
       feed: { type: "string", default: join(root, "feed", "feed.ttl") },
       releases: { type: "string" },
+      checked: { type: "string" },
     },
   });
   const [name] = positionals;
@@ -69,8 +81,10 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
   const contract = await readContract(root);
   console.error(contract.said);
   const folder = sourceFolder(root, name);
+  const source = await readSource(folder);
+  const seen = await seenBy(values.checked, source);
   const options = {
-    source: await readSource(folder),
+    source,
     build: await loadBuild(root, folder),
     feed: resolve(values.feed),
     out: resolve(values.out),
@@ -81,7 +95,11 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
   };
   const outcomes =
     values.release === undefined || values.label === undefined
-      ? await buildLatest(contract, { ...options, fetch })
+      ? await buildLatest(contract, {
+          ...options,
+          fetch,
+          ...(seen === undefined ? {} : { seen }),
+        })
       : await build(contract, {
           ...options,
           release: resolve(values.release),

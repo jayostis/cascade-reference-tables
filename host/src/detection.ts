@@ -7,6 +7,7 @@ import {
   type BuildOptions,
   type Contract,
   type Outcome,
+  type Seen,
   writeChecked,
 } from "./pipeline.js";
 import { TABLES } from "./rdf.js";
@@ -25,23 +26,30 @@ export type Checked =
       readonly label: string;
     };
 
-/** Each file's checksums and newest `Last-Modified` as the feed's current versions of the source's series record them. */
+/**
+ * Each file's checksums and newest `Last-Modified` as the feed's current versions of the source's series record them,
+ * and as the last check saw them.
+ */
 function held(
   source: Source,
   feed: Feed,
+  seen: Seen,
 ): Map<string, { checksums: Set<string>; modified?: string }> {
   const found = new Map<
     string,
     { checksums: Set<string>; modified?: string }
   >();
-  for (const series of source.series)
-    for (const [title, input] of feed.inputsOf(series.iri)) {
-      const before = found.get(title) ?? { checksums: new Set<string>() };
-      before.checksums.add(input.checksum);
-      if ((input.modified ?? "") > (before.modified ?? ""))
-        before.modified = input.modified;
-      found.set(title, before);
-    }
+  const inputs = [
+    ...source.series.flatMap((series) => [...feed.inputsOf(series.iri)]),
+    ...Object.entries(seen),
+  ];
+  for (const [title, input] of inputs) {
+    const before = found.get(title) ?? { checksums: new Set<string>() };
+    before.checksums.add(input.checksum);
+    if ((input.modified ?? "") > (before.modified ?? ""))
+      before.modified = input.modified;
+    found.set(title, before);
+  }
   return found;
 }
 
@@ -62,12 +70,13 @@ export async function check(
   feed: Feed,
   fetchWith: Fetch,
   folder: string,
+  seen: Seen = {},
 ): Promise<Checked> {
   if (source.detectedBy !== `${TABLES}ConditionalGet`)
     throw new Error(
       `the host cannot yet detect a release by ${source.detectedBy}`,
     );
-  const recorded = held(source, feed);
+  const recorded = held(source, feed, seen);
   const answers = new Map<string, { bytes?: Buffer; modified?: string }>();
   for (const [name, url] of source.files) {
     const since = recorded.get(name)?.modified;
@@ -124,6 +133,7 @@ export async function buildLatest(
   contract: Contract,
   options: Omit<BuildOptions, "release" | "label" | "modified"> & {
     readonly fetch: Fetch;
+    readonly seen?: Seen;
   },
 ): Promise<Outcome[] | "nothing new"> {
   const feed = await Feed.readOrEmpty(options.feed);
@@ -132,9 +142,16 @@ export async function buildLatest(
     feed,
     options.fetch,
     join(options.out, "release"),
+    options.seen,
   );
   if (checked.found === "nothing new") {
-    await writeChecked(options.out, options.source, options.now, "nothing new");
+    await writeChecked(
+      options.out,
+      options.source,
+      options.now,
+      "nothing new",
+      options.seen,
+    );
     return "nothing new";
   }
   return build(contract, {
