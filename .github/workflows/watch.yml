@@ -1,6 +1,8 @@
 name: watch
 
 on:
+  push:
+    branches: [feat/3-workflows-and-feed]
   schedule:
     - cron: "23 6 * * *"
   workflow_dispatch:
