@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, before, test } from "node:test";
@@ -38,13 +38,20 @@ function options(
   };
 }
 
-test("an unchanged file newly modified, and two series with no rows, give a conforming feed", async () => {
+test("an unchanged file newly modified, and two series with no rows, give a conforming feed and a release of its own", async () => {
+  const tag = async (): Promise<string> =>
+    (
+      JSON.parse(
+        await readFile(join(dir, "unchanged", "out", "release.json"), "utf8"),
+      ) as { tag: string }
+    ).tag;
   await build(
     contract,
     options("unchanged", "release", {
       modified: new Map([["codes.txt", "2026-09-01T00:00:00Z"]]),
     }),
   );
+  const first = await tag();
   const names: Row = {
     series: "urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c",
     subject: "http://hl7.org/fhir/sid/cvx/88",
@@ -64,6 +71,7 @@ test("an unchanged file newly modified, and two series with no rows, give a conf
   );
   const feed = await Feed.read(join(dir, "unchanged", "feed", "feed.ttl"));
   assert.deepEqual(await contract.feedShapes.violations(feed.triples), []);
+  assert.notEqual(await tag(), first);
 });
 
 test("the current versions' rows files are found beside the feed", async () => {

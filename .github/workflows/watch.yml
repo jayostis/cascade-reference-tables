@@ -1,0 +1,146 @@
+name: watch
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+    inputs:
+      source:
+        description: A folder under builders/; every one when empty.
+        required: false
+        default: ""
+
+concurrency:
+  group: watch-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    defaults:
+      run:
+        working-directory: cascade-reference-tables
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: cascade-reference-tables
+      - name: The vocabulary at the commit vocabulary.json pins, beside this repository
+        id: vocabulary
+        run: |
+          echo "repository=$(jq -r '.repository | sub("^https://github.com/"; "")' vocabulary.json)" >> "$GITHUB_OUTPUT"
+          echo "commit=$(jq -r .commit vocabulary.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ steps.vocabulary.outputs.repository }}
+          ref: ${{ steps.vocabulary.outputs.commit }}
+          path: cascade-vocabulary
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: cascade-reference-tables/package-lock.json
+      - run: npm ci
+      - name: Check each source, and build what is new
+        id: build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SOURCE: ${{ inputs.source }}
+        run: |
+          set -euo pipefail
+          built=""
+          failed=""
+          for folder in builders/*/; do
+            name=$(basename "$folder")
+            if [ -n "${SOURCE:-}" ] && [ "$SOURCE" != "$name" ]; then continue; fi
+            mkdir -p "build/$name"
+            cp feed/feed.ttl "build/$name/feed.ttl"
+            if ! npm run --silent host -- build "$name" --out "build/$name" --feed "build/$name/feed.ttl" \
+              --releases "$GITHUB_REPOSITORY"; then
+              echo "::error::$name could not be checked"
+              failed="$failed $name"
+              continue
+            fi
+            if [ -f "build/$name/release.json" ]; then built="$built $name"; fi
+          done
+          echo "built=${built# }" >> "$GITHUB_OUTPUT"
+          echo "failed=${failed# }" >> "$GITHUB_OUTPUT"
+      - name: The checks, on each new feed
+        if: ${{ steps.build.outputs.built != '' }}
+        env:
+          BUILT: ${{ steps.build.outputs.built }}
+        run: |
+          set -euo pipefail
+          npm run typecheck
+          npm run lint
+          for name in $BUILT; do
+            cp "build/$name/feed.ttl" feed/feed.ttl
+            npm test
+          done
+          git checkout -- feed/feed.ttl
+      - name: A release, a branch and a pull request for each source with new versions
+        if: ${{ steps.build.outputs.built != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUILT: ${{ steps.build.outputs.built }}
+          BASE: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for name in $BUILT; do
+            out="build/$name"
+            tag=$(jq -r .tag "$out/release.json")
+            if [ "$BASE" = "main" ]; then
+              if ! gh release view "$tag" >/dev/null 2>&1; then
+                gh release create "$tag" $(jq -r '.files[]' "$out/release.json" | sed "s|^|$out/|") \
+                  --title "$tag" --notes-file "$out/differences.md" --target "$GITHUB_SHA" --latest=false
+              fi
+            fi
+            git checkout -q -B "watch/$name" "$GITHUB_SHA"
+            cp "$out/feed.ttl" feed/feed.ttl
+            git add feed/feed.ttl
+            git commit -q -m "feat($name): $(jq -r .title "$out/release.json")"
+            git push -q -f origin "watch/$name"
+            if gh pr view "watch/$name" --json state -q .state 2>/dev/null | grep -q OPEN; then
+              gh pr edit "watch/$name" --body-file "$out/differences.md"
+            else
+              gh pr create --base "$BASE" --head "watch/$name" \
+                --title "feat($name): $(jq -r .title "$out/release.json")" --body-file "$out/differences.md"
+            fi
+          done
+      - uses: actions/upload-artifact@v7
+        if: ${{ github.ref_name != 'main' && steps.build.outputs.built != '' }}
+        with:
+          name: build
+          path: cascade-reference-tables/build
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: checked
+          path: cascade-reference-tables/build/*/checked.json
+          if-no-files-found: error
+      - if: ${{ steps.build.outputs.failed != '' }}
+        env:
+          FAILED: ${{ steps.build.outputs.failed }}
+        run: |
+          echo "::error::not checked: $FAILED"
+          exit 1
+
+  publish:
+    needs: watch
+    if: ${{ !cancelled() && github.ref_name == 'main' }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      attestations: write
+    uses: ./.github/workflows/publish.yml
+    with:
+      checked: true

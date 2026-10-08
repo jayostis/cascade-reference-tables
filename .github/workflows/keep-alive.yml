@@ -1,0 +1,33 @@
+name: keep-alive
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Enable watch.yml
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/watch.yml/enable" ||
+            echo "::warning::watch.yml could not be enabled"
+      - name: Warn of a source not checked in three days
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          url="https://${owner,,}.github.io/${GITHUB_REPOSITORY#*/}/checked.json"
+          if ! curl -fsS "$url" -o checked.json; then
+            echo "::warning::$url cannot be read: no check has been published"
+            exit 0
+          fi
+          jq -r '.checked[] | select(now - (.at | fromdateiso8601) > 3 * 86400)
+            | "::warning::\(.label) was last checked at \(.at)"' checked.json

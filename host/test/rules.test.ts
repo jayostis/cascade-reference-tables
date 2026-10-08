@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import { existsSync, readdirSync } from "node:fs";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { before, describe, test } from "node:test";
@@ -33,7 +33,13 @@ import {
   type Quad,
   quad,
 } from "../src/rdf.js";
+import {
+  type Checked as SiteChecks,
+  mergeChecked,
+  publish,
+} from "../src/publish.js";
 import { keyed } from "../src/rows.js";
+import { folderStore } from "../src/stores.js";
 import { loadBuild, readSource, type Source } from "../src/source.js";
 
 const ROOT = join(import.meta.dirname, "..", "..", "..");
@@ -50,6 +56,9 @@ interface World {
   /** Each request's `If-Modified-Since`, in order. */
   readonly asked: (string | undefined)[];
   checked?: Checked;
+  siteChecks?: SiteChecks;
+  site?: string;
+  stopped?: Error;
 }
 
 let contract: Contract;
@@ -445,7 +454,124 @@ const steps = new Steps<World>()
     ({ asked }, [since]) => {
       assert.equal(asked.at(-1), since);
     },
-  );
+  )
+  .define("the site's checks are:", (world, _, step) => {
+    const wanted = checksOf(step.table!);
+    if (world.site === undefined) {
+      world.siteChecks = wanted;
+      return;
+    }
+    assert.equal(world.stopped, undefined);
+    const held = JSON.parse(
+      readFileSync(join(world.site, "checked.json"), "utf8"),
+    ) as SiteChecks;
+    assert.deepEqual(held, wanted);
+  })
+  .define("the site is published", async (world) => {
+    world.site = join(world.dir, "site");
+    try {
+      await publish({
+        feed: world.feed,
+        site: world.site,
+        store: folderStore([world.out]),
+        checked: mergeChecked(
+          world.siteChecks ?? { checked: {} },
+          JSON.parse(
+            await readFile(join(world.out, "checked.json"), "utf8"),
+          ) as SiteChecks,
+        ),
+      });
+    } catch (error) {
+      world.stopped = error as Error;
+    }
+  })
+  .define(
+    "the site holds the rows files of these versions of {string}: {string}, {string}",
+    async (world, [label, ...labels]) => {
+      assert.equal(world.stopped, undefined);
+      const feed = await feedOf(world);
+      const series = seriesNamed(label as string);
+      const wanted = (labels as string[]).map(
+        (l) => feed.rowsOf(versionLabelled(feed, series, l)).file,
+      );
+      for (const version of feed.graph.objects(series, `${DCAT}hasVersion`)) {
+        const { file } = feed.rowsOf(version.value);
+        assert.equal(
+          existsSync(join(world.site!, file)),
+          wanted.includes(file),
+          file,
+        );
+      }
+    },
+  )
+  .define(
+    "a byte of the rows file of {string} {string} is changed",
+    async (world, [label, version]) => {
+      const feed = await feedOf(world);
+      const { file } = feed.rowsOf(
+        versionLabelled(feed, seriesNamed(label as string), version as string),
+      );
+      const bytes = await readFile(join(world.out, file));
+      bytes[bytes.length - 1] = bytes[bytes.length - 1]! ^ 1;
+      await writeFile(join(world.out, file), bytes);
+    },
+  )
+  .define(
+    "the rows file of {string} {string} holds the rows of {string} {string}, and the feed its checksum",
+    async (world, [label, version, otherLabel, otherVersion]) => {
+      const feed = await feedOf(world);
+      const to = feed.rowsOf(
+        versionLabelled(feed, seriesNamed(label as string), version as string),
+      );
+      const from = feed.rowsOf(
+        versionLabelled(
+          feed,
+          seriesNamed(otherLabel as string),
+          otherVersion as string,
+        ),
+      );
+      await writeFile(
+        join(world.out, to.file),
+        await readFile(join(world.out, from.file)),
+      );
+      const text = await readFile(world.feed, "utf8");
+      assert.ok(text.includes(to.checksum));
+      await writeFile(world.feed, text.split(to.checksum).join(from.checksum));
+    },
+  )
+  .define(
+    "the rows file of {string} {string} is in no release",
+    async (world, [label, version]) => {
+      const feed = await feedOf(world);
+      const { file } = feed.rowsOf(
+        versionLabelled(feed, seriesNamed(label as string), version as string),
+      );
+      await rm(join(world.out, file));
+    },
+  )
+  .define(
+    "the publish is stopped, saying {string}",
+    ({ stopped }, [reason]) => {
+      assert.ok(stopped, "the publish was not stopped");
+      assert.ok(stopped.message.includes(reason as string), stopped.message);
+    },
+  )
+  .define("the site holds nothing", ({ site }) => {
+    assert.equal(existsSync(site!), false);
+  });
+
+function checksOf(table: readonly (readonly string[])[]): SiteChecks {
+  return {
+    checked: Object.fromEntries(
+      table
+        .slice(1)
+        .map(([source, label, at, found]) => [
+          source!,
+          { label: label!, at: at!, found: found! },
+        ]),
+    ),
+  };
+}
 
 /** A publisher serving the example builder's files from a release folder, answering a conditional GET as CDC does. */
 function publisher(world: World): Fetch {

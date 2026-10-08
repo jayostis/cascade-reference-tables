@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ns.cascadeprotocol.org/tables/v1-draft/shapes/checked.schema.json",
+  "title": "When each source was last checked",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["checked"],
+  "properties": {
+    "checked": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "at", "found"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "at": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+          },
+          "found": { "enum": ["nothing new", "new"] }
+        }
+      }
+    }
+  }
+}

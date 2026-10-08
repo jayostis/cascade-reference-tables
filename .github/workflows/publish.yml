@@ -1,0 +1,75 @@
+name: publish
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      checked:
+        description: The calling run uploaded its checks as the artifact "checked".
+        type: boolean
+        default: false
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      attestations: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v7
+        if: ${{ inputs.checked }}
+        with:
+          name: checked
+          path: build/checked
+      - name: The site's last checks, carried forward
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          url="https://${owner,,}.github.io/${GITHUB_REPOSITORY#*/}/checked.json"
+          mkdir -p build/checked
+          status=$(curl -sS -o build/live-checked.json -w '%{http_code}' "$url?run=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT")
+          if [ "$status" = 404 ]; then
+            echo '{"checked":{}}' > build/live-checked.json
+          elif [ "$status" != 200 ]; then
+            echo "::error::$url answered $status"
+            exit 1
+          fi
+      - name: The site, every rows file checked against its checksum and its version's name
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          npm run --silent host -- publish --site build/site --releases "$GITHUB_REPOSITORY" \
+            build/live-checked.json $(find build/checked -name checked.json)
+      - id: rows
+        run: echo "any=$(find build/site/rows -name '*.nq.gz' | head -1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/attest-build-provenance@v3
+        if: ${{ steps.rows.outputs.any != '' }}
+        with:
+          subject-path: build/site/rows/*.nq.gz
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/site
+      - id: deployment
+        uses: actions/deploy-pages@v5

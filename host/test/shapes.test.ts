@@ -1,10 +1,17 @@
 import assert from "node:assert/strict";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
+import { Ajv2020 } from "ajv/dist/2020.js";
 import * as oxigraph from "oxigraph";
 import { FEED_BASE, Feed } from "../src/feed.js";
+import { build, readContract } from "../src/pipeline.js";
+import { type Checked, mergeChecked, publish } from "../src/publish.js";
 import { PREFIXES, type Quad } from "../src/rdf.js";
 import { Shapes } from "../src/shapes.js";
+import { loadBuild, readSource } from "../src/source.js";
+import { folderStore } from "../src/stores.js";
 
 const ROOT = join(import.meta.dirname, "..", "..", "..");
 const shapes = await Shapes.read(join(ROOT, "shapes", "feed.shapes.ttl"));
@@ -84,4 +91,68 @@ test("a feed breaking one constraint is refused with its message", async () => {
       `${update}\ngave:\n${found.join("\n")}`,
     );
   }
+});
+
+test("the checked.json a build and a publish write conforms to its schema", async () => {
+  const schema = JSON.parse(
+    await readFile(join(ROOT, "shapes", "checked.schema.json"), "utf8"),
+  ) as object;
+  const validate = new Ajv2020().compile(schema);
+  const example = join(ROOT, "fixtures", "builder");
+  const dir = await mkdtemp(join(tmpdir(), "tables-"));
+  try {
+    const feed = join(dir, "feed.ttl");
+    const out = join(dir, "out");
+    await build(await readContract(ROOT), {
+      source: await readSource(example),
+      build: await loadBuild(ROOT, example),
+      release: join(example, "fixtures", "release"),
+      label: "1",
+      feed,
+      out,
+      now: "2026-10-08T06:23:00Z",
+    });
+    const built = JSON.parse(
+      await readFile(join(out, "checked.json"), "utf8"),
+    ) as Checked;
+    await publish({
+      feed,
+      site: join(dir, "site"),
+      store: folderStore([out]),
+      checked: mergeChecked(built, {
+        checked: {
+          "urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d": {
+            label: "CDC CVX",
+            at: "2026-10-07T06:23:00Z",
+            found: "nothing new",
+          },
+        },
+      }),
+    });
+    const published = JSON.parse(
+      await readFile(join(dir, "site", "checked.json"), "utf8"),
+    ) as Checked;
+    assert.equal(Object.keys(published.checked).length, 2);
+    for (const written of [built, published])
+      assert.ok(validate(written), JSON.stringify(validate.errors));
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+  const cases: [unknown, boolean][] = [
+    [
+      {
+        checked: {
+          "CDC CVX": {
+            label: "CDC CVX",
+            at: "2026-10-08T06:23:00Z",
+            found: "new",
+          },
+        },
+      },
+      false,
+    ],
+    [{ checked: {}, extra: 1 }, false],
+  ];
+  for (const [checked, valid] of cases)
+    assert.equal(validate(checked), valid, JSON.stringify(checked));
 });

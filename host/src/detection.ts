@@ -7,6 +7,7 @@ import {
   type BuildOptions,
   type Contract,
   type Outcome,
+  writeChecked,
 } from "./pipeline.js";
 import { TABLES } from "./rdf.js";
 import type { Source } from "./source.js";
@@ -132,7 +133,10 @@ export async function buildLatest(
     options.fetch,
     join(options.out, "release"),
   );
-  if (checked.found === "nothing new") return "nothing new";
+  if (checked.found === "nothing new") {
+    await writeChecked(options.out, options.source, options.now, "nothing new");
+    return "nothing new";
+  }
   return build(contract, {
     ...options,
     release: checked.folder,
