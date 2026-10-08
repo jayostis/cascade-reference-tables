@@ -13,7 +13,7 @@ import {
   type Checked,
   type Fetch,
 } from "../src/detection.js";
-import { emptyFeed, Feed } from "../src/feed.js";
+import { Feed } from "../src/feed.js";
 import { readFeature, Steps } from "../src/features.js";
 import { sha256, versionName } from "../src/names.js";
 import {
@@ -391,11 +391,26 @@ const steps = new Steps<World>()
   .define("the example source is checked", async (world) => {
     world.checked = await check(
       example,
-      existsSync(world.feed) ? await Feed.read(world.feed) : emptyFeed(),
+      await Feed.readOrEmpty(world.feed),
       publisher(world),
       join(world.dir, "checked"),
     );
   })
+  .define(
+    "the example source, with a series added, is checked",
+    async (world) => {
+      const added = {
+        ...example.series[0]!,
+        iri: "urn:uuid:3f0c1a52-7d4e-4b8a-9c61-2e5d8f0b7a14",
+      };
+      world.checked = await check(
+        { ...example, series: [...example.series, added] },
+        await Feed.read(world.feed),
+        publisher(world),
+        join(world.dir, "checked"),
+      );
+    },
+  )
   .define("the example source is built from the publisher", async (world) => {
     const outcomes = await buildLatest(contract, {
       source: example,

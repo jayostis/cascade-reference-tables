@@ -40,6 +40,11 @@ test("CDC's files are refused, naming the line and why, when the builder cannot 
       "VG.txt line 1 names 141, which CVX.txt lacks",
     ],
     [FLU, "influenza|88|Inactive|FLU", "VG.txt line 1 has 4 fields, not 5"],
+    [
+      FLU,
+      "influenza, unspecified formulation|88        |Inactive|FLU|   ",
+      "VG.txt line 1 has no vaccine group CVX code",
+    ],
   ];
   const release = await mkdtemp(join(tmpdir(), "cdc-cvx-"));
   try {

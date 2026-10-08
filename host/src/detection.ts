@@ -1,7 +1,6 @@
-import { existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { emptyFeed, Feed } from "./feed.js";
+import { Feed } from "./feed.js";
 import { sha256 } from "./names.js";
 import {
   build,
@@ -25,33 +24,37 @@ export type Checked =
       readonly label: string;
     };
 
-/** Each file's checksum and `Last-Modified` as the feed's current versions of the source's series record them. */
+/** Each file's checksums and newest `Last-Modified` as the feed's current versions of the source's series record them. */
 function held(
   source: Source,
   feed: Feed,
-): Map<string, { checksum: string; modified?: string }> {
-  const found = new Map<string, { checksum: string; modified?: string }>();
+): Map<string, { checksums: Set<string>; modified?: string }> {
+  const found = new Map<
+    string,
+    { checksums: Set<string>; modified?: string }
+  >();
   for (const series of source.series)
     for (const [title, input] of feed.inputsOf(series.iri)) {
-      const before = found.get(title);
-      if (
-        before === undefined ||
-        (input.modified ?? "") > (before.modified ?? "")
-      )
-        found.set(title, input);
+      const before = found.get(title) ?? { checksums: new Set<string>() };
+      before.checksums.add(input.checksum);
+      if ((input.modified ?? "") > (before.modified ?? ""))
+        before.modified = input.modified;
+      found.set(title, before);
     }
   return found;
 }
 
 function xsdDateTime(httpDate: string | null): string | undefined {
-  return httpDate === null
+  const time = Date.parse(httpDate ?? "");
+  return Number.isNaN(time)
     ? undefined
-    : new Date(httpDate).toISOString().replace(/\.000Z$/, "Z");
+    : new Date(time).toISOString().replace(/\.000Z$/, "Z");
 }
 
 /**
  * A conditional GET of each file of the source: `If-Modified-Since` its recorded `Last-Modified`. Nothing new when
- * every file answers 304, or 200 with the checksum recorded. Otherwise every file is saved into the folder.
+ * every series has a version and every file answers 304, or 200 with a checksum recorded. Otherwise every file is
+ * saved into the folder.
  */
 export async function check(
   source: Source,
@@ -87,9 +90,12 @@ export async function check(
   const changed = [...answers].some(
     ([name, { bytes }]) =>
       bytes !== undefined &&
-      sha256(bytes).toString("hex") !== recorded.get(name)?.checksum,
+      !recorded.get(name)?.checksums.has(sha256(bytes).toString("hex")),
   );
-  if (!changed) return { found: "nothing new" };
+  const unbuilt = source.series.some(
+    (series) => feed.current(series.iri) === undefined,
+  );
+  if (!changed && !unbuilt) return { found: "nothing new" };
   await mkdir(folder, { recursive: true });
   const modified = new Map<string, string>();
   for (const [name, url] of source.files) {
@@ -119,9 +125,7 @@ export async function buildLatest(
     readonly fetch: Fetch;
   },
 ): Promise<Outcome[] | "nothing new"> {
-  const feed = existsSync(options.feed)
-    ? await Feed.read(options.feed)
-    : emptyFeed();
+  const feed = await Feed.readOrEmpty(options.feed);
   const checked = await check(
     options.source,
     feed,

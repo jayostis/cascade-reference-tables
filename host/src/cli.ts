@@ -7,7 +7,7 @@ import { parseArgs } from "node:util";
 import { Refusal } from "./builder.js";
 import { conformanceExamples, runConformance } from "./conformance.js";
 import { buildLatest, check } from "./detection.js";
-import { emptyFeed, Feed } from "./feed.js";
+import { Feed } from "./feed.js";
 import { build, readContract } from "./pipeline.js";
 import { loadBuild, readSource, sourceFolder } from "./source.js";
 
@@ -33,9 +33,7 @@ async function checkCommand(root: string, args: string[]): Promise<number> {
     return 2;
   }
   const source = await readSource(sourceFolder(root, name));
-  const feed = existsSync(values.feed)
-    ? await Feed.read(values.feed)
-    : emptyFeed();
+  const feed = await Feed.readOrEmpty(values.feed);
   const folder = await mkdtemp(join(tmpdir(), "check-"));
   try {
     console.log((await check(source, feed, fetch, folder)).found);

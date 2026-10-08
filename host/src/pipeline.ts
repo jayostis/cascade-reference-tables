@@ -8,7 +8,7 @@ import {
   type ReleaseFile,
 } from "./builder.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
-import { emptyFeed, Feed, type Input } from "./feed.js";
+import { Feed, type Input } from "./feed.js";
 import { documentName, sha256, versionName } from "./names.js";
 import { delimited, fixedWidth, jsonLines } from "./readers.js";
 import { keyed, RowSchema, SeriesRows, toRdf } from "./rows.js";
@@ -190,9 +190,7 @@ export async function build(
 ): Promise<Outcome[]> {
   const { source } = options;
   const series = await rowsOf(contract, source, options.build, options.release);
-  const feed = existsSync(options.feed)
-    ? await Feed.read(options.feed)
-    : emptyFeed();
+  const feed = await Feed.readOrEmpty(options.feed);
   const folders = [
     options.out,
     dirname(options.feed),

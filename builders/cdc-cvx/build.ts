@@ -7,7 +7,6 @@ const CVX = "https://ns.cascadeprotocol.org/records/v1-draft#CVX";
 const BROAD_MATCH = "http://www.w3.org/2004/02/skos/core#broadMatch";
 const CURATED = "https://w3id.org/semapv/vocab/ManualMappingCuration";
 
-/** CVX.txt's statuses: only a code CDC created and never used is retired. */
 const RETIRED = new Map([
   ["Active", false],
   ["Inactive", false],
@@ -69,6 +68,8 @@ const build: Build = async function* (release) {
     .file("VG.txt")
     .delimited("|")) {
     const [, code, , , group] = fieldsOf("VG.txt", number, fields, 5, 1);
+    if (group === "")
+      throw new Refusal(`VG.txt line ${number} has no vaccine group CVX code`);
     for (const named of [code!, group!])
       if (!codes.has(named))
         throw new Refusal(

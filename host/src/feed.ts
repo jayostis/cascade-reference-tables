@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import {
   ADMS,
@@ -91,6 +92,10 @@ export class Feed {
 
   static async read(path: string): Promise<Feed> {
     return Feed.parse(await readFile(path, "utf8"));
+  }
+
+  static async readOrEmpty(path: string): Promise<Feed> {
+    return existsSync(path) ? Feed.read(path) : emptyFeed();
   }
 
   get graph(): Graph {
