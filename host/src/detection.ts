@@ -133,7 +133,6 @@ export async function buildLatest(
   contract: Contract,
   options: Omit<BuildOptions, "release" | "label" | "modified"> & {
     readonly fetch: Fetch;
-    /** What the last check saw, when it built no new version. */
     readonly seen?: Seen;
   },
 ): Promise<Outcome[] | "nothing new"> {

@@ -576,7 +576,6 @@ function checksOf(table: readonly (readonly string[])[]): SiteChecks {
   };
 }
 
-/** A publisher serving the example builder's files from a release folder, answering a conditional GET as CDC does. */
 function lastSeen(world: World): Seen {
   const file = join(world.out, "checked.json");
   if (!existsSync(file)) return {};
@@ -584,6 +583,7 @@ function lastSeen(world: World): Seen {
   return checked[example.iri]?.inputs ?? {};
 }
 
+/** A publisher serving the example builder's files from a release folder, answering a conditional GET as CDC does. */
 function publisher(world: World): Fetch {
   return async (input, init) => {
     const { release, modified, ignoresSince } = world.publisher!;

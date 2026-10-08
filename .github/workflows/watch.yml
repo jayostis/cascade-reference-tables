@@ -52,12 +52,10 @@ jobs:
           owner="${GITHUB_REPOSITORY%%/*}"
           url="https://${owner,,}.github.io/${GITHUB_REPOSITORY#*/}/checked.json"
           mkdir -p build
-          status=$(curl -sS -o build/live-checked.json -w '%{http_code}' "$url?run=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT")
-          if [ "$status" = 404 ]; then
+          status=$(curl -sS -o build/live-checked.json -w '%{http_code}' "$url?run=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" || true)
+          if [ "$status" != 200 ]; then
+            if [ "$status" != 404 ]; then echo "::warning::$url answered $status; checking against the feed alone"; fi
             echo '{"checked":{}}' > build/live-checked.json
-          elif [ "$status" != 200 ]; then
-            echo "::error::$url answered $status"
-            exit 1
           fi
       - name: Check each source, and build what is new
         id: build
