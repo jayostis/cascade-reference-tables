@@ -658,22 +658,22 @@ for (const folder of builders)
   });
 
 describe("builder/conformance.feature on a builder outside the repository, with the vocabulary given", async () => {
-  const outside = await mkdtemp(join(tmpdir(), "outside-builder-"));
-  await cp(EXAMPLE, outside, {
-    recursive: true,
-    filter: (path) => !path.endsWith(".ts"),
-  });
-  const compiled = pathToFileURL(
-    join(ROOT, "dist", "fixtures", "builder", "build.js"),
-  ).href;
-  await writeFile(
-    join(outside, "build.js"),
-    `export { default } from ${JSON.stringify(compiled)};\n`,
-  );
-  const vocabulary = (await resolveVocabulary(ROOT)).folder;
+  let outside: string;
   let given: Contract;
   before(async () => {
-    given = await readContract(ROOT, vocabulary);
+    outside = await mkdtemp(join(tmpdir(), "outside-builder-"));
+    await cp(EXAMPLE, outside, {
+      recursive: true,
+      filter: (path) => !path.endsWith(".ts"),
+    });
+    const compiled = pathToFileURL(
+      join(ROOT, "dist", "fixtures", "builder", "build.js"),
+    ).href;
+    await writeFile(
+      join(outside, "build.js"),
+      `export { default } from ${JSON.stringify(compiled)};\n`,
+    );
+    given = await readContract(ROOT, (await resolveVocabulary(ROOT)).folder);
     assert.match(given.said, /as given$/);
   });
   after(() => rm(outside, { recursive: true, force: true }));

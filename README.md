@@ -38,7 +38,8 @@ A Node program uses the host as a package, depending on a commit:
 `npm install --save-exact github:jayostis/cascade-reference-tables#<commit>`. It imports `readContract`,
 `readSource`, `sourceFolder`, `loadBuild` and `buildLatest` from `cascade-reference-tables`, and passes
 `readContract` the vocabulary folder it uses. A builder outside this repository imports from
-`cascade-reference-tables/builder` and is loaded from its own `build.js`.
+`cascade-reference-tables/builder` and is loaded from the compiled `build.js` it provides beside its
+`source.ttl`.
 
 ## The feed
 

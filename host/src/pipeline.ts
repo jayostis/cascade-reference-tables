@@ -28,8 +28,7 @@ export interface Contract {
   /** Where the vocabulary was read from. */
   readonly said: string;
 }
-/** The contract at `root`, read with the vocabulary in `vocabularyFolder` when one is given. */
-/** The contract at `root`, read with the vocabulary in the folder `vocabulary` when one is given. */
+
 export async function readContract(
   root: string,
   vocabularyFolder?: string,
