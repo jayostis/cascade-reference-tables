@@ -1,0 +1,137 @@
+<urn:uuid:25623afd-6445-4394-8174-93ffacaea90e> {
+  <urn:uuid:2fb291fa-d9b4-890e-acf0-95c120e3af89> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:2fb291fa-d9b4-890e-acf0-95c120e3af89> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:2fb291fa-d9b4-890e-acf0-95c120e3af89> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/107> .
+  <urn:uuid:2fb291fa-d9b4-890e-acf0-95c120e3af89> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/107> .
+  <urn:uuid:2fb291fa-d9b4-890e-acf0-95c120e3af89> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:5947096a-81cf-892f-8a82-c68ebfb55b83> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:5947096a-81cf-892f-8a82-c68ebfb55b83> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:5947096a-81cf-892f-8a82-c68ebfb55b83> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/88> .
+  <urn:uuid:5947096a-81cf-892f-8a82-c68ebfb55b83> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/88> .
+  <urn:uuid:5947096a-81cf-892f-8a82-c68ebfb55b83> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:5a8063e6-36a0-86aa-b30a-79d9b845a3a3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:5a8063e6-36a0-86aa-b30a-79d9b845a3a3> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:5a8063e6-36a0-86aa-b30a-79d9b845a3a3> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/77> .
+  <urn:uuid:5a8063e6-36a0-86aa-b30a-79d9b845a3a3> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/222> .
+  <urn:uuid:5a8063e6-36a0-86aa-b30a-79d9b845a3a3> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:5c9650ac-2d63-8d46-bcac-e1f2c27b9785> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:5c9650ac-2d63-8d46-bcac-e1f2c27b9785> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:5c9650ac-2d63-8d46-bcac-e1f2c27b9785> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/306> .
+  <urn:uuid:5c9650ac-2d63-8d46-bcac-e1f2c27b9785> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/304> .
+  <urn:uuid:5c9650ac-2d63-8d46-bcac-e1f2c27b9785> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:682b4f66-ad68-80e4-a154-8952fb415368> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:682b4f66-ad68-80e4-a154-8952fb415368> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:682b4f66-ad68-80e4-a154-8952fb415368> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/141> .
+  <urn:uuid:682b4f66-ad68-80e4-a154-8952fb415368> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/88> .
+  <urn:uuid:682b4f66-ad68-80e4-a154-8952fb415368> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:6b73226d-844e-89ad-8744-10ab4e91aeab> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:6b73226d-844e-89ad-8744-10ab4e91aeab> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:6b73226d-844e-89ad-8744-10ab4e91aeab> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/222> .
+  <urn:uuid:6b73226d-844e-89ad-8744-10ab4e91aeab> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/222> .
+  <urn:uuid:6b73226d-844e-89ad-8744-10ab4e91aeab> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:6ee9dcf4-6140-8a0f-bd25-15cf7867aed8> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:6ee9dcf4-6140-8a0f-bd25-15cf7867aed8> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:6ee9dcf4-6140-8a0f-bd25-15cf7867aed8> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/304> .
+  <urn:uuid:6ee9dcf4-6140-8a0f-bd25-15cf7867aed8> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/304> .
+  <urn:uuid:6ee9dcf4-6140-8a0f-bd25-15cf7867aed8> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:6f01bf63-3d03-8b5b-abda-630660d5045d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:6f01bf63-3d03-8b5b-abda-630660d5045d> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:6f01bf63-3d03-8b5b-abda-630660d5045d> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/150> .
+  <urn:uuid:6f01bf63-3d03-8b5b-abda-630660d5045d> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/88> .
+  <urn:uuid:6f01bf63-3d03-8b5b-abda-630660d5045d> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:771d7cee-44ad-804e-8d17-e0e02260a6b2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:771d7cee-44ad-804e-8d17-e0e02260a6b2> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:771d7cee-44ad-804e-8d17-e0e02260a6b2> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/03> .
+  <urn:uuid:771d7cee-44ad-804e-8d17-e0e02260a6b2> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/03> .
+  <urn:uuid:771d7cee-44ad-804e-8d17-e0e02260a6b2> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:7a5f6328-2008-84e0-841a-117964f5d3eb> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:7a5f6328-2008-84e0-841a-117964f5d3eb> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:7a5f6328-2008-84e0-841a-117964f5d3eb> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/08> .
+  <urn:uuid:7a5f6328-2008-84e0-841a-117964f5d3eb> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/45> .
+  <urn:uuid:7a5f6328-2008-84e0-841a-117964f5d3eb> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:8305dcb9-a787-8228-b187-331935d88ddf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:8305dcb9-a787-8228-b187-331935d88ddf> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:8305dcb9-a787-8228-b187-331935d88ddf> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/45> .
+  <urn:uuid:8305dcb9-a787-8228-b187-331935d88ddf> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/45> .
+  <urn:uuid:8305dcb9-a787-8228-b187-331935d88ddf> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:8558d822-be6e-8af3-8bef-ebaacbd8078d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:8558d822-be6e-8af3-8bef-ebaacbd8078d> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:8558d822-be6e-8af3-8bef-ebaacbd8078d> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/17> .
+  <urn:uuid:8558d822-be6e-8af3-8bef-ebaacbd8078d> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/17> .
+  <urn:uuid:8558d822-be6e-8af3-8bef-ebaacbd8078d> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:8b0cc2ba-9337-894f-b49b-d5c20c74201e> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:8b0cc2ba-9337-894f-b49b-d5c20c74201e> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:8b0cc2ba-9337-894f-b49b-d5c20c74201e> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/102> .
+  <urn:uuid:8b0cc2ba-9337-894f-b49b-d5c20c74201e> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/45> .
+  <urn:uuid:8b0cc2ba-9337-894f-b49b-d5c20c74201e> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:97e09c6a-103b-8a2b-baf4-22a8edfd4594> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:97e09c6a-103b-8a2b-baf4-22a8edfd4594> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:97e09c6a-103b-8a2b-baf4-22a8edfd4594> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/102> .
+  <urn:uuid:97e09c6a-103b-8a2b-baf4-22a8edfd4594> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/17> .
+  <urn:uuid:97e09c6a-103b-8a2b-baf4-22a8edfd4594> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:a449fe1c-df05-87de-9106-8b6182404bf9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:a449fe1c-df05-87de-9106-8b6182404bf9> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:a449fe1c-df05-87de-9106-8b6182404bf9> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/102> .
+  <urn:uuid:a449fe1c-df05-87de-9106-8b6182404bf9> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/107> .
+  <urn:uuid:a449fe1c-df05-87de-9106-8b6182404bf9> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:bed6cadf-99af-8f04-a149-4239c7f5a4d1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:bed6cadf-99af-8f04-a149-4239c7f5a4d1> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:bed6cadf-99af-8f04-a149-4239c7f5a4d1> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/cvx/140> .
+  <urn:uuid:bed6cadf-99af-8f04-a149-4239c7f5a4d1> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://hl7.org/fhir/sid/cvx/88> .
+  <urn:uuid:bed6cadf-99af-8f04-a149-4239c7f5a4d1> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+}
+
+<urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79> {
+  <http://hl7.org/fhir/sid/cvx/57> <http://www.w3.org/2002/07/owl#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+}
+
+<urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> {
+  <http://hl7.org/fhir/sid/cvx/03> <http://www.w3.org/2004/02/skos/core#altLabel> "measles, mumps and rubella virus vaccine" .
+  <http://hl7.org/fhir/sid/cvx/03> <http://www.w3.org/2004/02/skos/core#notation> "03" .
+  <http://hl7.org/fhir/sid/cvx/03> <http://www.w3.org/2004/02/skos/core#prefLabel> "MMR" .
+  <http://hl7.org/fhir/sid/cvx/08> <http://www.w3.org/2004/02/skos/core#altLabel> "hepatitis B vaccine, pediatric or pediatric/adolescent dosage" .
+  <http://hl7.org/fhir/sid/cvx/08> <http://www.w3.org/2004/02/skos/core#notation> "08" .
+  <http://hl7.org/fhir/sid/cvx/08> <http://www.w3.org/2004/02/skos/core#prefLabel> "Hep B, adolescent or pediatric" .
+  <http://hl7.org/fhir/sid/cvx/102> <http://www.w3.org/2004/02/skos/core#altLabel> "DTP- Haemophilus influenzae type b conjugate and hepatitis b vaccine" .
+  <http://hl7.org/fhir/sid/cvx/102> <http://www.w3.org/2004/02/skos/core#notation> "102" .
+  <http://hl7.org/fhir/sid/cvx/102> <http://www.w3.org/2004/02/skos/core#prefLabel> "DTP-Hib-Hep B" .
+  <http://hl7.org/fhir/sid/cvx/107> <http://www.w3.org/2004/02/skos/core#altLabel> "diphtheria, tetanus toxoids and acellular pertussis vaccine, unspecified formulation" .
+  <http://hl7.org/fhir/sid/cvx/107> <http://www.w3.org/2004/02/skos/core#notation> "107" .
+  <http://hl7.org/fhir/sid/cvx/107> <http://www.w3.org/2004/02/skos/core#prefLabel> "DTaP, unspecified formulation" .
+  <http://hl7.org/fhir/sid/cvx/140> <http://www.w3.org/2004/02/skos/core#altLabel> "Influenza, split virus, trivalent, injectable, preservative free" .
+  <http://hl7.org/fhir/sid/cvx/140> <http://www.w3.org/2004/02/skos/core#notation> "140" .
+  <http://hl7.org/fhir/sid/cvx/140> <http://www.w3.org/2004/02/skos/core#prefLabel> "Influenza, split virus, trivalent, PF" .
+  <http://hl7.org/fhir/sid/cvx/141> <http://www.w3.org/2004/02/skos/core#altLabel> "Influenza, split virus, trivalent, injectable, contains preservative" .
+  <http://hl7.org/fhir/sid/cvx/141> <http://www.w3.org/2004/02/skos/core#notation> "141" .
+  <http://hl7.org/fhir/sid/cvx/141> <http://www.w3.org/2004/02/skos/core#prefLabel> "Influenza, split virus, trivalent, preservative" .
+  <http://hl7.org/fhir/sid/cvx/150> <http://www.w3.org/2004/02/skos/core#altLabel> "Influenza, split virus, quadrivalent, injectable, preservative free" .
+  <http://hl7.org/fhir/sid/cvx/150> <http://www.w3.org/2004/02/skos/core#notation> "150" .
+  <http://hl7.org/fhir/sid/cvx/150> <http://www.w3.org/2004/02/skos/core#prefLabel> "Influenza, split virus, quadrivalent, PF" .
+  <http://hl7.org/fhir/sid/cvx/17> <http://www.w3.org/2004/02/skos/core#altLabel> "Haemophilus influenzae type b vaccine, conjugate unspecified formulation" .
+  <http://hl7.org/fhir/sid/cvx/17> <http://www.w3.org/2004/02/skos/core#notation> "17" .
+  <http://hl7.org/fhir/sid/cvx/17> <http://www.w3.org/2004/02/skos/core#prefLabel> "Hib, unspecified formulation" .
+  <http://hl7.org/fhir/sid/cvx/222> <http://www.w3.org/2004/02/skos/core#altLabel> "Tick-borne encephalitis vaccine, unspecified" .
+  <http://hl7.org/fhir/sid/cvx/222> <http://www.w3.org/2004/02/skos/core#notation> "222" .
+  <http://hl7.org/fhir/sid/cvx/222> <http://www.w3.org/2004/02/skos/core#prefLabel> "Tick-borne encephalitis, unspecified" .
+  <http://hl7.org/fhir/sid/cvx/304> <http://www.w3.org/2004/02/skos/core#notation> "304" .
+  <http://hl7.org/fhir/sid/cvx/304> <http://www.w3.org/2004/02/skos/core#prefLabel> "Respiratory syncytial virus (RSV), unspecified" .
+  <http://hl7.org/fhir/sid/cvx/306> <http://www.w3.org/2004/02/skos/core#altLabel> "Respiratory syncytial virus (RSV) monoclonal antibody, IgG1κ, (nirsevimab-alip), 0.5 mL, neonates and children to 24 months" .
+  <http://hl7.org/fhir/sid/cvx/306> <http://www.w3.org/2004/02/skos/core#notation> "306" .
+  <http://hl7.org/fhir/sid/cvx/306> <http://www.w3.org/2004/02/skos/core#prefLabel> "RSV, mAb, nirsevimab-alip, 0.5 mL, neonate to 24 months" .
+  <http://hl7.org/fhir/sid/cvx/45> <http://www.w3.org/2004/02/skos/core#altLabel> "hepatitis B vaccine, unspecified formulation" .
+  <http://hl7.org/fhir/sid/cvx/45> <http://www.w3.org/2004/02/skos/core#notation> "45" .
+  <http://hl7.org/fhir/sid/cvx/45> <http://www.w3.org/2004/02/skos/core#prefLabel> "Hep B, unspecified formulation" .
+  <http://hl7.org/fhir/sid/cvx/57> <http://www.w3.org/2004/02/skos/core#altLabel> "hantavirus vaccine" .
+  <http://hl7.org/fhir/sid/cvx/57> <http://www.w3.org/2004/02/skos/core#notation> "57" .
+  <http://hl7.org/fhir/sid/cvx/57> <http://www.w3.org/2004/02/skos/core#prefLabel> "hantavirus" .
+  <http://hl7.org/fhir/sid/cvx/77> <http://www.w3.org/2004/02/skos/core#notation> "77" .
+  <http://hl7.org/fhir/sid/cvx/77> <http://www.w3.org/2004/02/skos/core#prefLabel> "Tick-borne encephalitis vaccine (non-US)" .
+  <http://hl7.org/fhir/sid/cvx/88> <http://www.w3.org/2004/02/skos/core#altLabel> "influenza virus vaccine, unspecified formulation" .
+  <http://hl7.org/fhir/sid/cvx/88> <http://www.w3.org/2004/02/skos/core#notation> "88" .
+  <http://hl7.org/fhir/sid/cvx/88> <http://www.w3.org/2004/02/skos/core#prefLabel> "influenza, unspecified formulation" .
+  <http://hl7.org/fhir/sid/cvx/998> <http://www.w3.org/2004/02/skos/core#notation> "998" .
+  <http://hl7.org/fhir/sid/cvx/998> <http://www.w3.org/2004/02/skos/core#prefLabel> "no vaccine administered" .
+  <http://hl7.org/fhir/sid/cvx/99> <http://www.w3.org/2004/02/skos/core#notation> "99" .
+  <http://hl7.org/fhir/sid/cvx/99> <http://www.w3.org/2004/02/skos/core#prefLabel> "RESERVED - do not use" .
+}
+
