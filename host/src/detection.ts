@@ -1,5 +1,5 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { mkdir, rm, writeFile } from "node:fs/promises";
+import { basename, join } from "node:path";
 import { Feed } from "./feed.js";
 import { sha256 } from "./names.js";
 import {
@@ -72,6 +72,8 @@ export async function check(
   folder: string,
   seen: Seen = {},
 ): Promise<Checked> {
+  if (source.detectedBy === `${TABLES}ReleaseApi`)
+    return checkReleaseApi(source, feed, fetchWith, folder, seen);
   if (source.detectedBy !== `${TABLES}ConditionalGet`)
     throw new Error(
       `the host cannot yet detect a release by ${source.detectedBy}`,
@@ -125,6 +127,68 @@ export async function check(
     folder,
     modified,
     label: newest === undefined ? "unlabelled" : newest.slice(0, 10),
+  };
+}
+
+/** A release as the publisher's API lists it. */
+interface Listed {
+  readonly fileName: string;
+  readonly releaseVersion: string;
+  readonly downloadUrl: string;
+}
+
+function listed(entry: unknown): entry is Listed & { current: true } {
+  const { fileName, releaseVersion, downloadUrl, current } = (entry ??
+    {}) as Record<string, unknown>;
+  return (
+    current === true &&
+    [fileName, releaseVersion, downloadUrl].every(
+      (field) => typeof field === "string" && field !== "",
+    )
+  );
+}
+
+/**
+ * Asks the publisher's API for its releases and takes the one it marks current. Nothing new when every series has a
+ * version and the feed or the last check records that release's file; otherwise its zip is saved into the folder,
+ * labelled by its release version.
+ */
+async function checkReleaseApi(
+  source: Source,
+  feed: Feed,
+  fetchWith: Fetch,
+  folder: string,
+  seen: Seen,
+): Promise<Checked> {
+  const api = source.releaseApi ?? "";
+  const response = await fetchWith(api);
+  if (!response.ok) throw new Error(`${api} answered ${response.status}`);
+  const answer = (await response.json()) as unknown;
+  const current = Array.isArray(answer) ? answer.filter(listed) : [];
+  if (current.length !== 1)
+    throw new Error(
+      `${api} lists ${current.length} current releases with a file, a version and a download URL, not one`,
+    );
+  const release = current[0]!;
+  const unbuilt = source.series.some(
+    (series) => feed.current(series.iri) === undefined,
+  );
+  if (!unbuilt && held(source, feed, seen).has(release.fileName))
+    return { found: "nothing new" };
+  const download = await fetchWith(release.downloadUrl);
+  if (!download.ok)
+    throw new Error(`${release.downloadUrl} answered ${download.status}`);
+  await rm(folder, { recursive: true, force: true });
+  await mkdir(folder, { recursive: true });
+  await writeFile(
+    join(folder, basename(release.fileName)),
+    Buffer.from(await download.arrayBuffer()),
+  );
+  return {
+    found: "new",
+    folder,
+    modified: new Map(),
+    label: release.releaseVersion,
   };
 }
 

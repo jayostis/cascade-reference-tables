@@ -16,7 +16,9 @@ function term(value: Term): RDFJS.Quad_Object {
         value.language || factory.namedNode(value.datatype.value),
       );
     default:
-      throw new Error(`${value.termType} is not checked`);
+      throw new Error(
+        `${(value as { termType: string }).termType} is not checked`,
+      );
   }
 }
 

@@ -43,13 +43,46 @@ tables:SourceShape a sh:NodeShape ;
     ] , [
         sh:path dcat:distribution ;
         sh:minCount 1 ;
-        sh:node tables:SourceFileShape ;
-        sh:message "A source has at least one file, each with one download URL."@en
+        sh:message "A source has at least one file."@en
     ] , [
         sh:path [ sh:inversePath dct:source ] ;
         sh:minCount 1 ;
         sh:node tables:SeriesDeclarationShape ;
         sh:message "A source fills at least one series, each a urn:uuid: with one name and one table kind."@en
+    ] .
+
+tables:SourceFilesShape a sh:NodeShape ;
+    sh:targetClass tables:Source ;
+    sh:or (
+        [
+            sh:property [ sh:path tables:detectedBy ; sh:hasValue tables:ReleaseApi ] ,
+                [
+                    sh:path tables:releaseApi ;
+                    sh:nodeKind sh:IRI ;
+                    sh:pattern "^https://[^/]+/" ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1
+                ] ,
+                [ sh:path dcat:distribution ; sh:node tables:ArchivedFileShape ]
+        ]
+        [
+            sh:property [ sh:path tables:detectedBy ; sh:not [ sh:in ( tables:ReleaseApi ) ] ] ,
+                [ sh:path tables:releaseApi ; sh:maxCount 0 ] ,
+                [ sh:path dcat:distribution ; sh:node tables:SourceFileShape ]
+        ]
+    ) ;
+    sh:message "A source detected by its release API names that API and each file by its path in the release's zip; any other source names each file's one download URL."@en .
+
+tables:ArchivedFileShape a sh:NodeShape ;
+    sh:property [
+        sh:path dct:title ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[^/].*[^/]$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path dcat:downloadURL ;
+        sh:maxCount 0
     ] .
 
 tables:SourceFileShape a sh:NodeShape ;

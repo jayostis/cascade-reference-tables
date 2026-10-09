@@ -6,9 +6,9 @@ import { test } from "node:test";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import * as oxigraph from "oxigraph";
 import { FEED_BASE, Feed } from "../src/feed.js";
-import { build, readContract } from "../src/pipeline.js";
+import { build, declarationViolations, readContract } from "../src/pipeline.js";
 import { type Checked, mergeChecked, publish } from "../src/publish.js";
-import { PREFIXES, type Quad } from "../src/rdf.js";
+import { fromOxigraph, PREFIXES, type Quad, toOxigraph } from "../src/rdf.js";
 import { Shapes } from "../src/shapes.js";
 import { loadBuild, readSource } from "../src/source.js";
 import { folderStore } from "../src/stores.js";
@@ -24,9 +24,9 @@ const prefixes = Object.entries(PREFIXES)
   .join("\n");
 
 function changed(update: string): Quad[] {
-  const store = new oxigraph.Store(valid);
+  const store = new oxigraph.Store(valid.map(toOxigraph));
   store.update(`${prefixes}\n${update}`, { base_iri: FEED_BASE });
-  return store.match(null, null, null, null);
+  return store.match(null, null, null, null).map(fromOxigraph);
 }
 
 test("the valid feed fixture and feed/feed.ttl conform", async () => {
@@ -161,4 +161,34 @@ test("the checked.json a build and a publish write conforms to its schema", asyn
   ];
   for (const [checked, valid] of cases)
     assert.equal(validate(checked), valid, JSON.stringify(checked));
+});
+
+test("a source names its files as its detection method needs them, or its declarations are refused with the message", async () => {
+  const contract = await readContract(ROOT);
+  const message =
+    "A source detected by its release API names that API and each file by its path in the release's zip; any other source names each file's one download URL.";
+  const cases: [string, string][] = [
+    ["nlm-rxnorm-prescribable", "DELETE WHERE { ?s tables:releaseApi ?a }"],
+    [
+      "nlm-rxnorm-prescribable",
+      "DELETE { ?f dct:title ?t } INSERT { ?f dcat:downloadURL <https://download.nlm.nih.gov/rxnorm/RXNREL.RRF> } WHERE { ?f dct:title ?t }",
+    ],
+    [
+      "cdc-cvx",
+      'DELETE { ?f dcat:downloadURL ?u } INSERT { ?f dct:title "VG.txt" } WHERE { ?f dcat:downloadURL ?u }',
+    ],
+  ];
+  for (const [builder, update] of cases) {
+    const source = await readSource(join(ROOT, "builders", builder));
+    const store = new oxigraph.Store(source.declarations.map(toOxigraph));
+    store.update(`${prefixes}\n${update}`);
+    const found = await declarationViolations(contract, {
+      ...source,
+      declarations: store.match(null, null, null, null).map(fromOxigraph),
+    });
+    assert.ok(
+      found.some((violation) => violation.endsWith(`: ${message}`)),
+      `${builder}: ${update}\ngave:\n${found.join("\n")}`,
+    );
+  }
 });

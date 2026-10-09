@@ -49,6 +49,21 @@ its `Last-Modified`, otherwise 200 with the file and its `Last-Modified`.
 | `the publisher was last asked with no If-Modified-Since`                            |                                                                              |
 | `the publisher was last asked with If-Modified-Since {string}`                      |                                                                              |
 
+## Detection by release API
+
+The examples' source is `fixtures/release-api/`: the example builder's series, detected by a release API at
+`https://publisher.example/releases`. The API lists an older release not marked current, and the release a step marks
+current, its file `<release folder>.zip`; that zip holds the folder's `codes.txt` as `release/codes.txt`.
+
+| Step                                                                                       | What happens, or must hold                                          |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| `the publisher's release API marks {string} current as {string}`                           | that release folder is current, its release version the second text |
+| `the publisher's release API marks {string} current as {string}, its zip lacking {string}` | and its zip holds its file under another path                       |
+| `the publisher's release API marks no release current`                                     | the API lists only the older release                                |
+| `the example source, detected by its release API, is checked`                              | the source is checked against the feed                              |
+| `the example source, detected by its release API, is built from the publisher`             | the source is checked, and what is new is built                     |
+| `the check fails, saying {string}`                                                         | the check stopped as an error whose message contains the text       |
+
 ## Publishing
 
 The releases of a publishing example are the rows files its builds wrote; the site is a folder of its own.

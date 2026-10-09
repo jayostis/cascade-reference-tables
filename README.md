@@ -29,7 +29,8 @@ npm run host -- publish --site <folder> [--releases <owner/repo>] [--rows <folde
 ```
 
 A source is a folder under `builders/`, or a path. Without `--release`, `build` checks the publisher and builds what
-it has when it is new, keeping its files in `<out>/release/`; `--checked` reads what the last check saw from a
+it has when it is new, keeping its files in `<out>/release/`; for a source detected by a release API, a release is
+its one zip, in `--release`'s folder too. `--checked` reads what the last check saw from a
 `checked.json`. The host reads the vocabulary from
 `$CASCADE_VOCABULARY`, else the sibling checkout `../cascade-vocabulary`, else the pinned commit, fetched into
 `.cache/`.

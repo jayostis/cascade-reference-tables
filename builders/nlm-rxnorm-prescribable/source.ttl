@@ -1,0 +1,39 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> a tables:Source, dcat:Dataset ;
+    rdfs:label "NLM RxNorm Prescribable" ;
+    dct:publisher <https://ror.org/0060t0j89> ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
+    tables:detectedBy tables:ReleaseApi ;
+    tables:releaseApi <https://uts-ws.nlm.nih.gov/releases?releaseType=rxnorm-prescribable-content-monthly-release> ;
+    dcat:distribution
+        [ dct:title "rrf/RXNCONSO.RRF" ] ,
+        [ dct:title "rrf/RXNREL.RRF" ] ,
+        [ dct:title "rrf/RXNSAT.RRF" ] .
+
+<https://ror.org/0060t0j89> rdfs:label "National Library of Medicine" .
+
+<urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6> a rec:ReferenceSeries ;
+    rdfs:label "NLM RxNorm Prescribable product ingredients" ;
+    rec:tableKind rec:ProductIngredients ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> .
+
+<urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4> a rec:ReferenceSeries ;
+    rdfs:label "NLM RxNorm Prescribable brand generics" ;
+    rec:tableKind rec:BrandGenerics ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> .
+
+<urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf> a rec:ReferenceSeries ;
+    rdfs:label "NLM RxNorm Prescribable NDC drugs" ;
+    rec:tableKind rec:NdcDrugs ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> .
+
+<urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba> a rec:ReferenceSeries ;
+    rdfs:label "NLM RxNorm Prescribable names" ;
+    rec:tableKind rec:CodeNames ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> .

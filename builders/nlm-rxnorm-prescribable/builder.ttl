@@ -1,0 +1,7 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> a tables:Builder ;
+    rdfs:label "nlm-rxnorm-prescribable" ;
+    tables:builderVersion "1" ;
+    tables:builds <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> .
