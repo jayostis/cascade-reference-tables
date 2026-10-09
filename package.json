@@ -42,11 +42,13 @@
     "ajv": "8.17.1",
     "oxigraph": "0.5.11",
     "rdf-canonize": "5.0.0",
-    "rdf-validate-shacl": "0.6.5"
+    "rdf-validate-shacl": "0.6.5",
+    "yauzl": "3.4.0"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@types/node": "22.20.5",
+    "@types/yauzl": "3.4.0",
     "eslint": "10.12.0",
     "eslint-config-prettier": "10.1.8",
     "prettier": "3.9.9",

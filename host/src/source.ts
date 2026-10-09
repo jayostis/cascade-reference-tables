@@ -22,7 +22,12 @@ export interface Source {
   readonly iri: string;
   readonly label: string;
   readonly detectedBy: string;
-  /** Each file of a release, by its name, the last segment of its download URL. */
+  /** The publisher's list of releases, for a source detected by its release API. */
+  readonly releaseApi?: string;
+  /**
+   * Each file of a release by its name, the last segment of where it is: its download URL, or, for a source detected
+   * by its release API, its path in the release's zip.
+   */
   readonly files: ReadonlyMap<string, string>;
   readonly series: readonly SeriesDescription[];
   readonly builder: {
@@ -71,14 +76,19 @@ export async function readSource(folder: string): Promise<Source> {
     graph.value(subject, predicate) ?? "";
   const files = new Map<string, string>();
   for (const distribution of graph.objects(iri, `${DCAT}distribution`)) {
-    const url = graph.value(distribution, `${DCAT}downloadURL`) ?? "";
-    files.set(decodeURIComponent(url.split("/").pop() ?? ""), url);
+    const where =
+      graph.value(distribution, `${DCAT}downloadURL`) ??
+      graph.value(distribution, `${DCT}title`) ??
+      "";
+    files.set(decodeURIComponent(where.split("/").pop() ?? ""), where);
   }
+  const releaseApi = graph.value(iri, `${TABLES}releaseApi`);
   return {
     folder,
     iri,
     label: value(iri, `${RDFS}label`),
     detectedBy: value(iri, `${TABLES}detectedBy`),
+    ...(releaseApi === undefined ? {} : { releaseApi }),
     files,
     series: graph
       .subjects(`${DCT}source`, iri)

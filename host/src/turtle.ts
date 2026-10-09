@@ -36,7 +36,9 @@ export function writeTurtle(triples: readonly Quad[], base: string): string {
       if (term.datatype.value === `${XSD}boolean`) return term.value;
       return `${text}^^${name(term.datatype)}`;
     }
-    throw new Error(`${term.termType} is not written`);
+    throw new Error(
+      `${(term as { termType: string }).termType} is not written`,
+    );
   };
   const properties = (group: readonly Quad[], indent: string): string[] => {
     const byPredicate = new Map<string, Term[]>();

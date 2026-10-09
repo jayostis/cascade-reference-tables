@@ -33,6 +33,11 @@ tables:ReleaseApi a tables:DetectionMethod ;
     rdfs:label "release API"@en ;
     rdfs:comment "The publisher's API lists its releases, each with its download URL."@en .
 
+tables:releaseApi a owl:ObjectProperty ;
+    rdfs:label "release API"@en ;
+    rdfs:comment "The address of the publisher's list of releases, a JSON array whose one release marked current gives its fileName, releaseVersion and downloadUrl, a zip; the source's files are paths in that zip."@en ;
+    rdfs:domain tables:Source .
+
 tables:FolderListing a tables:DetectionMethod ;
     rdfs:label "folder listing"@en ;
     rdfs:comment "The publisher's folder lists one folder per release."@en .

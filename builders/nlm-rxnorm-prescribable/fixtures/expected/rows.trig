@@ -1,0 +1,125 @@
+<urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6> {
+  <urn:uuid:d229d830-8828-832c-8fd9-237798cf27b3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:d229d830-8828-832c-8fd9-237798cf27b3> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:d229d830-8828-832c-8fd9-237798cf27b3> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/1> .
+  <urn:uuid:d229d830-8828-832c-8fd9-237798cf27b3> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/1> .
+  <urn:uuid:d229d830-8828-832c-8fd9-237798cf27b3> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:884850cf-908d-8da6-8e16-9e0e3c552db9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:884850cf-908d-8da6-8e16-9e0e3c552db9> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:884850cf-908d-8da6-8e16-9e0e3c552db9> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/2> .
+  <urn:uuid:884850cf-908d-8da6-8e16-9e0e3c552db9> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/2> .
+  <urn:uuid:884850cf-908d-8da6-8e16-9e0e3c552db9> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:6df65b59-f4de-81d3-bcdf-0e124d9515c7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:6df65b59-f4de-81d3-bcdf-0e124d9515c7> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:6df65b59-f4de-81d3-bcdf-0e124d9515c7> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/3> .
+  <urn:uuid:6df65b59-f4de-81d3-bcdf-0e124d9515c7> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/3> .
+  <urn:uuid:6df65b59-f4de-81d3-bcdf-0e124d9515c7> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:f7217399-32b4-88eb-9c13-e6cd2916cb9d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:f7217399-32b4-88eb-9c13-e6cd2916cb9d> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:f7217399-32b4-88eb-9c13-e6cd2916cb9d> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/4> .
+  <urn:uuid:f7217399-32b4-88eb-9c13-e6cd2916cb9d> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/4> .
+  <urn:uuid:f7217399-32b4-88eb-9c13-e6cd2916cb9d> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:5ea61858-8c3d-897c-a469-e7454e4ed664> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:5ea61858-8c3d-897c-a469-e7454e4ed664> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:5ea61858-8c3d-897c-a469-e7454e4ed664> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/10> .
+  <urn:uuid:5ea61858-8c3d-897c-a469-e7454e4ed664> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/1> .
+  <urn:uuid:5ea61858-8c3d-897c-a469-e7454e4ed664> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:f0252851-acaf-8900-a1b5-21333314e1e9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:f0252851-acaf-8900-a1b5-21333314e1e9> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:f0252851-acaf-8900-a1b5-21333314e1e9> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/11> .
+  <urn:uuid:f0252851-acaf-8900-a1b5-21333314e1e9> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/1> .
+  <urn:uuid:f0252851-acaf-8900-a1b5-21333314e1e9> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/MappingChaining> .
+  <urn:uuid:e714ed69-8b51-85b2-a127-b6dd3026b233> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:e714ed69-8b51-85b2-a127-b6dd3026b233> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:e714ed69-8b51-85b2-a127-b6dd3026b233> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/12> .
+  <urn:uuid:e714ed69-8b51-85b2-a127-b6dd3026b233> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/1> .
+  <urn:uuid:e714ed69-8b51-85b2-a127-b6dd3026b233> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:b779257e-e0ca-83d5-8fc1-0aaf95d0b834> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:b779257e-e0ca-83d5-8fc1-0aaf95d0b834> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:b779257e-e0ca-83d5-8fc1-0aaf95d0b834> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/13> .
+  <urn:uuid:b779257e-e0ca-83d5-8fc1-0aaf95d0b834> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/1> .
+  <urn:uuid:b779257e-e0ca-83d5-8fc1-0aaf95d0b834> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/MappingChaining> .
+  <urn:uuid:455456f0-0dc4-8307-9e7e-55dcb2a4637c> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:455456f0-0dc4-8307-9e7e-55dcb2a4637c> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:455456f0-0dc4-8307-9e7e-55dcb2a4637c> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/14> .
+  <urn:uuid:455456f0-0dc4-8307-9e7e-55dcb2a4637c> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/3> .
+  <urn:uuid:455456f0-0dc4-8307-9e7e-55dcb2a4637c> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/MappingChaining> .
+  <urn:uuid:965ab610-e55f-8536-9348-ebe0254db639> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:965ab610-e55f-8536-9348-ebe0254db639> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:965ab610-e55f-8536-9348-ebe0254db639> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/16> .
+  <urn:uuid:965ab610-e55f-8536-9348-ebe0254db639> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/1> .
+  <urn:uuid:965ab610-e55f-8536-9348-ebe0254db639> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:f57c593d-c8ac-8838-b7b0-cd9801e17a40> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:f57c593d-c8ac-8838-b7b0-cd9801e17a40> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:f57c593d-c8ac-8838-b7b0-cd9801e17a40> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/17> .
+  <urn:uuid:f57c593d-c8ac-8838-b7b0-cd9801e17a40> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/1> .
+  <urn:uuid:f57c593d-c8ac-8838-b7b0-cd9801e17a40> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:76ecb4e9-d32e-8fe1-bac9-290e5adedd12> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:76ecb4e9-d32e-8fe1-bac9-290e5adedd12> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:76ecb4e9-d32e-8fe1-bac9-290e5adedd12> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/18> .
+  <urn:uuid:76ecb4e9-d32e-8fe1-bac9-290e5adedd12> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/1> .
+  <urn:uuid:76ecb4e9-d32e-8fe1-bac9-290e5adedd12> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/MappingChaining> .
+}
+<urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4> {
+  <urn:uuid:6b7b9228-e088-85d8-a796-d8ab9c39ce42> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:6b7b9228-e088-85d8-a796-d8ab9c39ce42> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:6b7b9228-e088-85d8-a796-d8ab9c39ce42> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/13> .
+  <urn:uuid:6b7b9228-e088-85d8-a796-d8ab9c39ce42> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/11> .
+  <urn:uuid:6b7b9228-e088-85d8-a796-d8ab9c39ce42> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/18> .
+  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/17> .
+  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:72f48350-24e5-81ae-9eb2-da34acdfd333> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:72f48350-24e5-81ae-9eb2-da34acdfd333> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:72f48350-24e5-81ae-9eb2-da34acdfd333> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/20> .
+  <urn:uuid:72f48350-24e5-81ae-9eb2-da34acdfd333> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/19> .
+  <urn:uuid:72f48350-24e5-81ae-9eb2-da34acdfd333> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+}
+<urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf> {
+  <urn:uuid:261d3264-45f3-810b-bf85-91880168f21f> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:261d3264-45f3-810b-bf85-91880168f21f> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:261d3264-45f3-810b-bf85-91880168f21f> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/ndc/00000000011> .
+  <urn:uuid:261d3264-45f3-810b-bf85-91880168f21f> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/11> .
+  <urn:uuid:261d3264-45f3-810b-bf85-91880168f21f> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:f56350fb-85cd-859a-b8d2-33e56f308824> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:f56350fb-85cd-859a-b8d2-33e56f308824> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
+  <urn:uuid:f56350fb-85cd-859a-b8d2-33e56f308824> <http://www.w3.org/2002/07/owl#annotatedSource> <http://hl7.org/fhir/sid/ndc/00000000013> .
+  <urn:uuid:f56350fb-85cd-859a-b8d2-33e56f308824> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/13> .
+  <urn:uuid:f56350fb-85cd-859a-b8d2-33e56f308824> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+}
+<urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba> {
+  <http://www.nlm.nih.gov/research/umls/rxnorm/1> <http://www.w3.org/2004/02/skos/core#prefLabel> "alpha" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/1> <http://www.w3.org/2004/02/skos/core#notation> "1" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/2> <http://www.w3.org/2004/02/skos/core#prefLabel> "beta" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/2> <http://www.w3.org/2004/02/skos/core#notation> "2" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/3> <http://www.w3.org/2004/02/skos/core#prefLabel> "alpha / beta" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/3> <http://www.w3.org/2004/02/skos/core#notation> "3" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/4> <http://www.w3.org/2004/02/skos/core#prefLabel> "gamma" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/4> <http://www.w3.org/2004/02/skos/core#notation> "4" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/10> <http://www.w3.org/2004/02/skos/core#prefLabel> "alpha 10 MG" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/10> <http://www.w3.org/2004/02/skos/core#notation> "10" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/11> <http://www.w3.org/2004/02/skos/core#prefLabel> "alpha 10 MG Oral Tablet" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/11> <http://www.w3.org/2004/02/skos/core#altLabel> "alpha 10mg tablet" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/11> <http://www.w3.org/2004/02/skos/core#altLabel> "alpha tab" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/11> <http://www.w3.org/2004/02/skos/core#notation> "11" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/12> <http://www.w3.org/2004/02/skos/core#prefLabel> "Alfa" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/12> <http://www.w3.org/2004/02/skos/core#notation> "12" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/13> <http://www.w3.org/2004/02/skos/core#prefLabel> "alpha 10 MG Oral Tablet [Alfa]" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/13> <http://www.w3.org/2004/02/skos/core#notation> "13" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/14> <http://www.w3.org/2004/02/skos/core#prefLabel> "Duo" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/14> <http://www.w3.org/2004/02/skos/core#notation> "14" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/15> <http://www.w3.org/2004/02/skos/core#prefLabel> "Trio" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/15> <http://www.w3.org/2004/02/skos/core#notation> "15" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/16> <http://www.w3.org/2004/02/skos/core#prefLabel> "alpha hydrochloride" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/16> <http://www.w3.org/2004/02/skos/core#notation> "16" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/17> <http://www.w3.org/2004/02/skos/core#prefLabel> "alpha Oral Tablet" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/17> <http://www.w3.org/2004/02/skos/core#notation> "17" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/18> <http://www.w3.org/2004/02/skos/core#prefLabel> "alpha Oral Tablet [Alfa]" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/18> <http://www.w3.org/2004/02/skos/core#notation> "18" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/19> <http://www.w3.org/2004/02/skos/core#prefLabel> "{1 (alpha 10 MG Oral Tablet) } Pack" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/19> <http://www.w3.org/2004/02/skos/core#notation> "19" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/20> <http://www.w3.org/2004/02/skos/core#prefLabel> "{1 (alpha 10 MG Oral Tablet [Alfa]) } Pack [Alfa Pack]" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/20> <http://www.w3.org/2004/02/skos/core#notation> "20" .
+}

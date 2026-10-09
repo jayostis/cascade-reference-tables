@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { after, before, describe, test } from "node:test";
-import { gunzipSync } from "node:zlib";
+import { crc32, gunzipSync } from "node:zlib";
 import { type Build, Refusal, type Row } from "../src/builder.js";
 import { conformanceExamples, runConformance } from "../src/conformance.js";
 import {
@@ -62,10 +62,90 @@ interface World {
   siteChecks?: SiteChecks;
   site?: string;
   stopped?: Error;
+  /** The release the publisher's API marks current, with its version, and the path its zip lacks; none for none. */
+  api?: { release?: string; version?: string; lacking?: string };
+  failure?: Error;
 }
 
 let contract: Contract;
 let example: Source;
+let byReleaseApi: Source;
+const RELEASES = "https://publisher.example/releases";
+
+/** A zip of the files, stored without compression. */
+function zipOf(files: readonly (readonly [string, Buffer])[]): Buffer {
+  const locals: Buffer[] = [];
+  const centrals: Buffer[] = [];
+  let offset = 0;
+  for (const [name, bytes] of files) {
+    const path = Buffer.from(name);
+    const crc = crc32(bytes);
+    const local = Buffer.alloc(30);
+    local.writeUInt32LE(0x04034b50, 0);
+    local.writeUInt16LE(20, 4);
+    local.writeUInt32LE(crc, 14);
+    local.writeUInt32LE(bytes.length, 18);
+    local.writeUInt32LE(bytes.length, 22);
+    local.writeUInt16LE(path.length, 26);
+    const central = Buffer.alloc(46);
+    central.writeUInt32LE(0x02014b50, 0);
+    central.writeUInt16LE(20, 4);
+    central.writeUInt16LE(20, 6);
+    central.writeUInt32LE(crc, 16);
+    central.writeUInt32LE(bytes.length, 20);
+    central.writeUInt32LE(bytes.length, 24);
+    central.writeUInt16LE(path.length, 28);
+    central.writeUInt32LE(offset, 42);
+    locals.push(local, path, bytes);
+    centrals.push(central, path);
+    offset += local.length + path.length + bytes.length;
+  }
+  const directory = Buffer.concat(centrals);
+  const end = Buffer.alloc(22);
+  end.writeUInt32LE(0x06054b50, 0);
+  end.writeUInt16LE(files.length, 8);
+  end.writeUInt16LE(files.length, 10);
+  end.writeUInt32LE(directory.length, 12);
+  end.writeUInt32LE(offset, 16);
+  return Buffer.concat([...locals, directory, end]);
+}
+
+/** The publisher's release API and its zips, as the world says. */
+function releaseApi(world: World): Fetch {
+  return async (input) => {
+    const { release, version, lacking } = world.api!;
+    const url = String(input);
+    const download = `https://publisher.example/downloads/${release}.zip`;
+    if (url === RELEASES)
+      return Response.json([
+        {
+          fileName: "older.zip",
+          releaseVersion: "2026-01-01",
+          downloadUrl: "https://publisher.example/downloads/older.zip",
+        },
+        ...(release === undefined
+          ? []
+          : [
+              {
+                fileName: `${release}.zip`,
+                releaseVersion: version,
+                downloadUrl: download,
+                current: true,
+              },
+            ]),
+      ]);
+    if (url !== download) return new Response(null, { status: 404 });
+    const codes = await readFile(
+      join(EXAMPLE, "fixtures", release!, "codes.txt"),
+    );
+    const path = "release/codes.txt";
+    return new Response(
+      new Uint8Array(
+        zipOf([[path === lacking ? "release/other.txt" : path, codes]]),
+      ),
+    );
+  };
+}
 
 function seriesNamed(label: string): string {
   const found = example.series.find((s) => s.label === label);
@@ -437,6 +517,66 @@ const steps = new Steps<World>()
     world.builds.push(outcomes === "nothing new" ? [] : outcomes);
     world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
   })
+  .define(
+    "the publisher's release API marks {string} current as {string}",
+    (world, [release, version]) => {
+      world.api = { release: release as string, version: version as string };
+    },
+  )
+  .define(
+    "the publisher's release API marks {string} current as {string}, its zip lacking {string}",
+    (world, [release, version, lacking]) => {
+      world.api = {
+        release: release as string,
+        version: version as string,
+        lacking: lacking as string,
+      };
+    },
+  )
+  .define("the publisher's release API marks no release current", (world) => {
+    world.api = {};
+  })
+  .define(
+    "the example source, detected by its release API, is checked",
+    async (world) => {
+      try {
+        world.checked = await check(
+          byReleaseApi,
+          await Feed.readOrEmpty(world.feed),
+          releaseApi(world),
+          join(world.dir, "checked"),
+          lastSeen(world),
+        );
+      } catch (error) {
+        world.failure = error as Error;
+      }
+    },
+  )
+  .define(
+    "the example source, detected by its release API, is built from the publisher",
+    async (world) => {
+      try {
+        const outcomes = await buildLatest(contract, {
+          source: byReleaseApi,
+          build: await loadBuild(ROOT, EXAMPLE),
+          feed: world.feed,
+          out: world.out,
+          now: `2026-10-0${world.builds.length + 1}T00:00:00Z`,
+          fetch: releaseApi(world),
+          seen: lastSeen(world),
+        });
+        world.builds.push(outcomes === "nothing new" ? [] : outcomes);
+        world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
+      } catch (error) {
+        if (!(error instanceof Refusal)) throw error;
+        world.refusal = error;
+      }
+    },
+  )
+  .define("the check fails, saying {string}", ({ failure }, [reason]) => {
+    assert.ok(failure, "the check did not fail");
+    assert.ok(failure.message.includes(reason as string), failure.message);
+  })
   .define("the check finds nothing new", ({ checked }) => {
     assert.equal(checked?.found, "nothing new");
   })
@@ -613,6 +753,7 @@ function dropGraph(q: Quad): Quad {
 before(async () => {
   contract = await readContract(ROOT);
   example = await readSource(EXAMPLE);
+  byReleaseApi = await readSource(join(ROOT, "fixtures", "release-api"));
 });
 
 const rules = readdirSync(join(ROOT, "rules")).filter((file) =>

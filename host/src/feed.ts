@@ -13,6 +13,7 @@ import {
   type Quad,
   RDF,
   RDFS,
+  sameQuad,
   REC,
   SPDX,
   SSSOM,
@@ -156,7 +157,7 @@ export class Feed {
       );
     const add = (...quads: Quad[]): void => {
       for (const q of quads)
-        if (!this.quads.some((held) => held.equals(q))) this.quads.push(q);
+        if (!this.quads.some((held) => sameQuad(held, q))) this.quads.push(q);
     };
     const drop = (subject: string, predicate: string): void => {
       this.quads = this.quads.filter(

@@ -1,5 +1,13 @@
 import { existsSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  mkdtemp,
+  readdir,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import {
   type Build,
@@ -7,6 +15,7 @@ import {
   type Release,
   type ReleaseFile,
 } from "./builder.js";
+import { unzip } from "./archive.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
 import { Feed, type Input } from "./feed.js";
 import { documentName, sha256, versionName } from "./names.js";
@@ -16,6 +25,9 @@ import { Shapes } from "./shapes.js";
 import { folderStore, type RowsStore } from "./stores.js";
 import type { Source } from "./source.js";
 import { resolveVocabulary, Vocabulary } from "./vocabulary.js";
+
+/** Rows checked by one validator: one validator over every row costs more than linearly. */
+const SHAPE_CHUNK = 2000;
 
 /** What every build reads: the vocabulary, its shapes, this repository's shapes and the row schema. */
 export interface Contract {
@@ -78,6 +90,17 @@ function releaseOf(
   };
 }
 
+/** The files of a release kept as its inputs: each file the source names, or, from a release API, its one zip. */
+async function inputsOf(source: Source, release: string): Promise<string[]> {
+  if (source.releaseApi === undefined) return [...source.files.keys()].sort();
+  const zips = existsSync(release)
+    ? (await readdir(release)).filter((file) => file.endsWith(".zip"))
+    : [];
+  if (zips.length !== 1)
+    throw new Refusal(`the release holds ${zips.length} zips, not one`);
+  return zips;
+}
+
 /** What the shapes say of a source's `source.ttl` and `builder.ttl`, read with the vocabulary's terms. */
 export function declarationViolations(
   contract: Contract,
@@ -104,23 +127,42 @@ export async function rowsOf(
   const series = new Map(
     source.series.map((s) => [s.iri, new SeriesRows(s.iri)]),
   );
-  for await (const yielded of build(releaseOf(contract, source, release))) {
-    const row = contract.schema.check(yielded);
-    const into = series.get(row.series);
-    if (into === undefined)
-      throw new Refusal(
-        `${row.series} is not a series ${source.label} declares`,
-      );
-    into.add(toRdf(row));
+  const opened =
+    source.releaseApi === undefined
+      ? release
+      : await mkdtemp(join(tmpdir(), "release-"));
+  try {
+    if (source.releaseApi !== undefined) {
+      const [zip] = await inputsOf(source, release);
+      await unzip(join(release, zip!), source.files, opened);
+    }
+    for await (const yielded of build(releaseOf(contract, source, opened))) {
+      const row = contract.schema.check(yielded);
+      const into = series.get(row.series);
+      if (into === undefined)
+        throw new Refusal(
+          `${row.series} is not a series ${source.label} declares`,
+        );
+      into.add(toRdf(row));
+    }
+  } finally {
+    if (opened !== release) await rm(opened, { recursive: true, force: true });
   }
   for (const description of source.series) {
     const rows = series.get(description.iri)!;
     const kind = contract.vocabulary.kind(description.kind);
-    const found = await contract.rowShapes.violationsOf(
-      rows.triples(),
-      rows.rows.keys(),
-      kind.rowShape,
-    );
+    const keys = [...rows.rows.keys()];
+    const found: string[] = [];
+    for (let start = 0; start < keys.length; start += SHAPE_CHUNK) {
+      const chunk = keys.slice(start, start + SHAPE_CHUNK);
+      found.push(
+        ...(await contract.rowShapes.violationsOf(
+          chunk.flatMap((key) => rows.rows.get(key)!),
+          chunk,
+          kind.rowShape,
+        )),
+      );
+    }
     if (found.length > 0)
       throw new Refusal(
         `rows of ${description.label} do not conform:\n${found.join("\n")}`,
@@ -237,7 +279,7 @@ export async function build(
   ];
   const inputs: Input[] = [];
   const inputFiles: { file: string; bytes: Buffer }[] = [];
-  for (const title of [...source.files.keys()].sort()) {
+  for (const title of await inputsOf(source, options.release)) {
     const path = join(options.release, title);
     if (!existsSync(path)) throw new Refusal(`the release has no ${title}`);
     const bytes = await readFile(path);
