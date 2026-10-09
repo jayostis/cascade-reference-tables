@@ -11,7 +11,7 @@ import {
   writeChecked,
 } from "./pipeline.js";
 import { TABLES } from "./rdf.js";
-import type { Source } from "./source.js";
+import type { Listing, Source } from "./source.js";
 
 export type Fetch = typeof fetch;
 
@@ -71,9 +71,12 @@ export async function check(
   fetchWith: Fetch,
   folder: string,
   seen: Seen = {},
+  now: string = new Date().toISOString(),
 ): Promise<Checked> {
   if (source.detectedBy === `${TABLES}ReleaseApi`)
     return checkReleaseApi(source, feed, fetchWith, folder, seen);
+  if (source.detectedBy === `${TABLES}FolderListing`)
+    return checkFolderListing(source, feed, fetchWith, folder, seen, now);
   if (source.detectedBy !== `${TABLES}ConditionalGet`)
     throw new Error(
       `the host cannot yet detect a release by ${source.detectedBy}`,
@@ -192,6 +195,159 @@ async function checkReleaseApi(
   };
 }
 
+/** An entry of a folder listing: a folder or a file, and the time the listing gives it. */
+interface Entry {
+  readonly name: string;
+  readonly url: string;
+  readonly folder: boolean;
+  readonly modified?: string;
+}
+
+/** A listing's time, `8/13/2026  2:25 PM` as IIS writes it, as an `xsd:dateTime`. */
+function listedTime(text: string): string | undefined {
+  const found =
+    /(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})\s*([AP]M)/i.exec(text);
+  if (found === null) return undefined;
+  const [, month, day, year, hour, minute, half] = found;
+  const hours = (Number(hour) % 12) + (half!.toUpperCase() === "PM" ? 12 : 0);
+  const two = (n: string | number) => String(n).padStart(2, "0");
+  return `${year}-${two(month!)}-${two(day!)}T${two(hours)}:${minute}:00Z`;
+}
+
+/** The links of an HTML folder listing below its own address, each with the text before it on its line as its time. */
+async function listingOf(fetchWith: Fetch, url: string): Promise<Entry[]> {
+  const response = await fetchWith(url);
+  if (!response.ok) throw new Error(`${url} answered ${response.status}`);
+  const html = await response.text();
+  const entries: Entry[] = [];
+  const link = /<a\s[^>]*href="([^"]+)"[^>]*>/gi;
+  let previous = 0;
+  for (let found = link.exec(html); found !== null; found = link.exec(html)) {
+    const before = html
+      .slice(previous, found.index)
+      .split(/<br\s*\/?>|\n/i)
+      .pop()!;
+    previous = link.lastIndex;
+    const target = new URL(found[1]!.replace(/&amp;/g, "&"), url).href;
+    if (!target.startsWith(url) || target === url) continue;
+    const folder = target.endsWith("/");
+    const name = decodeURIComponent(
+      target.slice(url.length).replace(/\/$/, ""),
+    );
+    if (name.includes("/")) continue;
+    const modified = listedTime(before);
+    entries.push({
+      name,
+      url: target,
+      folder,
+      ...(modified === undefined ? {} : { modified }),
+    });
+  }
+  return entries;
+}
+
+const matches = (pattern: string, name: string): boolean =>
+  new RegExp(pattern, "i").test(name);
+
+/** The release folders in effect on the day, newest first, each with the date it took effect. */
+function inEffect(
+  listing: Listing,
+  entries: readonly Entry[],
+  day: string,
+): { entry: Entry; effective: string }[] {
+  return entries
+    .filter((entry) => entry.folder)
+    .flatMap((entry) =>
+      listing.releaseFolders.flatMap((kind) => {
+        const year = new RegExp(kind.namePattern, "i").exec(entry.name)?.[1];
+        if (year === undefined) return [];
+        const effective = `${Number(year) + kind.yearOffset}${kind.effectiveFrom.slice(1)}`;
+        return effective <= day ? [{ entry, effective }] : [];
+      }),
+    )
+    .sort(
+      (a, b) =>
+        b.effective.localeCompare(a.effective) ||
+        b.entry.name.localeCompare(a.entry.name),
+    );
+}
+
+/**
+ * Reads the publisher's folder listing, and takes each file the source names from the newest release folder in effect
+ * that has it: a file matching its name, or a zip matching its archive's. Nothing new when every series has a version
+ * and the feed or the last check records every file taken with the time the listing gives it; otherwise they are
+ * saved into the folder, labelled by the date the newest folder they came from took effect.
+ */
+async function checkFolderListing(
+  source: Source,
+  feed: Feed,
+  fetchWith: Fetch,
+  folder: string,
+  seen: Seen,
+  now: string,
+): Promise<Checked> {
+  const listing = source.listing!;
+  const folders = inEffect(
+    listing,
+    await listingOf(fetchWith, listing.url),
+    now.slice(0, 10),
+  );
+  const listed = new Map<string, Entry[]>();
+  const taken = new Map<string, Entry>();
+  let label = "";
+  for (const [title, file] of listing.files) {
+    let found = false;
+    for (const { entry, effective } of folders) {
+      if (!listed.has(entry.url))
+        listed.set(entry.url, await listingOf(fetchWith, entry.url));
+      const candidates = listed
+        .get(entry.url)!
+        .filter(
+          (candidate) =>
+            !candidate.folder &&
+            (matches(file.namePattern, candidate.name) ||
+              (file.archivePattern !== undefined &&
+                /\.zip$/i.test(candidate.name) &&
+                matches(file.archivePattern, candidate.name))),
+        );
+      if (candidates.length === 0) continue;
+      for (const candidate of candidates) taken.set(candidate.name, candidate);
+      if (effective > label) label = effective;
+      found = true;
+      break;
+    }
+    if (!found)
+      throw new Error(
+        `no release folder in effect at ${listing.url} has a file for ${title}`,
+      );
+  }
+  const unbuilt = source.series.some(
+    (series) => feed.current(series.iri) === undefined,
+  );
+  const recorded = held(source, feed, seen);
+  if (
+    !unbuilt &&
+    [...taken.values()].every(
+      ({ name, modified }) =>
+        modified !== undefined && recorded.get(name)?.modified === modified,
+    )
+  )
+    return { found: "nothing new" };
+  await rm(folder, { recursive: true, force: true });
+  await mkdir(folder, { recursive: true });
+  const modified = new Map<string, string>();
+  for (const { name, url, modified: when } of taken.values()) {
+    const response = await fetchWith(url);
+    if (!response.ok) throw new Error(`${url} answered ${response.status}`);
+    await writeFile(
+      join(folder, name),
+      Buffer.from(await response.arrayBuffer()),
+    );
+    if (when !== undefined) modified.set(name, when);
+  }
+  return { found: "new", folder, modified, label };
+}
+
 /** Checks the source, and builds what the publisher has when it is new: the release is saved under `<out>/release/`. */
 export async function buildLatest(
   contract: Contract,
@@ -207,6 +363,7 @@ export async function buildLatest(
     options.fetch,
     join(options.out, "release"),
     options.seen,
+    options.now,
   );
   if (checked.found === "nothing new") {
     await writeChecked(

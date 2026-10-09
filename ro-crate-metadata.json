@@ -26,11 +26,13 @@
         { "@id": "rules/versions.feature" },
         { "@id": "rules/feed.feature" },
         { "@id": "rules/detection.feature" },
+        { "@id": "rules/folder-listing.feature" },
         { "@id": "rules/publish.feature" },
         { "@id": "rules/steps.md" },
         { "@id": "builder/interface.schema.json" },
         { "@id": "builder/conformance.feature" },
         { "@id": "fixtures/builder/" },
+        { "@id": "fixtures/folder-listing/" },
         { "@id": "fixtures/feeds/valid/" },
         { "@id": "feed/feed.ttl" }
       ]

@@ -5,25 +5,24 @@ import yauzl from "yauzl";
 import { Refusal } from "./builder.js";
 
 /**
- * Writes each named entry of the zip into the folder, as the file named by the map's key; an entry the zip lacks is
- * refused.
+ * Writes each entry of the zip that `pick` names into the folder, as the file it names; gives the paths of the entries
+ * written.
  */
-export function unzip(
+export function extract(
   zip: string,
-  entries: ReadonlyMap<string, string>,
+  pick: (path: string) => string | undefined,
   folder: string,
-): Promise<void> {
-  const wanted = new Map([...entries].map(([name, path]) => [path, name]));
+): Promise<string[]> {
   return new Promise((resolve, reject) => {
     yauzl.open(zip, { lazyEntries: true }, (error, archive) => {
       if (error !== null) {
         reject(new Refusal(`${zip} is not a zip: ${error.message}`));
         return;
       }
-      const found = new Set<string>();
+      const found: string[] = [];
       archive.on("error", reject);
       archive.on("entry", (entry: yauzl.Entry) => {
-        const name = wanted.get(entry.fileName);
+        const name = pick(entry.fileName);
         if (name === undefined) {
           archive.readEntry();
           return;
@@ -34,18 +33,29 @@ export function unzip(
             return;
           }
           pipeline(stream, createWriteStream(join(folder, name))).then(() => {
-            found.add(entry.fileName);
+            found.push(entry.fileName);
             archive.readEntry();
           }, reject);
         });
       });
-      archive.on("end", () => {
-        const missing = [...wanted.keys()].filter((path) => !found.has(path));
-        if (missing.length > 0)
-          reject(new Refusal(`the release's zip has no ${missing.join(", ")}`));
-        else resolve();
-      });
+      archive.on("end", () => resolve(found));
       archive.readEntry();
     });
   });
+}
+
+/**
+ * Writes each named entry of the zip into the folder, as the file named by the map's key; an entry the zip lacks is
+ * refused.
+ */
+export async function unzip(
+  zip: string,
+  entries: ReadonlyMap<string, string>,
+  folder: string,
+): Promise<void> {
+  const wanted = new Map([...entries].map(([name, path]) => [path, name]));
+  const found = new Set(await extract(zip, (path) => wanted.get(path), folder));
+  const missing = [...wanted.keys()].filter((path) => !found.has(path));
+  if (missing.length > 0)
+    throw new Refusal(`the release's zip has no ${missing.join(", ")}`);
 }

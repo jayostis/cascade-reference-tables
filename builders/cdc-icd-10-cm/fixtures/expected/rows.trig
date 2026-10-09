@@ -1,0 +1,51 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix icd: <http://hl7.org/fhir/sid/icd-10-cm/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix semapv: <https://w3id.org/semapv/vocab/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sssom: <https://w3id.org/sssom/> .
+
+<urn:uuid:2f1d04ac-2101-4d15-8251-566846a14488> {
+    icd:A41.54 skos:prefLabel "Sepsis due to Acinetobacter baumannii" ; skos:notation "A41.54" .
+    icd:A41.59 skos:prefLabel "Other Gram-negative sepsis" ; skos:notation "A41.59" .
+    icd:C88 skos:prefLabel "Malignant immunoproliferative diseases and certain other B-cell lymphomas" ;
+        skos:altLabel "Malig immunoproliferative dis and certain oth B-cell lymph" ; skos:notation "C88" .
+    icd:C88.0 skos:prefLabel "Waldenstrom macroglobulinemia" ; skos:notation "C88.0" .
+    icd:C88.00 skos:prefLabel "Waldenstrom macroglobulinemia not having achieved remission" ; skos:notation "C88.00" .
+    icd:C88.01 skos:prefLabel "Waldenstrom macroglobulinemia, in remission" ; skos:notation "C88.01" .
+    icd:D69.1 skos:prefLabel "Qualitative platelet defects" ; skos:notation "D69.1" .
+    icd:D69.11 skos:prefLabel "Glanzmann thrombasthenia" ; skos:notation "D69.11" .
+    icd:D69.19 skos:prefLabel "Other qualitative platelet defects" ; skos:notation "D69.19" .
+    icd:E66.01 skos:prefLabel "Morbid (severe) obesity due to excess calories" ; skos:notation "E66.01" .
+    icd:E66.8 skos:prefLabel "Other obesity" ; skos:notation "E66.8" .
+    icd:E66.813 skos:prefLabel "Obesity, class 3" ; skos:notation "E66.813" .
+    icd:M97.01XA skos:prefLabel "Periprosthetic fracture around internal prosthetic right hip joint, initial encounter" ;
+        skos:altLabel "Periprosth fracture around internal prosth r hip jt, init" ; skos:notation "M97.01XA" .
+}
+
+<urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540> {
+    icd:C88.0 owl:deprecated true ; dct:isReplacedBy icd:C88.00 .
+    icd:D69.1 owl:deprecated true ; dct:isReplacedBy icd:D69.11 , icd:D69.19 .
+    icd:E66.8 owl:deprecated true ; dct:isReplacedBy icd:E66.813 .
+    icd:T84.040A owl:deprecated true ; dct:isReplacedBy icd:M97.01XA .
+}
+
+<urn:uuid:14f76251-2926-43ef-90c3-47101c1da3dd> {
+    <urn:uuid:cdad4595-ef8d-86e3-8c73-e73e0a50fc65> a owl:Axiom ;
+        owl:annotatedSource icd:C88.0 ;
+        owl:annotatedProperty skos:exactMatch ;
+        owl:annotatedTarget icd:C88.00 ;
+        sssom:mapping_justification semapv:ManualMappingCuration .
+
+    <urn:uuid:9790044d-616d-8eaf-903c-76b05d833da9> a owl:Axiom ;
+        owl:annotatedSource icd:E66.8 ;
+        owl:annotatedProperty skos:exactMatch ;
+        owl:annotatedTarget icd:E66.813 ;
+        sssom:mapping_justification semapv:ManualMappingCuration .
+
+    <urn:uuid:780a84d2-9379-83dc-87c5-641881e911e9> a owl:Axiom ;
+        owl:annotatedSource icd:T84.040A ;
+        owl:annotatedProperty skos:exactMatch ;
+        owl:annotatedTarget icd:M97.01XA ;
+        sssom:mapping_justification semapv:ManualMappingCuration .
+}

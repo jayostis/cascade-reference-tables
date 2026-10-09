@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
 import {
+  copyFile,
   mkdir,
   mkdtemp,
   readdir,
@@ -15,11 +16,11 @@ import {
   type Release,
   type ReleaseFile,
 } from "./builder.js";
-import { unzip } from "./archive.js";
+import { extract, unzip } from "./archive.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
 import { Feed, type Input } from "./feed.js";
 import { documentName, sha256, versionName } from "./names.js";
-import { delimited, fixedWidth, jsonLines } from "./readers.js";
+import { delimited, fixedWidth, jsonLines, xlsx } from "./readers.js";
 import { keyed, RowSchema, SeriesRows, toRdf } from "./rows.js";
 import { Shapes } from "./shapes.js";
 import { folderStore, type RowsStore } from "./stores.js";
@@ -84,14 +85,20 @@ function releaseOf(
         delimited: (delimiter) => delimited(path, delimiter),
         fixedWidth: (columns) => fixedWidth(path, columns),
         json: () => jsonLines(path),
+        xlsx: () => xlsx(path),
       };
     },
     codeIri: (system, code) => contract.vocabulary.codeIri(system, code),
   };
 }
 
-/** The files of a release kept as its inputs: each file the source names, or, from a release API, its one zip. */
+/**
+ * The files of a release kept as its inputs: each file the source names, or, from a release API, its one zip, or, from
+ * a folder listing, every file the check took.
+ */
 async function inputsOf(source: Source, release: string): Promise<string[]> {
+  if (source.listing !== undefined)
+    return existsSync(release) ? (await readdir(release)).sort() : [];
   if (source.releaseApi === undefined) return [...source.files.keys()].sort();
   const zips = existsSync(release)
     ? (await readdir(release)).filter((file) => file.endsWith(".zip"))
@@ -99,6 +106,46 @@ async function inputsOf(source: Source, release: string): Promise<string[]> {
   if (zips.length !== 1)
     throw new Refusal(`the release holds ${zips.length} zips, not one`);
   return zips;
+}
+
+/**
+ * Writes each file a folder-listing source names into the folder, from the one file of the release, or entry of one of
+ * its zips, whose name matches its pattern; none or several is refused.
+ */
+async function openListed(
+  source: Source,
+  release: string,
+  folder: string,
+): Promise<void> {
+  const files = await inputsOf(source, release);
+  const matching = (pattern: string, name: string) =>
+    new RegExp(pattern, "i").test(name);
+  for (const [title, file] of source.listing!.files) {
+    const found: string[] = [];
+    for (const name of files.filter((name) =>
+      matching(file.namePattern, name),
+    )) {
+      await copyFile(join(release, name), join(folder, title));
+      found.push(name);
+    }
+    for (const zip of files.filter((name) => /\.zip$/i.test(name)))
+      found.push(
+        ...(
+          await extract(
+            join(release, zip),
+            (path) =>
+              matching(file.namePattern, path.split("/").pop()!)
+                ? title
+                : undefined,
+            folder,
+          )
+        ).map((path) => `${zip}/${path}`),
+      );
+    if (found.length !== 1)
+      throw new Refusal(
+        `the release has ${found.length} files for ${title}, not one${found.length === 0 ? "" : `: ${found.join(", ")}`}`,
+      );
+  }
 }
 
 /** What the shapes say of a source's `source.ttl` and `builder.ttl`, read with the vocabulary's terms. */
@@ -128,7 +175,7 @@ export async function rowsOf(
     source.series.map((s) => [s.iri, new SeriesRows(s.iri)]),
   );
   const opened =
-    source.releaseApi === undefined
+    source.releaseApi === undefined && source.listing === undefined
       ? release
       : await mkdtemp(join(tmpdir(), "release-"));
   try {
@@ -136,6 +183,7 @@ export async function rowsOf(
       const [zip] = await inputsOf(source, release);
       await unzip(join(release, zip!), source.files, opened);
     }
+    if (source.listing !== undefined) await openListed(source, release, opened);
     for await (const yielded of build(releaseOf(contract, source, opened))) {
       const row = contract.schema.check(yielded);
       const into = series.get(row.series);

@@ -1,0 +1,35 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:uuid:0d6bcefb-bc49-45ec-bb0b-e5ca5bb6f60d> a tables:Source, dcat:Dataset ;
+    rdfs:label "Example vaccine codes, by folder listing" ;
+    dct:publisher <https://publisher.example/> ;
+    dct:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+    dct:bibliographicCitation "Source: an example publisher" ;
+    tables:detectedBy tables:FolderListing ;
+    tables:folderListing <https://publisher.example/releases/> ;
+    tables:releaseFolder
+        [ tables:namePattern "^(\\d{4})$" ; tables:effectiveFrom "--10-01"^^xsd:gMonthDay ; tables:yearOffset -1 ] ,
+        [ tables:namePattern "^(\\d{4})-update$" ; tables:effectiveFrom "--04-01"^^xsd:gMonthDay ; tables:yearOffset 0 ] ;
+    dcat:distribution
+        [ dct:title "codes.txt" ; tables:namePattern "^codes-.*\\.txt$" ; tables:archivePattern "^codes-" ] ,
+        [ dct:title "notes.txt" ; tables:namePattern "^notes-.*\\.txt$" ] .
+
+<urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> a rec:ReferenceSeries ;
+    rdfs:label "Example vaccine groups" ;
+    rec:tableKind rec:VaccineGroups ;
+    dct:source <urn:uuid:0d6bcefb-bc49-45ec-bb0b-e5ca5bb6f60d> .
+
+<urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> a rec:ReferenceSeries ;
+    rdfs:label "Example vaccine names" ;
+    rec:tableKind rec:CodeNames ;
+    dct:source <urn:uuid:0d6bcefb-bc49-45ec-bb0b-e5ca5bb6f60d> .
+
+<urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> a rec:ReferenceSeries ;
+    rdfs:label "Example vaccine code status" ;
+    rec:tableKind rec:CodeStatus ;
+    dct:source <urn:uuid:0d6bcefb-bc49-45ec-bb0b-e5ca5bb6f60d> .

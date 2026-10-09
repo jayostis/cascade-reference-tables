@@ -64,6 +64,23 @@ current, its file `<release folder>.zip`; that zip holds the folder's `codes.txt
 | `the example source, detected by its release API, is built from the publisher`             | the source is checked, and what is new is built                     |
 | `the check fails, saying {string}`                                                         | the check stopped as an error whose message contains the text       |
 
+## Detection by folder listing
+
+The examples' source is `fixtures/folder-listing/`: the example builder's series, detected by the folder listing at
+`https://publisher.example/releases/`, an IIS listing of the folders `2026`, `2026-update`, `2027` and
+`CM- Committee`. `2026` holds `codes-2026.zip` and `notes-2026.txt`, `2026-update` only `codes-april-2026.zip`,
+and `2027` `codes-2027.zip` and `notes-2027.txt`; each zip holds the codes of `release`, `release-2` and
+`release-3` as `<zip's name>/<zip's name>.txt`.
+
+| Step                                                                                          | What happens, or must hold                                  |
+| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `the publisher's folders list each file at {string}`                                          | every listing gives each file that time                     |
+| `the publisher's folders list each file at {string}, their zips lacking the codes`            | and each zip holds its codes under another name             |
+| `the example source, detected by its folder listing, is checked on {string}`                  | the source is checked against the feed on that day          |
+| `the example source, detected by its folder listing, is built from the publisher on {string}` | the source is checked on that day, and what is new is built |
+| `the check took {string}`                                                                     | the files the check saved are exactly those named           |
+| `the check downloaded nothing`                                                                | the check asked for no address but a folder's listing       |
+
 ## Publishing
 
 The releases of a publishing example are the rows files its builds wrote; the site is a folder of its own.

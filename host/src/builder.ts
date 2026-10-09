@@ -13,6 +13,8 @@ export interface ReleaseFile {
     columns: readonly (readonly [number, number])[],
   ): AsyncIterable<Line>;
   json(): AsyncIterable<JsonLine>;
+  /** The first sheet of an xlsx workbook, each row a line of its cells' text. */
+  xlsx(): AsyncIterable<Line>;
 }
 
 /** What a builder is handed: the release's files, and the IRIs of codes. */
