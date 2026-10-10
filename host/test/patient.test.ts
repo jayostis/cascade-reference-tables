@@ -7,7 +7,8 @@ import { patientFetch } from "../src/patient.js";
 const BODY = Buffer.from("0123456789".repeat(100));
 const CUT = 300;
 
-type Answer = "cut" | "error" | "serve" | "short" | "offset" | "other version";
+type Answer =
+  "cut" | "error" | "serve" | "short" | "offset" | "other version" | "untagged";
 
 /** A publisher that answers the file's requests, in order, as `answers` say, and then whole. */
 async function publisher(
@@ -32,7 +33,9 @@ async function publisher(
           : [start, BODY.length - 1];
     const body = BODY.subarray(first, last + 1);
     response.writeHead(start > 0 ? 206 : 200, {
-      ETag: how === "other version" ? '"v2"' : '"v1"',
+      ...(how === "untagged"
+        ? {}
+        : { ETag: how === "other version" ? '"v2"' : '"v1"' }),
       "Content-Length": body.length,
       ...(start > 0
         ? { "Content-Range": `bytes ${first}-${last}/${BODY.length}` }
@@ -104,5 +107,28 @@ test("a download is given up after attempts in a row that read nothing new, sayi
     );
   } finally {
     server.close();
+  }
+});
+
+test("a download whose resume is always refused and whose full read is always cut at the same point is given up, not looped", async () => {
+  const cases: [string, Answer[]][] = [
+    ["a partial answer that always stops short", ["cut", "short"]],
+    ["a partial answer that never names its version", ["cut", "untagged"]],
+  ];
+  for (const [name, pattern] of cases) {
+    const { server, url, seen } = await publisher(
+      Array.from({ length: 100 }, (_, i) => pattern[i % 2]!),
+      true,
+    );
+    try {
+      await assert.rejects(
+        patientFetch(fetch, { attempts: 3, delayMs: 0 })(url),
+        /3 attempts in a row/,
+        name,
+      );
+      assert.ok(seen.length < 10, name);
+    } finally {
+      server.close();
+    }
   }
 });

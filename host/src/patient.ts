@@ -25,7 +25,7 @@ function versionOf(response: Response): Version | null {
 
 /**
  * A fetch that gives a whole body or an error. A dropped connection, a 5xx, a 408 or a 429 is tried again after
- * `delayMs`, doubled for each attempt in a row that read no new bytes; `attempts` such attempts in a row end it. Where
+ * `delayMs`, doubled for each attempt in a row that read no byte further than any attempt before it; `attempts` such attempts in a row end it. Where
  * the publisher names the file's version and sends it unencoded, the bytes already read are kept and the rest asked
  * for with `Range` and `If-Range`, and accepted only as the exact rest of that version. A publisher that answers the
  * whole file instead is read again from the start.
@@ -40,6 +40,7 @@ export function patientFetch(
     let first: Response | undefined;
     let version: Version | null = null;
     let stalled = 0;
+    let furthest = 0;
     const restart = () => {
       chunks.length = 0;
       have = 0;
@@ -47,7 +48,6 @@ export function patientFetch(
       version = null;
     };
     for (;;) {
-      const before = have;
       try {
         const headers = new Headers(init?.headers);
         if (have > 0 && version !== null) {
@@ -110,7 +110,8 @@ export function patientFetch(
           headers: out,
         });
       } catch (error) {
-        stalled = have > before ? 0 : stalled + 1;
+        stalled = have > furthest ? 0 : stalled + 1;
+        furthest = Math.max(furthest, have);
         if (stalled === attempts)
           throw new Error(
             `${String(input)} could not be downloaded: ${attempts} attempts in a row read nothing new, the last because ${why(error)}`,
