@@ -11,7 +11,13 @@ import { Feed } from "./feed.js";
 import { build, readContract, type Seen } from "./pipeline.js";
 import { type Checked, mergeChecked, publish } from "./publish.js";
 import { patientFetch } from "./patient.js";
-import { loadBuild, readSource, type Source, sourceFolder } from "./source.js";
+import {
+  loadBuild,
+  loadHistory,
+  readSource,
+  type Source,
+  sourceFolder,
+} from "./source.js";
 import { folderStore, releaseStore } from "./stores.js";
 
 const USAGE = `host check <source> [--feed <file>] [--checked <file>]
@@ -86,9 +92,12 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
   const folder = sourceFolder(root, name);
   const source = await readSource(folder);
   const seen = await seenBy(values.checked, source);
+  const history = await loadHistory(root, folder);
   const options = {
     source,
     build: await loadBuild(root, folder),
+    fetch: patientFetch(),
+    ...(history === undefined ? {} : { history }),
     feed: resolve(values.feed),
     out: resolve(values.out),
     now: now(),
@@ -100,7 +109,6 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
     values.release === undefined || values.label === undefined
       ? await buildLatest(contract, {
           ...options,
-          fetch: patientFetch(),
           ...(seen === undefined ? {} : { seen }),
         })
       : await build(contract, {

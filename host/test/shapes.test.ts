@@ -223,3 +223,47 @@ test("a source names its files as its detection method needs them, or its declar
     );
   }
 });
+
+test("a source carrying rows forward and looking up their history declares what that needs, or its declarations are refused with the message", async () => {
+  const contract = await readContract(ROOT);
+  const source = await readSource(join(ROOT, "fixtures", "carrying"));
+  assert.deepEqual(await declarationViolations(contract, source), []);
+  const cases: [string, string][] = [
+    [
+      "INSERT { ?s tables:carriesForward true } WHERE { ?s rec:tableKind rec:CodeStatus }",
+      "A series carrying rows forward does not hold code status.",
+    ],
+    [
+      'DELETE { ?s tables:carriesForward ?c } INSERT { ?s tables:carriesForward "yes" } WHERE { ?s tables:carriesForward ?c ; rec:tableKind rec:CodeNames }',
+      "A series says once, as a boolean, whether it carries rows forward.",
+    ],
+    [
+      'DELETE { ?l tables:urlTemplate ?u } INSERT { ?l tables:urlTemplate "https://publisher.example/history" } WHERE { ?l tables:urlTemplate ?u }',
+      "A history lookup names one code system and one URL template, which holds {code}.",
+    ],
+    [
+      "INSERT { ?s tables:historyLookup [ tables:codeSystem rec:CVX ; tables:urlTemplate 'https://publisher.example/{code}' ] } WHERE { ?s a tables:Source }",
+      "A source has at most one history lookup.",
+    ],
+    [
+      "DELETE { ?s rec:tableKind rec:CodeStatus } INSERT { ?s rec:tableKind rec:CodeNames } WHERE { ?s rec:tableKind rec:CodeStatus }",
+      "A source with a history lookup fills exactly one code status series.",
+    ],
+    [
+      "DELETE { ?s tables:carriesForward true } INSERT { ?s tables:carriesForward false } WHERE { ?s tables:carriesForward true }",
+      "A source with a history lookup fills at least one series carrying rows forward.",
+    ],
+  ];
+  for (const [update, message] of cases) {
+    const store = new oxigraph.Store(source.declarations.map(toOxigraph));
+    store.update(`${prefixes}\n${update}`);
+    const found = await declarationViolations(contract, {
+      ...source,
+      declarations: store.match(null, null, null, null).map(fromOxigraph),
+    });
+    assert.ok(
+      found.some((violation) => violation.endsWith(`: ${message}`)),
+      `${update}\ngave:\n${found.join("\n")}`,
+    );
+  }
+});

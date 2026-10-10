@@ -163,3 +163,60 @@ tables:SeriesDeclarationShape a sh:NodeShape ;
         sh:minCount 1 ;
         sh:maxCount 1
     ] .
+
+tables:CarryingSeriesShape a sh:NodeShape ;
+    sh:targetSubjectsOf tables:carriesForward ;
+    sh:property [
+        sh:path tables:carriesForward ;
+        sh:datatype xsd:boolean ;
+        sh:maxCount 1 ;
+        sh:message "A series says once, as a boolean, whether it carries rows forward."@en
+    ] , [
+        sh:path rec:tableKind ;
+        sh:not [ sh:hasValue rec:CodeStatus ] ;
+        sh:message "A series carrying rows forward does not hold code status."@en
+    ] .
+
+tables:HistoryLookupCountShape a sh:NodeShape ;
+    sh:targetClass tables:Source ;
+    sh:property [
+        sh:path tables:historyLookup ;
+        sh:maxCount 1 ;
+        sh:message "A source has at most one history lookup."@en
+    ] .
+
+tables:HistoryLookupShape a sh:NodeShape ;
+    sh:targetObjectsOf tables:historyLookup ;
+    sh:property [
+        sh:path tables:codeSystem ;
+        sh:class rec:CodeSystem ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A history lookup names one code system and one URL template, which holds {code}."@en
+    ] , [
+        sh:path tables:urlTemplate ;
+        sh:datatype xsd:string ;
+        sh:pattern "[{]code[}]" ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A history lookup names one code system and one URL template, which holds {code}."@en
+    ] .
+
+tables:HistoryLookupSeriesShape a sh:NodeShape ;
+    sh:targetSubjectsOf tables:historyLookup ;
+    sh:property [
+        sh:path [ sh:inversePath dct:source ] ;
+        sh:qualifiedValueShape [
+            sh:property [ sh:path rec:tableKind ; sh:hasValue rec:CodeStatus ]
+        ] ;
+        sh:qualifiedMinCount 1 ;
+        sh:qualifiedMaxCount 1 ;
+        sh:message "A source with a history lookup fills exactly one code status series."@en
+    ] , [
+        sh:path [ sh:inversePath dct:source ] ;
+        sh:qualifiedValueShape [
+            sh:property [ sh:path tables:carriesForward ; sh:hasValue true ]
+        ] ;
+        sh:qualifiedMinCount 1 ;
+        sh:message "A source with a history lookup fills at least one series carrying rows forward."@en
+    ] .

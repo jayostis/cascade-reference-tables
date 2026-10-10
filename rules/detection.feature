@@ -82,3 +82,9 @@ Feature: Detection by conditional GET
       Then the check fails, saying "ETIMEDOUT"
       And the build records the source as not checked, saying "ETIMEDOUT"
       And the build's record keeps "codes.txt" among what the last check saw
+
+    Example: a build that fails after the release is found, as when the history of carried codes cannot be reached
+      Given the publisher serves "release", last modified "Thu, 17 Sep 2026 21:01:41 GMT"
+      When the example source is built from the publisher by a builder that fails, saying "RxNav answered 503", and the build fails
+      Then the build records the source as not checked, saying "RxNav answered 503"
+      And the build fails, saying "Example vaccine codes"

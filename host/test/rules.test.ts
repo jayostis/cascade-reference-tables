@@ -19,6 +19,7 @@ import { readFeature, Steps } from "../src/features.js";
 import { sha256, versionName } from "../src/names.js";
 import {
   build,
+  type BuildOptions,
   type Contract,
   type Outcome,
   readContract,
@@ -42,7 +43,12 @@ import {
 } from "../src/publish.js";
 import { keyed } from "../src/rows.js";
 import { folderStore } from "../src/stores.js";
-import { loadBuild, readSource, type Source } from "../src/source.js";
+import {
+  loadBuild,
+  loadHistory,
+  readSource,
+  type Source,
+} from "../src/source.js";
 import { resolveVocabulary } from "../src/vocabulary.js";
 
 const ROOT = join(import.meta.dirname, "..", "..", "..");
@@ -71,12 +77,16 @@ interface World {
   listed?: { at: string; lacking: boolean };
   /** Each address the publisher was asked for, in order. */
   fetched?: string[];
+  /** What the publisher's history says of each code, and the codes the last build asked it for. */
+  history?: Map<string, { status: string; replacedBy: string[] }>;
+  askedHistory: string[];
 }
 
 let contract: Contract;
 let example: Source;
 let byReleaseApi: Source;
 let byFolderListing: Source;
+let carrying: Source;
 const RELEASES = "https://publisher.example/releases";
 const FOLDERS = "https://publisher.example/releases/";
 
@@ -211,6 +221,26 @@ function folderListing(world: World): Fetch {
   };
 }
 
+const HISTORY = "https://publisher.example/history/";
+
+/** The publisher's history of a code, as the world says; any other address is not found. */
+function historyOf(world: World): Fetch {
+  return async (input) => {
+    const url = String(input);
+    const answer = url.startsWith(HISTORY)
+      ? world.history?.get(url.slice(HISTORY.length))
+      : undefined;
+    if (answer === undefined) return new Response(null, { status: 404 });
+    world.askedHistory.push(url.slice(HISTORY.length));
+    return Response.json({
+      status: answer.status,
+      ...(answer.replacedBy.length === 0
+        ? {}
+        : { replacedBy: answer.replacedBy }),
+    });
+  };
+}
+
 function seriesNamed(label: string): string {
   const found = example.series.find((s) => s.label === label);
   assert.ok(found, `no series is labelled ${label}`);
@@ -245,7 +275,9 @@ async function runBuild(
   release: string,
   label: string,
   code?: Build,
+  carried?: Partial<BuildOptions>,
 ): Promise<void> {
+  world.askedHistory = [];
   const outcomes = await build(contract, {
     source: example,
     build: code ?? (await loadBuild(ROOT, EXAMPLE)),
@@ -254,6 +286,7 @@ async function runBuild(
     feed: world.feed,
     out: world.out,
     now: `2026-10-0${world.builds.length + 1}T00:00:00Z`,
+    ...carried,
   });
   world.builds.push(outcomes);
   world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
@@ -284,6 +317,54 @@ const steps = new Steps<World>()
         if (!(error instanceof Refusal)) throw error;
         world.refusal = error;
       }
+    },
+  )
+  .define("the history answers:", (world, _, step) => {
+    world.history = new Map(
+      step.table!.slice(1).map(([code, status, replacedBy]) => [
+        code!,
+        {
+          status: status!,
+          replacedBy: replacedBy === "" ? [] : replacedBy!.split(", "),
+        },
+      ]),
+    );
+  })
+  .define(
+    "the carrying example's release {string} is built as {string}",
+    async (world, [release, label]) => {
+      try {
+        await runBuild(world, release as string, label as string, undefined, {
+          source: carrying,
+          history: await loadHistory(ROOT, EXAMPLE),
+          fetch: historyOf(world),
+        });
+      } catch (error) {
+        if (!(error instanceof Refusal)) throw error;
+        world.refusal = error;
+      }
+    },
+  )
+  .define("the last build asked the history for {string}", (world, [codes]) => {
+    assert.deepEqual(
+      [...world.askedHistory].sort(),
+      (codes as string).split(", "),
+    );
+  })
+  .define("the last build did not ask the history", (world) => {
+    assert.deepEqual(world.askedHistory, []);
+  })
+  .define(
+    "each version of the last build records {string} among its inputs",
+    async (world, [title]) => {
+      const feed = await feedOf(world);
+      const made = lastBuild(world).filter((o) => o.version !== undefined);
+      assert.ok(made.length > 0, "the last build made no version");
+      for (const { series, label } of made)
+        assert.ok(
+          feed.inputsOf(series).has(title as string),
+          `${label} does not record ${title as string}`,
+        );
     },
   )
   .define("the build is refused, saying {string}", ({ refusal }, [reason]) => {
@@ -605,6 +686,29 @@ const steps = new Steps<World>()
       }
     },
   )
+  .define(
+    "the example source is built from the publisher by a builder that fails, saying {string}, and the build fails",
+    async (world, [reason]) => {
+      try {
+        await buildLatest(contract, {
+          source: example,
+          build: () => {
+            throw new Error(reason as string);
+          },
+          feed: world.feed,
+          out: world.out,
+          now: "2026-10-01T00:00:00Z",
+          fetch: publisher(world),
+        });
+      } catch (error) {
+        world.failure = error as Error;
+      }
+    },
+  )
+  .define("the build fails, saying {string}", ({ failure }, [reason]) => {
+    assert.ok(failure, "the build did not fail");
+    assert.ok(failure.message.includes(reason as string), failure.message);
+  })
   .define(
     "the build records the source as not checked, saying {string}",
     ({ out }, [reason]) => {
@@ -933,6 +1037,7 @@ before(async () => {
   example = await readSource(EXAMPLE);
   byReleaseApi = await readSource(join(ROOT, "fixtures", "release-api"));
   byFolderListing = await readSource(join(ROOT, "fixtures", "folder-listing"));
+  carrying = await readSource(join(ROOT, "fixtures", "carrying"));
 });
 
 const rules = readdirSync(join(ROOT, "rules")).filter((file) =>
@@ -953,6 +1058,7 @@ for (const file of rules) {
             feeds: [],
             builds: [],
             asked: [],
+            askedHistory: [],
           });
         } finally {
           await rm(dir, { recursive: true, force: true });

@@ -10,23 +10,20 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
-import {
-  type Build,
-  Refusal,
-  type Release,
-  type ReleaseFile,
-} from "./builder.js";
+import { type Build, Refusal } from "./builder.js";
+import { carry } from "./carry.js";
+import type { Fetch } from "./detection.js";
 import { extract, unzip } from "./archive.js";
 import { type Described, describe } from "./describe.js";
-import { TABLES } from "./rdf.js";
+import { type Quad, REC, TABLES } from "./rdf.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
 import { Feed, type Input } from "./feed.js";
 import { documentName, sha256, versionName } from "./names.js";
-import { delimited, fixedWidth, jsonLines, xlsx } from "./readers.js";
+import { releaseOf } from "./release.js";
 import { keyed, RowSchema, SeriesRows, toRdf } from "./rows.js";
 import { Shapes } from "./shapes.js";
 import { folderStore, type RowsStore } from "./stores.js";
-import { matches, type Source } from "./source.js";
+import { matches, type Source, type SourceSeries } from "./source.js";
 import { resolveVocabulary, Vocabulary } from "./vocabulary.js";
 
 /** Rows checked by one validator: one validator over every row costs more than linearly. */
@@ -71,29 +68,6 @@ export async function readContract(
     feedShapes: await Shapes.read(shapes("feed.shapes.ttl")),
     schema: new RowSchema(join(root, "builder", "interface.schema.json")),
     said: resolved.said,
-  };
-}
-
-function releaseOf(
-  contract: Contract,
-  source: Source,
-  folder: string,
-): Release {
-  return {
-    file(name: string): ReleaseFile {
-      if (!source.files.has(name))
-        throw new Error(`${source.label} declares no file ${name}`);
-      const path = join(folder, name);
-      if (!existsSync(path)) throw new Refusal(`the release has no ${name}`);
-      return {
-        name,
-        delimited: (delimiter) => delimited(path, delimiter),
-        fixedWidth: (columns) => fixedWidth(path, columns),
-        json: () => jsonLines(path),
-        xlsx: () => xlsx(path),
-      };
-    },
-    codeIri: (system, code) => contract.vocabulary.codeIri(system, code),
   };
 }
 
@@ -191,7 +165,9 @@ export async function rowsOf(
     }
     if (source.detectedBy === BY_LISTING)
       await openListed(source, release, opened);
-    for await (const yielded of build(releaseOf(contract, source, opened))) {
+    for await (const yielded of build(
+      releaseOf(contract.vocabulary, source.label, source.files, opened),
+    )) {
       const row = contract.schema.check(yielded);
       const into = series.get(row.series);
       if (into === undefined)
@@ -203,27 +179,34 @@ export async function rowsOf(
   } finally {
     if (opened !== release) await rm(opened, { recursive: true, force: true });
   }
-  for (const description of source.series) {
-    const rows = series.get(description.iri)!;
-    const kind = contract.vocabulary.kind(description.kind);
-    const keys = [...rows.rows.keys()];
-    const found: string[] = [];
-    for (let start = 0; start < keys.length; start += SHAPE_CHUNK) {
-      const chunk = keys.slice(start, start + SHAPE_CHUNK);
-      found.push(
-        ...(await contract.rowShapes.violationsOf(
-          chunk.flatMap((key) => rows.rows.get(key)!),
-          chunk,
-          kind.rowShape,
-        )),
-      );
-    }
-    if (found.length > 0)
-      throw new Refusal(
-        `rows of ${description.label} do not conform:\n${found.join("\n")}`,
-      );
-  }
+  for (const description of source.series)
+    await checkShapes(contract, description, series.get(description.iri)!);
   return series;
+}
+
+/** A series' rows, every one checked against its kind's row shape; a `Refusal` names what is wrong. */
+async function checkShapes(
+  contract: Contract,
+  description: SourceSeries,
+  rows: SeriesRows,
+): Promise<void> {
+  const kind = contract.vocabulary.kind(description.kind);
+  const keys = [...rows.rows.keys()];
+  const found: string[] = [];
+  for (let start = 0; start < keys.length; start += SHAPE_CHUNK) {
+    const chunk = keys.slice(start, start + SHAPE_CHUNK);
+    found.push(
+      ...(await contract.rowShapes.violationsOf(
+        chunk.flatMap((key) => rows.rows.get(key)!),
+        chunk,
+        kind.rowShape,
+      )),
+    );
+  }
+  if (found.length > 0)
+    throw new Refusal(
+      `rows of ${description.label} do not conform:\n${found.join("\n")}`,
+    );
 }
 
 /** Keys in one version only, added or removed; in both with other triples, changed. */
@@ -275,6 +258,10 @@ export interface BuildOptions {
   readonly now: string;
   /** Each release file's `Last-Modified`, by name, where the publisher gave one. */
   readonly modified?: ReadonlyMap<string, string>;
+  /** Where the history of carried codes is asked for. */
+  readonly fetch?: Fetch;
+  /** The builder's `history`, for a source that declares a history lookup. */
+  readonly history?: Build;
 }
 
 async function rowsAtHand(
@@ -339,6 +326,27 @@ export async function build(
     folderStore([options.out, dirname(options.feed)]),
     ...(options.rows === undefined ? [] : [options.rows]),
   ];
+  const current = async (iri: string): Promise<readonly Quad[]> => {
+    const previous = feed.current(iri);
+    const held = previous === undefined ? undefined : feed.rowsOf(previous);
+    return held === undefined
+      ? []
+      : await rowsAtHand(held.file, held.checksum, folders);
+  };
+  const carried = await carry({
+    contract,
+    source,
+    built: series,
+    current,
+    history: options.history,
+    fetch: options.fetch,
+  });
+  for (const [iri, rows] of carried.rows)
+    for (const row of rows) series.get(iri)!.add(row);
+  if (carried.history !== undefined)
+    for (const description of source.series)
+      if (description.kind === `${REC}CodeStatus`)
+        await checkShapes(contract, description, series.get(description.iri)!);
   const inputs: Input[] = [];
   const inputFiles: { file: string; bytes: Buffer }[] = [];
   for (const title of await inputsOf(source, options.release)) {
@@ -355,16 +363,25 @@ export async function build(
       ...(modified === undefined ? {} : { modified }),
     });
   }
+  const released = [...inputs];
+  if (carried.history !== undefined) {
+    const checksum = sha256(carried.history).toString("hex");
+    inputFiles.push({
+      file: `inputs/${checksum}-history.jsonl`,
+      bytes: carried.history,
+    });
+    inputs.push({
+      name: documentName(carried.history),
+      title: "history.jsonl",
+      checksum,
+    });
+  }
   const outcomes: Outcome[] = [];
   const files: { file: string; bytes: Buffer; checksum: string }[] = [];
   for (const description of source.series) {
     const rows = series.get(description.iri)!;
     const previous = feed.current(description.iri);
-    const held = previous === undefined ? undefined : feed.rowsOf(previous);
-    const beforeRows =
-      held === undefined
-        ? []
-        : await rowsAtHand(held.file, held.checksum, folders);
+    const beforeRows = await current(description.iri);
     const after = rows.byKey();
     const found = differences(keyed(beforeRows), after);
     const same =
@@ -447,7 +464,7 @@ export async function build(
     built
       ? undefined
       : Object.fromEntries(
-          inputs.map(({ title, checksum, modified }) => [
+          released.map(({ title, checksum, modified }) => [
             title,
             modified === undefined ? { checksum } : { checksum, modified },
           ]),

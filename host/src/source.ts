@@ -41,6 +41,17 @@ export interface Listing {
   readonly files: ReadonlyMap<string, ListedFile>;
 }
 
+/** A series a source declares, and whether its rows are kept when their code leaves the release. */
+export interface SourceSeries extends SeriesDescription {
+  readonly carriesForward: boolean;
+}
+
+/** Where the history of a code is asked for: its code system, and the address with `{code}` where the code goes. */
+export interface HistoryLookup {
+  readonly system: string;
+  readonly urlTemplate: string;
+}
+
 /** A source folder: its declaration (`source.ttl`), its builder's (`builder.ttl`), and its code (`build.ts`). */
 export interface Source {
   readonly folder: string;
@@ -56,7 +67,8 @@ export interface Source {
    * by its release API, its path in the release's zip.
    */
   readonly files: ReadonlyMap<string, string>;
-  readonly series: readonly SeriesDescription[];
+  readonly series: readonly SourceSeries[];
+  readonly historyLookup?: HistoryLookup;
   readonly builder: {
     readonly iri: string;
     readonly label: string;
@@ -109,6 +121,14 @@ export async function readSource(folder: string): Promise<Source> {
       "";
     files.set(decodeURIComponent(where.split("/").pop() ?? ""), where);
   }
+  const lookup = graph.one(iri, `${TABLES}historyLookup`);
+  const historyLookup =
+    lookup === undefined
+      ? undefined
+      : {
+          system: value(lookup, `${TABLES}codeSystem`),
+          urlTemplate: value(lookup, `${TABLES}urlTemplate`),
+        };
   const releaseApi = graph.value(iri, `${TABLES}releaseApi`);
   const listingUrl = graph.value(iri, `${TABLES}folderListing`);
   const listing =
@@ -146,6 +166,7 @@ export async function readSource(folder: string): Promise<Source> {
     detectedBy: value(iri, `${TABLES}detectedBy`),
     ...(releaseApi === undefined ? {} : { releaseApi }),
     ...(listing === undefined ? {} : { listing }),
+    ...(historyLookup === undefined ? {} : { historyLookup }),
     files,
     series: graph
       .subjects(`${DCT}source`, iri)
@@ -158,6 +179,9 @@ export async function readSource(folder: string): Promise<Source> {
         license: value(iri, `${DCT}license`),
         publisher: value(iri, `${DCT}publisher`),
         credit: value(iri, `${DCT}bibliographicCitation`),
+        carriesForward: ["true", "1"].includes(
+          value(series, `${TABLES}carriesForward`),
+        ),
       })),
     builder: {
       iri: builder,
@@ -168,8 +192,11 @@ export async function readSource(folder: string): Promise<Source> {
   };
 }
 
-/** The builder's code: as `tsc` compiled it under `dist/` for a folder in `root`, else the folder's own `build.js`. */
-export async function loadBuild(root: string, folder: string): Promise<Build> {
+/** The builder's module: as `tsc` compiled it under `dist/` for a folder in `root`, else the folder's own `build.js`. */
+async function loadModule(
+  root: string,
+  folder: string,
+): Promise<{ default: Build; history?: Build }> {
   const inside = relative(resolve(root), resolve(folder));
   const outside =
     inside === ".." || inside.startsWith(`..${sep}`) || isAbsolute(inside);
@@ -182,8 +209,26 @@ export async function loadBuild(root: string, folder: string): Promise<Build> {
         ? `${compiled} does not exist; a builder outside the repository provides its compiled build.js beside its source.ttl`
         : `${compiled} is not built; run npm run build`,
     );
-  const module = (await import(pathToFileURL(compiled).href)) as {
+  return (await import(pathToFileURL(compiled).href)) as {
     default: Build;
+    history?: Build;
   };
-  return module.default;
+}
+
+/** The builder's code: its default export. */
+export async function loadBuild(root: string, folder: string): Promise<Build> {
+  return (await loadModule(root, folder)).default;
+}
+
+/** The builder's `history` export; a source that declares a history lookup, and a builder with none, is an error. */
+export async function loadHistory(
+  root: string,
+  folder: string,
+): Promise<Build | undefined> {
+  const { history } = await loadModule(root, folder);
+  if (history === undefined && (await readSource(folder)).historyLookup)
+    throw new Error(
+      `${folder} declares a history lookup, and its build module has no history export`,
+    );
+  return history;
 }

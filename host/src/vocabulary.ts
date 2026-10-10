@@ -109,6 +109,13 @@ export class Vocabulary {
     return { iri, rowShape };
   }
 
+  /** A code of a system, from its IRI; `undefined` outside the system's `void:uriSpace`. */
+  codeOf(system: string, codeIri: string): string | undefined {
+    const space = this.terms.value(system, `${VOID}uriSpace`);
+    if (space === undefined) throw new Error(`${system} is not a code system`);
+    return codeIri.startsWith(space) ? codeIri.slice(space.length) : undefined;
+  }
+
   /** A code's IRI: its system's `void:uriSpace` followed by the code. */
   codeIri(system: string, code: string): string {
     const space = this.terms.value(system, `${VOID}uriSpace`);

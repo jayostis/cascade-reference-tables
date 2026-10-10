@@ -1,5 +1,6 @@
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
+import { Refusal } from "./builder.js";
 import { Feed } from "./feed.js";
 import { sha256 } from "./names.js";
 import {
@@ -388,5 +389,18 @@ export async function buildLatest(
     release: checked.folder,
     label: checked.label,
     modified: checked.modified,
+  }).catch(async (error: unknown) => {
+    const reason = error instanceof Error ? error.message : String(error);
+    await writeChecked(
+      options.out,
+      options.source,
+      options.now,
+      { notChecked: reason },
+      options.seen,
+    );
+    const failed = `${options.source.label} could not be built: ${reason}`;
+    throw error instanceof Refusal
+      ? new Refusal(failed)
+      : new Error(failed, { cause: error });
   });
 }

@@ -1,0 +1,15 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rxnorm: <http://www.nlm.nih.gov/research/umls/rxnorm/> .
+
+<urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88> {
+    rxnorm:1000004 owl:deprecated true ;
+        dct:isReplacedBy rxnorm:999970 .
+
+    rxnorm:1000406 owl:deprecated true .
+
+    rxnorm:1006611 owl:deprecated true ;
+        dct:isReplacedBy rxnorm:1006608 .
+
+    rxnorm:10000 owl:deprecated true .
+}
