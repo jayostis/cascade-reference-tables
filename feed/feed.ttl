@@ -14,9 +14,13 @@
     a dcat:Catalog ;
     adms:status <http://purl.org/adms/status/UnderDevelopment> ;
     dcat:dataset <urn:uuid:25623afd-6445-4394-8174-93ffacaea90e>,
+        <urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf>,
         <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>,
+        <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>,
+        <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>,
+        <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4>,
         <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> ;
-    dct:modified "2026-10-08T21:59:00Z"^^xsd:dateTime ;
+    dct:modified "2026-10-10T02:54:10Z"^^xsd:dateTime ;
     dct:title "Cascade reference tables (DRAFT)" .
 
 <ni:///sha-256;5_uyiQaVbIiSdYxJsLag5SiqlzI7Z5OUSh13hrkXsw0>
@@ -51,6 +55,76 @@
     dct:title "CVX.txt" ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "efd2a6770f0f648ce76e10ac2889602b2ea8fa8ca4b63deb33ca883e7d0d7413" ] .
 
+<ni:///sha-256;Bldp7_nf-OGuyFYioV_cgFlDgPFsNWCXaNZxj-YZoG8>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "81620 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/1901f8f66b71df214453e69825301b78502eb225cb565f3fc626f364ed7d06db.nq.gz> ;
+    dcat:version "2026-10-05" ;
+    dct:issued "2026-10-10T02:54:10Z"^^xsd:dateTime ;
+    pav:version "2026-10-05" ;
+    prov:specializationOf <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;BszJQatQDH2rTURFnE-sFfwAjvBu7yj2mFMS3Dlxr8I>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "239059 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/9d003f3a0b46b834ea2dc7d68af68f84dd7b8bacc120a0db3804d0e0bcbed999.nq.gz> ;
+    dcat:version "2026-10-05" ;
+    dct:issued "2026-10-10T02:54:10Z"^^xsd:dateTime ;
+    pav:version "2026-10-05" ;
+    prov:specializationOf <urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    sssom:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    sssom:mapping_set_version "2026-10-05" ;
+    sssom:mapping_tool "nlm-rxnorm-prescribable" ;
+    sssom:mapping_tool_version "1" ;
+    sssom:subject_source_version "2026-10-05" ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;EStDF-p0nfL0iLcKqTwc3uXf4-tmgQbvWAneo9Hg_CI>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "79685 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/6b636e1eb269bef9f296f035f1c440f7b64eae70a2b971e4588d1e2427420bdc.nq.gz> ;
+    dcat:version "2026-10-05" ;
+    dct:issued "2026-10-10T02:54:10Z"^^xsd:dateTime ;
+    pav:version "2026-10-05" ;
+    prov:specializationOf <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    sssom:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    sssom:mapping_set_version "2026-10-05" ;
+    sssom:mapping_tool "nlm-rxnorm-prescribable" ;
+    sssom:mapping_tool_version "1" ;
+    sssom:subject_source_version "2026-10-05" ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;F0FaPQH1w75tY2g4up1goTUEHq9Jvzmt9WbYLJNyKvA>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "31730 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/14d2555ae05dc5e7b08ad0249f60a263c2991c72aa08778fcbcb269a44f8021f.nq.gz> ;
+    dcat:version "2026-10-05" ;
+    dct:issued "2026-10-10T02:54:10Z"^^xsd:dateTime ;
+    pav:version "2026-10-05" ;
+    prov:specializationOf <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    sssom:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    sssom:mapping_set_version "2026-10-05" ;
+    sssom:mapping_tool "nlm-rxnorm-prescribable" ;
+    sssom:mapping_tool_version "1" ;
+    sssom:subject_source_version "2026-10-05" ;
+    tables:builderVersion "1" .
+
 <ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE>
     a dcat:Dataset,
         prov:Entity ;
@@ -64,6 +138,11 @@
     prov:wasDerivedFrom <ni:///sha-256;5_uyiQaVbIiSdYxJsLag5SiqlzI7Z5OUSh13hrkXsw0>,
         <ni:///sha-256;79Kmdw8PZIznbhCsKIlgKy6o-oyktj3rM8qIPn0NdBM> ;
     tables:builderVersion "1" .
+
+<ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc>
+    a prov:Entity ;
+    dct:title "RxNorm_full_prescribe_10052026.zip" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "8ed351c29f3cb56bedeb8e2bcb8fa56931f8d7eb88e2280dc9772d7d3eb16977" ] .
 
 <ni:///sha-256;tjAJHzXlxhRB4xsChH6CrnVIADVMekpg0Ywr2BJ06xk>
     a dcat:Dataset,
@@ -79,12 +158,33 @@
         <ni:///sha-256;79Kmdw8PZIznbhCsKIlgKy6o-oyktj3rM8qIPn0NdBM> ;
     tables:builderVersion "1" .
 
+<rows/14d2555ae05dc5e7b08ad0249f60a263c2991c72aa08778fcbcb269a44f8021f.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/14d2555ae05dc5e7b08ad0249f60a263c2991c72aa08778fcbcb269a44f8021f.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "14d2555ae05dc5e7b08ad0249f60a263c2991c72aa08778fcbcb269a44f8021f" ] .
+
+<rows/1901f8f66b71df214453e69825301b78502eb225cb565f3fc626f364ed7d06db.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/1901f8f66b71df214453e69825301b78502eb225cb565f3fc626f364ed7d06db.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "1901f8f66b71df214453e69825301b78502eb225cb565f3fc626f364ed7d06db" ] .
+
 <rows/5317b49cea0b92fe52c0e329f0481f842a8073306933fdec2e3c4463b74b4fd4.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
     dcat:downloadURL <rows/5317b49cea0b92fe52c0e329f0481f842a8073306933fdec2e3c4463b74b4fd4.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "5317b49cea0b92fe52c0e329f0481f842a8073306933fdec2e3c4463b74b4fd4" ] .
+
+<rows/6b636e1eb269bef9f296f035f1c440f7b64eae70a2b971e4588d1e2427420bdc.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/6b636e1eb269bef9f296f035f1c440f7b64eae70a2b971e4588d1e2427420bdc.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "6b636e1eb269bef9f296f035f1c440f7b64eae70a2b971e4588d1e2427420bdc" ] .
 
 <rows/93d5a200279668eb333cdd021b752f3fbb3248496c76f0fcfa3e5f2b54cf5134.nq.gz>
     a dcat:Distribution ;
@@ -99,6 +199,13 @@
     dcat:downloadURL <rows/9a43e56efd682723321755f7e23ea5d1a505c92f6d48140edc0c04f1a4290753.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "9a43e56efd682723321755f7e23ea5d1a505c92f6d48140edc0c04f1a4290753" ] .
+
+<rows/9d003f3a0b46b834ea2dc7d68af68f84dd7b8bacc120a0db3804d0e0bcbed999.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/9d003f3a0b46b834ea2dc7d68af68f84dd7b8bacc120a0db3804d0e0bcbed999.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "9d003f3a0b46b834ea2dc7d68af68f84dd7b8bacc120a0db3804d0e0bcbed999" ] .
 
 <urn:uuid:13935fd3-979f-4138-b25a-04f32f12155f>
     a tables:Builder ;
@@ -116,6 +223,22 @@
     rdfs:label "CDC CVX vaccine groups" ;
     rec:tableKind rec:VaccineGroups .
 
+<urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;BszJQatQDH2rTURFnE-sFfwAjvBu7yj2mFMS3Dlxr8I> ;
+    dcat:hasVersion <ni:///sha-256;BszJQatQDH2rTURFnE-sFfwAjvBu7yj2mFMS3Dlxr8I> ;
+    dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/0060t0j89> ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
+    rdfs:label "NLM RxNorm Prescribable NDC drugs" ;
+    rec:tableKind rec:NdcDrugs .
+
+<urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7>
+    a tables:Builder ;
+    rdfs:label "nlm-rxnorm-prescribable" .
+
 <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>
     a dcat:Dataset,
         rec:ReferenceSeries ;
@@ -127,6 +250,42 @@
     dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> ;
     rdfs:label "CDC CVX code status" ;
     rec:tableKind rec:CodeStatus .
+
+<urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;Bldp7_nf-OGuyFYioV_cgFlDgPFsNWCXaNZxj-YZoG8> ;
+    dcat:hasVersion <ni:///sha-256;Bldp7_nf-OGuyFYioV_cgFlDgPFsNWCXaNZxj-YZoG8> ;
+    dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/0060t0j89> ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
+    rdfs:label "NLM RxNorm Prescribable names" ;
+    rec:tableKind rec:CodeNames .
+
+<urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;EStDF-p0nfL0iLcKqTwc3uXf4-tmgQbvWAneo9Hg_CI> ;
+    dcat:hasVersion <ni:///sha-256;EStDF-p0nfL0iLcKqTwc3uXf4-tmgQbvWAneo9Hg_CI> ;
+    dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/0060t0j89> ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
+    rdfs:label "NLM RxNorm Prescribable product ingredients" ;
+    rec:tableKind rec:ProductIngredients .
+
+<urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;F0FaPQH1w75tY2g4up1goTUEHq9Jvzmt9WbYLJNyKvA> ;
+    dcat:hasVersion <ni:///sha-256;F0FaPQH1w75tY2g4up1goTUEHq9Jvzmt9WbYLJNyKvA> ;
+    dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/0060t0j89> ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
+    rdfs:label "NLM RxNorm Prescribable brand generics" ;
+    rec:tableKind rec:BrandGenerics .
 
 <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0>
     a dcat:Dataset,
