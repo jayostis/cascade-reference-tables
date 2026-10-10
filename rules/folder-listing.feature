@@ -6,7 +6,7 @@ Feature: Detection by folder listing
   or a zip matching its archive's. The files taken are the release's inputs, each with the time the listing gives it.
 
   The examples' source is the example builder's, detected by a folder listing at `https://publisher.example/releases/`:
-  its files `codes.txt`, in a zip, and `notes.txt`. The folder `2026` takes effect on 2025-10-01 and holds both;
+  its files `codes.txt`, in a zip that also holds a `notes-` file, and `notes.txt`. The folder `2026` takes effect on 2025-10-01 and holds both;
   `2026-update`, on 2026-04-01, holds only the codes; `2027`, on 2026-10-01, holds both.
 
   Rule: H16. Each file is taken from the newest release folder in effect that has it, and is new until a version records it as listed

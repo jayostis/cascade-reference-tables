@@ -31,6 +31,9 @@ export interface ListedFile {
   readonly archivePattern?: string;
 }
 
+export const matches = (pattern: string, name: string): boolean =>
+  new RegExp(pattern, "i").test(name);
+
 /** A source detected by its folder listing: the listing, its kinds of release folder, and each file by its name. */
 export interface Listing {
   readonly url: string;

@@ -2,43 +2,8 @@ import { createReadStream } from "node:fs";
 import { createInterface } from "node:readline";
 import { posix } from "node:path";
 import { SaxesParser } from "saxes";
-import yauzl from "yauzl";
+import { texts } from "./archive.js";
 import { Refusal } from "./builder.js";
-
-/** The text of each named entry of the zip, by its path. */
-function entriesOf(
-  zip: string,
-  wanted: (path: string) => boolean,
-): Promise<Map<string, string>> {
-  return new Promise((resolve, reject) => {
-    yauzl.open(zip, { lazyEntries: true }, (error, archive) => {
-      if (error !== null) {
-        reject(new Refusal(`${zip} is not an xlsx: ${error.message}`));
-        return;
-      }
-      const texts = new Map<string, string>();
-      archive.on("error", reject);
-      archive.on("entry", (entry: yauzl.Entry) => {
-        if (!wanted(entry.fileName)) {
-          archive.readEntry();
-          return;
-        }
-        archive.openReadStream(entry, async (failed, stream) => {
-          if (failed !== null) {
-            reject(failed);
-            return;
-          }
-          const chunks: Buffer[] = [];
-          for await (const chunk of stream) chunks.push(chunk as Buffer);
-          texts.set(entry.fileName, Buffer.concat(chunks).toString("utf8"));
-          archive.readEntry();
-        });
-      });
-      archive.on("end", () => resolve(texts));
-      archive.readEntry();
-    });
-  });
-}
 
 /** Calls `open` and `close` with each element's local name and attributes, and `text` with the text inside one. */
 function parseXml(
@@ -122,15 +87,13 @@ function firstSheet(entries: ReadonlyMap<string, string>): string {
  * rich-text string, or a number or other value as written; an empty cell is "".
  */
 export async function* xlsx(path: string): AsyncIterable<Line> {
-  const parts = await entriesOf(path, (entry) =>
+  const parts = await texts(path, (entry) =>
     /^xl\/(workbook\.xml|_rels\/workbook\.xml\.rels|sharedStrings\.xml)$/.test(
       entry,
     ),
   );
   const sheet = firstSheet(parts);
-  const sheetXml = (await entriesOf(path, (entry) => entry === sheet)).get(
-    sheet,
-  );
+  const sheetXml = (await texts(path, (entry) => entry === sheet)).get(sheet);
   if (sheetXml === undefined) throw new Refusal(`the xlsx has no ${sheet}`);
   const strings = sharedStrings(parts.get("xl/sharedStrings.xml"));
   const rows: Line[] = [];

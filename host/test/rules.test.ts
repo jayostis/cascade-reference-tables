@@ -198,7 +198,14 @@ function folderListing(world: World): Fetch {
     if (!name!.endsWith(".zip")) return new Response(new Uint8Array(codes));
     const stem = name!.replace(/\.zip$/, "");
     const entry = `${stem}/${lacking ? "other.txt" : `${stem}.txt`}`;
-    return new Response(new Uint8Array(zipOf([[entry, codes]])));
+    return new Response(
+      new Uint8Array(
+        zipOf([
+          [entry, codes],
+          [`${stem}/notes-${stem}.txt`, codes],
+        ]),
+      ),
+    );
   };
 }
 

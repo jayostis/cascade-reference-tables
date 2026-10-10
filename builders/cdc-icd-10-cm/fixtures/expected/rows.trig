@@ -27,6 +27,7 @@
     icd:C88.0 owl:deprecated true ; dct:isReplacedBy icd:C88.00 .
     icd:D69.1 owl:deprecated true ; dct:isReplacedBy icd:D69.11 , icd:D69.19 .
     icd:E66.8 owl:deprecated true ; dct:isReplacedBy icd:E66.813 .
+    icd:H02.109 owl:deprecated true ; dct:isReplacedBy icd:H02.151 .
     icd:T84.040A owl:deprecated true ; dct:isReplacedBy icd:M97.01XA .
 }
 

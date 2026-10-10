@@ -171,6 +171,10 @@ test("a source names its files as its detection method needs them, or its declar
     ["nlm-rxnorm-prescribable", "DELETE WHERE { ?s tables:releaseApi ?a }"],
     [
       "nlm-rxnorm-prescribable",
+      "INSERT { ?s tables:folderListing <https://publisher.example/releases/> } WHERE { ?s tables:releaseApi ?a }",
+    ],
+    [
+      "nlm-rxnorm-prescribable",
       "DELETE { ?f dct:title ?t } INSERT { ?f dcat:downloadURL <https://download.nlm.nih.gov/rxnorm/RXNREL.RRF> } WHERE { ?f dct:title ?t }",
     ],
     [

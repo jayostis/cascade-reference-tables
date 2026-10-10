@@ -11,7 +11,7 @@ import {
   writeChecked,
 } from "./pipeline.js";
 import { TABLES } from "./rdf.js";
-import type { Listing, Source } from "./source.js";
+import { type Listing, matches, type Source } from "./source.js";
 
 export type Fetch = typeof fetch;
 
@@ -245,9 +245,6 @@ async function listingOf(fetchWith: Fetch, url: string): Promise<Entry[]> {
   }
   return entries;
 }
-
-const matches = (pattern: string, name: string): boolean =>
-  new RegExp(pattern, "i").test(name);
 
 /** The release folders in effect on the day, newest first, each with the date it took effect. */
 function inEffect(

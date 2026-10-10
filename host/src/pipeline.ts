@@ -17,6 +17,7 @@ import {
   type ReleaseFile,
 } from "./builder.js";
 import { extract, unzip } from "./archive.js";
+import { TABLES } from "./rdf.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
 import { Feed, type Input } from "./feed.js";
 import { documentName, sha256, versionName } from "./names.js";
@@ -24,11 +25,14 @@ import { delimited, fixedWidth, jsonLines, xlsx } from "./readers.js";
 import { keyed, RowSchema, SeriesRows, toRdf } from "./rows.js";
 import { Shapes } from "./shapes.js";
 import { folderStore, type RowsStore } from "./stores.js";
-import type { Source } from "./source.js";
+import { matches, type Source } from "./source.js";
 import { resolveVocabulary, Vocabulary } from "./vocabulary.js";
 
 /** Rows checked by one validator: one validator over every row costs more than linearly. */
 const SHAPE_CHUNK = 2000;
+
+const BY_API = `${TABLES}ReleaseApi`;
+const BY_LISTING = `${TABLES}FolderListing`;
 
 /** What every build reads: the vocabulary, its shapes, this repository's shapes and the row schema. */
 export interface Contract {
@@ -97,9 +101,9 @@ function releaseOf(
  * a folder listing, every file the check took.
  */
 async function inputsOf(source: Source, release: string): Promise<string[]> {
-  if (source.listing !== undefined)
+  if (source.detectedBy === BY_LISTING)
     return existsSync(release) ? (await readdir(release)).sort() : [];
-  if (source.releaseApi === undefined) return [...source.files.keys()].sort();
+  if (source.detectedBy !== BY_API) return [...source.files.keys()].sort();
   const zips = existsSync(release)
     ? (await readdir(release)).filter((file) => file.endsWith(".zip"))
     : [];
@@ -110,42 +114,43 @@ async function inputsOf(source: Source, release: string): Promise<string[]> {
 
 /**
  * Writes each file a folder-listing source names into the folder, from the one file of the release, or entry of one of
- * its zips, whose name matches its pattern; none or several is refused.
+ * its zips matching the file's archive pattern, whose name matches its pattern; none or several is refused.
  */
 async function openListed(
   source: Source,
   release: string,
   folder: string,
 ): Promise<void> {
-  const files = await inputsOf(source, release);
-  const matching = (pattern: string, name: string) =>
-    new RegExp(pattern, "i").test(name);
-  for (const [title, file] of source.listing!.files) {
-    const found: string[] = [];
-    for (const name of files.filter((name) =>
-      matching(file.namePattern, name),
-    )) {
+  const files = source.listing!.files;
+  const found = new Map(
+    [...files.keys()].map((title) => [title, [] as string[]]),
+  );
+  const titleOf = (name: string, zip?: string): string | undefined =>
+    [...files].find(
+      ([, file]) =>
+        matches(file.namePattern, basename(name)) &&
+        (zip === undefined ||
+          (file.archivePattern !== undefined &&
+            matches(file.archivePattern, zip))),
+    )?.[0];
+  for (const name of await inputsOf(source, release)) {
+    const title = titleOf(name);
+    if (title !== undefined) {
       await copyFile(join(release, name), join(folder, title));
-      found.push(name);
-    }
-    for (const zip of files.filter((name) => /\.zip$/i.test(name)))
-      found.push(
-        ...(
-          await extract(
-            join(release, zip),
-            (path) =>
-              matching(file.namePattern, path.split("/").pop()!)
-                ? title
-                : undefined,
-            folder,
-          )
-        ).map((path) => `${zip}/${path}`),
-      );
-    if (found.length !== 1)
-      throw new Refusal(
-        `the release has ${found.length} files for ${title}, not one${found.length === 0 ? "" : `: ${found.join(", ")}`}`,
-      );
+      found.get(title)!.push(name);
+    } else if (/\.zip$/i.test(name))
+      for (const path of await extract(
+        join(release, name),
+        (path) => titleOf(path, name),
+        folder,
+      ))
+        found.get(titleOf(path, name)!)!.push(`${name}/${path}`);
   }
+  for (const [title, taken] of found)
+    if (taken.length !== 1)
+      throw new Refusal(
+        `the release has ${taken.length} files for ${title}, not one${taken.length === 0 ? "" : `: ${taken.join(", ")}`}`,
+      );
 }
 
 /** What the shapes say of a source's `source.ttl` and `builder.ttl`, read with the vocabulary's terms. */
@@ -175,15 +180,16 @@ export async function rowsOf(
     source.series.map((s) => [s.iri, new SeriesRows(s.iri)]),
   );
   const opened =
-    source.releaseApi === undefined && source.listing === undefined
-      ? release
-      : await mkdtemp(join(tmpdir(), "release-"));
+    source.detectedBy === BY_API || source.detectedBy === BY_LISTING
+      ? await mkdtemp(join(tmpdir(), "release-"))
+      : release;
   try {
-    if (source.releaseApi !== undefined) {
+    if (source.detectedBy === BY_API) {
       const [zip] = await inputsOf(source, release);
       await unzip(join(release, zip!), source.files, opened);
     }
-    if (source.listing !== undefined) await openListed(source, release, opened);
+    if (source.detectedBy === BY_LISTING)
+      await openListed(source, release, opened);
     for await (const yielded of build(releaseOf(contract, source, opened))) {
       const row = contract.schema.check(yielded);
       const into = series.get(row.series);

@@ -40,7 +40,7 @@ tables:releaseApi a owl:ObjectProperty ;
 
 tables:FolderListing a tables:DetectionMethod ;
     rdfs:label "folder listing"@en ;
-    rdfs:comment "The publisher's folder lists one folder per release. The release is the folders in effect, each file the source names taken from the newest folder that has it."@en .
+    rdfs:comment "The publisher's folder lists one folder per release."@en .
 
 tables:folderListing a owl:ObjectProperty ;
     rdfs:label "folder listing"@en ;

@@ -48,8 +48,7 @@ const build: Build = async function* (release) {
     if (!CODE.test(current)) continue;
     const codes = previous
       .split(/\s*(?:,|;|&|\band\b)\s*/)
-      .filter((code) => code !== "");
-    if (codes.length === 0 || !codes.every((code) => CODE.test(code))) continue;
+      .filter((code) => CODE.test(code));
     for (const code of codes) {
       if (!converted.has(code)) converted.set(code, new Set());
       converted.get(code)!.add(current);
