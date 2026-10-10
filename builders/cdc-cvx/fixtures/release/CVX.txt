@@ -15,3 +15,4 @@
 222       |Tick-borne encephalitis, unspecified|Tick-borne encephalitis vaccine, unspecified|Unspecified Code - should only be used when specific vaccine administered is unknown|Inactive|False|2022/03/16
 304       |Respiratory syncytial virus (RSV), unspecified|Respiratory syncytial virus (RSV), unspecified|Unspecified, for historic records where it is not known if RSV vaccine or RSV MAB was administered|Inactive|False|2024/01/03
 306       |RSV, mAb, nirsevimab-alip, 0.5 mL, neonate to 24 months|Respiratory syncytial virus (RSV) monoclonal antibody, IgG1κ, (nirsevimab-alip), 0.5 mL, neonates and children to 24 months|RSV monoclonal antibody (Beyfortus)|Active|False|2023/07/25
+310       |zoster, pending|zoster, pending|Expected to become active|Pending|False|2026/07/22

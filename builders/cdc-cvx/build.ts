@@ -12,6 +12,7 @@ const RETIRED = new Map([
   ["Inactive", false],
   ["Non-US", false],
   ["Never Active", true],
+  ["Pending", false],
 ]);
 
 function fieldsOf(

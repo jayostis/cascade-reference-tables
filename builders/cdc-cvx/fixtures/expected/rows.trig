@@ -118,6 +118,8 @@
   <http://hl7.org/fhir/sid/cvx/306> <http://www.w3.org/2004/02/skos/core#altLabel> "Respiratory syncytial virus (RSV) monoclonal antibody, IgG1κ, (nirsevimab-alip), 0.5 mL, neonates and children to 24 months" .
   <http://hl7.org/fhir/sid/cvx/306> <http://www.w3.org/2004/02/skos/core#notation> "306" .
   <http://hl7.org/fhir/sid/cvx/306> <http://www.w3.org/2004/02/skos/core#prefLabel> "RSV, mAb, nirsevimab-alip, 0.5 mL, neonate to 24 months" .
+  <http://hl7.org/fhir/sid/cvx/310> <http://www.w3.org/2004/02/skos/core#notation> "310" .
+  <http://hl7.org/fhir/sid/cvx/310> <http://www.w3.org/2004/02/skos/core#prefLabel> "zoster, pending" .
   <http://hl7.org/fhir/sid/cvx/45> <http://www.w3.org/2004/02/skos/core#altLabel> "hepatitis B vaccine, unspecified formulation" .
   <http://hl7.org/fhir/sid/cvx/45> <http://www.w3.org/2004/02/skos/core#notation> "45" .
   <http://hl7.org/fhir/sid/cvx/45> <http://www.w3.org/2004/02/skos/core#prefLabel> "Hep B, unspecified formulation" .
