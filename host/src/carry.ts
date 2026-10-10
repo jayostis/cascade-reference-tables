@@ -117,7 +117,7 @@ async function ask(
 
 /**
  * The rows of the current versions that a carrying series keeps because their code is named by no row of the new
- * release, the status rows kept with them, and the status rows the history of the carried codes gives.
+ * release and lies in the space of a code system the vocabulary registers, the status rows kept with them, and the status rows the history of the carried codes gives.
  */
 export async function carry(input: CarryInput): Promise<Carried> {
   const { contract, source, built, current } = input;
@@ -133,18 +133,20 @@ export async function carry(input: CarryInput): Promise<Carried> {
     if (!rows.has(series)) rows.set(series, []);
     rows.get(series)!.push(row);
   };
-  const keep = (series: string, group: Group): void =>
+  const keep = (series: string, group: Group): boolean => {
+    if (contract.vocabulary.systemOf(subjectOf(group)) === undefined)
+      return false;
     add(series, {
       form: formOf(group),
       key: group.key,
       triples: group.triples,
     });
+    return true;
+  };
   for (const { iri } of carrying)
     for (const group of groups(await current(iri))) {
       const subject = subjectOf(group);
-      if (taken.has(subject)) continue;
-      keep(iri, group);
-      carried.push(subject);
+      if (!taken.has(subject) && keep(iri, group)) carried.push(subject);
     }
   if (status === undefined || source.historyLookup === undefined)
     return { rows };

@@ -36,6 +36,7 @@ import {
   PREFIXES,
   type Quad,
   quad,
+  REC,
 } from "../src/rdf.js";
 import {
   type Checked as SiteChecks,
@@ -81,6 +82,8 @@ interface World {
   /** What the publisher's history says of each code, and the codes the last build asked it for. */
   history?: Map<string, { status: string; replacedBy: string[] }>;
   askedHistory: string[];
+  /** The contract of the builds that follow a vocabulary moving a code system's space. */
+  moved?: Contract;
 }
 
 let contract: Contract;
@@ -279,7 +282,7 @@ async function runBuild(
   carried?: Partial<BuildOptions>,
 ): Promise<void> {
   world.askedHistory = [];
-  const outcomes = await build(contract, {
+  const outcomes = await build(world.moved ?? contract, {
     source: example,
     build: code ?? (await loadBuild(ROOT, EXAMPLE)),
     release: join(EXAMPLE, "fixtures", release),
@@ -328,6 +331,30 @@ const steps = new Steps<World>()
         if (!(error instanceof Refusal)) throw error;
         world.refusal = error;
       }
+    },
+  )
+  .define(
+    "the vocabulary moves CVX's space to {string}",
+    async (world, [space]) => {
+      const folder = join(world.dir, "moved-vocabulary");
+      const records = join("ontologies", "records", "v1-draft");
+      await cp(
+        join(contract.vocabulary.folder, records),
+        join(folder, records),
+        { recursive: true },
+      );
+      const old = contract.vocabulary.codeIri(`${REC}CVX`, "");
+      const turtle = (stem: string): string => stem.replaceAll(".", "\\\\.");
+      for (const [file, from, to] of [
+        ["records.ttl", old, space as string],
+        ["records.shapes.ttl", turtle(old), turtle(space as string)],
+      ] as const) {
+        const path = join(folder, records, file);
+        const text = await readFile(path, "utf8");
+        assert.equal(text.split(from).length, 2, `${file} lacks ${from}`);
+        await writeFile(path, text.replace(from, to));
+      }
+      world.moved = await readContract(ROOT, folder);
     },
   )
   .define("the history answers:", (world, _, step) => {

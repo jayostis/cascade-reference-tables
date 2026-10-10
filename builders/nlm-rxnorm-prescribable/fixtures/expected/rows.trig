@@ -66,11 +66,6 @@
   <urn:uuid:6b7b9228-e088-85d8-a796-d8ab9c39ce42> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/13> .
   <urn:uuid:6b7b9228-e088-85d8-a796-d8ab9c39ce42> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/11> .
   <urn:uuid:6b7b9228-e088-85d8-a796-d8ab9c39ce42> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
-  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
-  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
-  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/18> .
-  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/17> .
-  <urn:uuid:a0fa453f-52c0-8075-af2b-d1cd703266b9> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
   <urn:uuid:72f48350-24e5-81ae-9eb2-da34acdfd333> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
   <urn:uuid:72f48350-24e5-81ae-9eb2-da34acdfd333> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://www.w3.org/2004/02/skos/core#broadMatch> .
   <urn:uuid:72f48350-24e5-81ae-9eb2-da34acdfd333> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/20> .

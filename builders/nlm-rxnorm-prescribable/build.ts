@@ -16,10 +16,6 @@ const OTHER_NAMES = new Set(["SY", "TMSY", "PSN"]);
 /** Each branded term type and its generic's. */
 const GENERIC = new Map([
   ["SBD", "SCD"],
-  ["SBDC", "SCDC"],
-  ["SBDF", "SCDF"],
-  ["SBDG", "SCDG"],
-  ["SBDFP", "SCDFP"],
   ["BPCK", "GPCK"],
 ]);
 
