@@ -65,12 +65,18 @@ interface World {
   /** The release the publisher's API marks current, with its version, and the path its zip lacks; none for none. */
   api?: { release?: string; version?: string; lacking?: string };
   failure?: Error;
+  /** The time the publisher's folders list each file at, and whether their zips lack the codes. */
+  listed?: { at: string; lacking: boolean };
+  /** Each address the publisher was asked for, in order. */
+  fetched?: string[];
 }
 
 let contract: Contract;
 let example: Source;
 let byReleaseApi: Source;
+let byFolderListing: Source;
 const RELEASES = "https://publisher.example/releases";
+const FOLDERS = "https://publisher.example/releases/";
 
 /** A zip of the files, stored without compression. */
 function zipOf(files: readonly (readonly [string, Buffer])[]): Buffer {
@@ -142,6 +148,62 @@ function releaseApi(world: World): Fetch {
     return new Response(
       new Uint8Array(
         zipOf([[path === lacking ? "release/other.txt" : path, codes]]),
+      ),
+    );
+  };
+}
+
+/** Each release folder of the publisher's listing: its files, by name, and the example release whose codes it holds. */
+const LISTED: Record<string, Record<string, string>> = {
+  "2026": { "codes-2026.zip": "release", "notes-2026.txt": "release" },
+  "2026-update": { "codes-april-2026.zip": "release-2" },
+  "2027": { "codes-2027.zip": "release-3", "notes-2027.txt": "release-3" },
+};
+
+/** An IIS listing of the links, each at the time. */
+function listingHtml(links: readonly string[], at: string): string {
+  return `<html><body><pre>${links
+    .map(
+      (link) =>
+        ` ${at}  ${link.endsWith("/") ? "&lt;dir&gt;" : "123"} <A HREF="${link}">${link}</A><br>`,
+    )
+    .join("")}</pre></body></html>`;
+}
+
+/** The publisher's folder listing and its files, as the world says, recording each address asked for. */
+function folderListing(world: World): Fetch {
+  return async (input) => {
+    const url = String(input);
+    (world.fetched ??= []).push(url);
+    const { at, lacking } = world.listed!;
+    if (url === FOLDERS)
+      return new Response(
+        listingHtml(
+          [
+            ...Object.keys(LISTED).map((folder) => `${folder}/`),
+            "CM- Committee/",
+          ],
+          at,
+        ),
+      );
+    const [folder, name] = url.slice(FOLDERS.length).split("/");
+    const files = LISTED[folder!];
+    if (files === undefined) return new Response(null, { status: 404 });
+    if (name === "") return new Response(listingHtml(Object.keys(files), at));
+    const release = files[name!];
+    if (release === undefined) return new Response(null, { status: 404 });
+    const codes = await readFile(
+      join(EXAMPLE, "fixtures", release, "codes.txt"),
+    );
+    if (!name!.endsWith(".zip")) return new Response(new Uint8Array(codes));
+    const stem = name!.replace(/\.zip$/, "");
+    const entry = `${stem}/${lacking ? "other.txt" : `${stem}.txt`}`;
+    return new Response(
+      new Uint8Array(
+        zipOf([
+          [entry, codes],
+          [`${stem}/notes-${stem}.txt`, codes],
+        ]),
       ),
     );
   };
@@ -533,6 +595,70 @@ const steps = new Steps<World>()
       };
     },
   )
+  .define(
+    "the publisher's folders list each file at {string}",
+    (world, [at]) => {
+      world.listed = { at: at as string, lacking: false };
+    },
+  )
+  .define(
+    "the publisher's folders list each file at {string}, their zips lacking the codes",
+    (world, [at]) => {
+      world.listed = { at: at as string, lacking: true };
+    },
+  )
+  .define(
+    "the example source, detected by its folder listing, is checked on {string}",
+    async (world, [day]) => {
+      world.fetched = [];
+      try {
+        world.checked = await check(
+          byFolderListing,
+          await Feed.readOrEmpty(world.feed),
+          folderListing(world),
+          join(world.dir, "checked"),
+          lastSeen(world),
+          `${day as string}T00:00:00Z`,
+        );
+      } catch (error) {
+        world.failure = error as Error;
+      }
+    },
+  )
+  .define(
+    "the example source, detected by its folder listing, is built from the publisher on {string}",
+    async (world, [day]) => {
+      try {
+        const outcomes = await buildLatest(contract, {
+          source: byFolderListing,
+          build: await loadBuild(ROOT, EXAMPLE),
+          feed: world.feed,
+          out: world.out,
+          now: `${day as string}T00:00:00Z`,
+          fetch: folderListing(world),
+          seen: lastSeen(world),
+        });
+        world.builds.push(outcomes === "nothing new" ? [] : outcomes);
+        world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
+      } catch (error) {
+        if (!(error instanceof Refusal)) throw error;
+        world.refusal = error;
+      }
+    },
+  )
+  .define("the check took {string}", ({ checked }, [names]) => {
+    assert.equal(checked?.found, "new");
+    assert.deepEqual(
+      readdirSync(checked.folder).sort(),
+      (names as string).split(", ").sort(),
+    );
+  })
+  .define("the check downloaded nothing", ({ fetched }) => {
+    assert.deepEqual(
+      (fetched ?? []).filter((url) => !url.endsWith("/")),
+      [],
+    );
+  })
   .define("the publisher's release API marks no release current", (world) => {
     world.api = {};
   })
@@ -754,6 +880,7 @@ before(async () => {
   contract = await readContract(ROOT);
   example = await readSource(EXAMPLE);
   byReleaseApi = await readSource(join(ROOT, "fixtures", "release-api"));
+  byFolderListing = await readSource(join(ROOT, "fixtures", "folder-listing"));
 });
 
 const rules = readdirSync(join(ROOT, "rules")).filter((file) =>

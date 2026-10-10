@@ -166,9 +166,13 @@ test("the checked.json a build and a publish write conforms to its schema", asyn
 test("a source names its files as its detection method needs them, or its declarations are refused with the message", async () => {
   const contract = await readContract(ROOT);
   const message =
-    "A source detected by its release API names that API and each file by its path in the release's zip; any other source names each file's one download URL.";
+    "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; any other source names each file's one download URL.";
   const cases: [string, string][] = [
     ["nlm-rxnorm-prescribable", "DELETE WHERE { ?s tables:releaseApi ?a }"],
+    [
+      "nlm-rxnorm-prescribable",
+      "INSERT { ?s tables:folderListing <https://publisher.example/releases/> } WHERE { ?s tables:releaseApi ?a }",
+    ],
     [
       "nlm-rxnorm-prescribable",
       "DELETE { ?f dct:title ?t } INSERT { ?f dcat:downloadURL <https://download.nlm.nih.gov/rxnorm/RXNREL.RRF> } WHERE { ?f dct:title ?t }",
@@ -176,6 +180,11 @@ test("a source names its files as its detection method needs them, or its declar
     [
       "cdc-cvx",
       'DELETE { ?f dcat:downloadURL ?u } INSERT { ?f dct:title "VG.txt" } WHERE { ?f dcat:downloadURL ?u }',
+    ],
+    ["cdc-icd-10-cm", "DELETE WHERE { ?s tables:folderListing ?l }"],
+    [
+      "cdc-icd-10-cm",
+      'DELETE { ?f tables:namePattern ?p } WHERE { ?f dct:title "conversion-table.xlsx" ; tables:namePattern ?p }',
     ],
   ];
   for (const [builder, update] of cases) {

@@ -63,15 +63,70 @@ tables:SourceFilesShape a sh:NodeShape ;
                     sh:minCount 1 ;
                     sh:maxCount 1
                 ] ,
+                [ sh:path tables:folderListing ; sh:maxCount 0 ] ,
                 [ sh:path dcat:distribution ; sh:node tables:ArchivedFileShape ]
         ]
         [
-            sh:property [ sh:path tables:detectedBy ; sh:not [ sh:in ( tables:ReleaseApi ) ] ] ,
+            sh:property [ sh:path tables:detectedBy ; sh:hasValue tables:FolderListing ] ,
+                [
+                    sh:path tables:folderListing ;
+                    sh:nodeKind sh:IRI ;
+                    sh:pattern "^https://[^/]+/.*/$" ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1
+                ] ,
+                [ sh:path tables:releaseFolder ; sh:minCount 1 ; sh:node tables:ReleaseFolderShape ] ,
                 [ sh:path tables:releaseApi ; sh:maxCount 0 ] ,
+                [ sh:path dcat:distribution ; sh:node tables:ListedFileShape ]
+        ]
+        [
+            sh:property [ sh:path tables:detectedBy ; sh:in ( tables:ConditionalGet ) ] ,
+                [ sh:path tables:releaseApi ; sh:maxCount 0 ] ,
+                [ sh:path tables:folderListing ; sh:maxCount 0 ] ,
                 [ sh:path dcat:distribution ; sh:node tables:SourceFileShape ]
         ]
     ) ;
-    sh:message "A source detected by its release API names that API and each file by its path in the release's zip; any other source names each file's one download URL."@en .
+    sh:message "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; any other source names each file's one download URL."@en .
+
+tables:ReleaseFolderShape a sh:NodeShape ;
+    sh:property [
+        sh:path tables:namePattern ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path tables:effectiveFrom ;
+        sh:nodeKind sh:Literal ;
+        sh:pattern "^--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path tables:yearOffset ;
+        sh:datatype xsd:integer ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] .
+
+tables:ListedFileShape a sh:NodeShape ;
+    sh:property [
+        sh:path dct:title ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[^/]+$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path tables:namePattern ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path tables:archivePattern ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1
+    ] , [
+        sh:path dcat:downloadURL ;
+        sh:maxCount 0
+    ] .
 
 tables:ArchivedFileShape a sh:NodeShape ;
     sh:property [

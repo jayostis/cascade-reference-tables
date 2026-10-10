@@ -42,6 +42,35 @@ tables:FolderListing a tables:DetectionMethod ;
     rdfs:label "folder listing"@en ;
     rdfs:comment "The publisher's folder lists one folder per release."@en .
 
+tables:folderListing a owl:ObjectProperty ;
+    rdfs:label "folder listing"@en ;
+    rdfs:comment "The address of the publisher's folder of release folders, an HTML listing of links."@en ;
+    rdfs:domain tables:Source .
+
+tables:releaseFolder a owl:ObjectProperty ;
+    rdfs:label "release folder"@en ;
+    rdfs:comment "A kind of release folder: the folders whose name matches its pattern, its one group a year, take effect on its day of the year after the year offset."@en ;
+    rdfs:domain tables:Source .
+
+tables:namePattern a owl:DatatypeProperty ;
+    rdfs:label "name pattern"@en ;
+    rdfs:comment "A regular expression, matched without regard to case against a name: a release folder's, or a file's in a folder or in a zip of it."@en ;
+    rdfs:range xsd:string .
+
+tables:archivePattern a owl:DatatypeProperty ;
+    rdfs:label "archive pattern"@en ;
+    rdfs:comment "Of a file, a regular expression matched without regard to case against the names of a folder's zips that may hold it."@en ;
+    rdfs:range xsd:string .
+
+tables:effectiveFrom a owl:DatatypeProperty ;
+    rdfs:label "effective from"@en ;
+    rdfs:range xsd:gMonthDay .
+
+tables:yearOffset a owl:DatatypeProperty ;
+    rdfs:label "year offset"@en ;
+    rdfs:comment "Added to a release folder's year to give the year it takes effect."@en ;
+    rdfs:range xsd:integer .
+
 tables:Builder a owl:Class ;
     rdfs:subClassOf prov:SoftwareAgent ;
     rdfs:label "builder"@en ;

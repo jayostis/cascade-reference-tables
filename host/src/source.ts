@@ -10,11 +10,36 @@ import {
   Graph,
   parseTurtle,
   type Quad,
+  type Term,
   RDF,
   RDFS,
   REC,
   TABLES,
 } from "./rdf.js";
+
+/** A kind of release folder: the folders whose name matches, dated by the one year the pattern's group gives. */
+export interface ReleaseFolder {
+  readonly namePattern: string;
+  /** The day of the year it takes effect, as `xsd:gMonthDay` writes it: `--10-01`. */
+  readonly effectiveFrom: string;
+  readonly yearOffset: number;
+}
+
+/** A file of a release found in a folder listing: its name pattern, and the pattern of the zips that may hold it. */
+export interface ListedFile {
+  readonly namePattern: string;
+  readonly archivePattern?: string;
+}
+
+export const matches = (pattern: string, name: string): boolean =>
+  new RegExp(pattern, "i").test(name);
+
+/** A source detected by its folder listing: the listing, its kinds of release folder, and each file by its name. */
+export interface Listing {
+  readonly url: string;
+  readonly releaseFolders: readonly ReleaseFolder[];
+  readonly files: ReadonlyMap<string, ListedFile>;
+}
 
 /** A source folder: its declaration (`source.ttl`), its builder's (`builder.ttl`), and its code (`build.ts`). */
 export interface Source {
@@ -24,6 +49,8 @@ export interface Source {
   readonly detectedBy: string;
   /** The publisher's list of releases, for a source detected by its release API. */
   readonly releaseApi?: string;
+  /** The publisher's folder of release folders, for a source detected by its folder listing. */
+  readonly listing?: Listing;
   /**
    * Each file of a release by its name, the last segment of where it is: its download URL, or, for a source detected
    * by its release API, its path in the release's zip.
@@ -72,7 +99,7 @@ export async function readSource(folder: string): Promise<Source> {
     "builders",
     folder,
   );
-  const value = (subject: string, predicate: string): string =>
+  const value = (subject: string | Term, predicate: string): string =>
     graph.value(subject, predicate) ?? "";
   const files = new Map<string, string>();
   for (const distribution of graph.objects(iri, `${DCAT}distribution`)) {
@@ -83,12 +110,42 @@ export async function readSource(folder: string): Promise<Source> {
     files.set(decodeURIComponent(where.split("/").pop() ?? ""), where);
   }
   const releaseApi = graph.value(iri, `${TABLES}releaseApi`);
+  const listingUrl = graph.value(iri, `${TABLES}folderListing`);
+  const listing =
+    listingUrl === undefined
+      ? undefined
+      : {
+          url: listingUrl,
+          releaseFolders: graph
+            .objects(iri, `${TABLES}releaseFolder`)
+            .map((folder) => ({
+              namePattern: value(folder, `${TABLES}namePattern`),
+              effectiveFrom: value(folder, `${TABLES}effectiveFrom`),
+              yearOffset: Number(value(folder, `${TABLES}yearOffset`)),
+            })),
+          files: new Map(
+            graph.objects(iri, `${DCAT}distribution`).map((file) => {
+              const archivePattern = graph.value(
+                file,
+                `${TABLES}archivePattern`,
+              );
+              return [
+                value(file, `${DCT}title`),
+                {
+                  namePattern: value(file, `${TABLES}namePattern`),
+                  ...(archivePattern === undefined ? {} : { archivePattern }),
+                },
+              ];
+            }),
+          ),
+        };
   return {
     folder,
     iri,
     label: value(iri, `${RDFS}label`),
     detectedBy: value(iri, `${TABLES}detectedBy`),
     ...(releaseApi === undefined ? {} : { releaseApi }),
+    ...(listing === undefined ? {} : { listing }),
     files,
     series: graph
       .subjects(`${DCT}source`, iri)

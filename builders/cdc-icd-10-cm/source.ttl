@@ -1,0 +1,39 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:uuid:273aeb46-e2b3-4ff6-81dd-5ab327489d0c> a tables:Source, dcat:Dataset ;
+    rdfs:label "CDC ICD-10-CM" ;
+    dct:publisher <https://ror.org/042twtr12> ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:bibliographicCitation "Source: CDC" ;
+    tables:detectedBy tables:FolderListing ;
+    tables:folderListing <https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/ICD10CM/> ;
+    tables:releaseFolder
+        [ tables:namePattern "^(\\d{4})$" ; tables:effectiveFrom "--10-01"^^xsd:gMonthDay ; tables:yearOffset -1 ] ,
+        [ tables:namePattern "^(?:april-1-)?(\\d{4})-update$" ; tables:effectiveFrom "--04-01"^^xsd:gMonthDay ;
+          tables:yearOffset 0 ] ;
+    dcat:distribution
+        [ dct:title "icd10cm-order.txt" ; tables:namePattern "^icd10cm-order-(?!addenda).*\\.txt$" ;
+          tables:archivePattern "code.?desc|table.?(and.?)?index" ] ,
+        [ dct:title "conversion-table.xlsx" ; tables:namePattern "conversion.?table.*\\.xlsx$" ] .
+
+<https://ror.org/042twtr12> rdfs:label "Centers for Disease Control and Prevention" .
+
+<urn:uuid:2f1d04ac-2101-4d15-8251-566846a14488> a rec:ReferenceSeries ;
+    rdfs:label "CDC ICD-10-CM names" ;
+    rec:tableKind rec:CodeNames ;
+    dct:source <urn:uuid:273aeb46-e2b3-4ff6-81dd-5ab327489d0c> .
+
+<urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540> a rec:ReferenceSeries ;
+    rdfs:label "CDC ICD-10-CM code status" ;
+    rec:tableKind rec:CodeStatus ;
+    dct:source <urn:uuid:273aeb46-e2b3-4ff6-81dd-5ab327489d0c> .
+
+<urn:uuid:14f76251-2926-43ef-90c3-47101c1da3dd> a rec:ReferenceSeries ;
+    rdfs:label "CDC ICD-10-CM code conversions" ;
+    rec:tableKind rec:CodeConversions ;
+    dct:source <urn:uuid:273aeb46-e2b3-4ff6-81dd-5ab327489d0c> .
