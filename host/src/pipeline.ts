@@ -17,6 +17,7 @@ import {
   type ReleaseFile,
 } from "./builder.js";
 import { extract, unzip } from "./archive.js";
+import { type Described, describe } from "./describe.js";
 import { TABLES } from "./rdf.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
 import { Feed, type Input } from "./feed.js";
@@ -258,6 +259,8 @@ export interface Outcome {
   readonly version?: string;
   readonly previous?: string;
   readonly differences: Differences;
+  /** The differences as lines a person can read, by the rows' codes. */
+  readonly described: Described;
 }
 
 export interface BuildOptions {
@@ -353,12 +356,12 @@ export async function build(
     const rows = series.get(description.iri)!;
     const previous = feed.current(description.iri);
     const held = previous === undefined ? undefined : feed.rowsOf(previous);
-    const before =
+    const beforeRows =
       held === undefined
-        ? new Map<string, string>()
-        : keyed(await rowsAtHand(held.file, held.checksum, folders));
+        ? []
+        : await rowsAtHand(held.file, held.checksum, folders);
     const after = rows.byKey();
-    const found = differences(before, after);
+    const found = differences(keyed(beforeRows), after);
     const same =
       previous !== undefined &&
       found.added.length + found.removed.length + found.changed.length === 0;
@@ -368,6 +371,7 @@ export async function build(
         label: description.label,
         previous,
         differences: found,
+        described: { added: [], removed: [], changed: [] },
       });
       continue;
     }
@@ -400,6 +404,7 @@ export async function build(
       version,
       ...(previous === undefined ? {} : { previous }),
       differences: found,
+      described: describe(beforeRows, rows.triples(), found),
     });
   }
   if (outcomes.some((o) => o.version !== undefined)) {
@@ -446,18 +451,62 @@ export async function build(
   return outcomes;
 }
 
-const LISTED = 50;
+const FOLDED_FROM = 10;
+const BODY_CHARACTERS = 60000;
 
-function listed(heading: string, keys: readonly string[]): string[] {
-  if (keys.length === 0) return [];
-  const shown = keys.slice(0, LISTED).map((key) => `- \`${key}\``);
+/** A list of rows, folded when long, cut to the characters it may take with the rest counted. */
+function listed(
+  heading: string,
+  lines: readonly string[],
+  share: number,
+): string[] {
+  if (lines.length === 0) return [];
+  const shown: string[] = [];
+  let used = 0;
+  for (const text of lines) {
+    used += text.length + 3;
+    if (used > share) break;
+    shown.push(`- ${text}`);
+  }
   const more =
-    keys.length > LISTED ? [`- and ${keys.length - LISTED} more`] : [];
-  return [`${heading}:`, "", ...shown, ...more, ""];
+    lines.length > shown.length
+      ? [
+          `- and ${lines.length - shown.length} more; the complete rows are in the release's rows files`,
+        ]
+      : [];
+  const summary = `${heading} (${lines.length})`;
+  return lines.length < FOLDED_FROM
+    ? [`${summary}:`, "", ...shown, ...more, ""]
+    : [
+        `<details><summary>${summary}</summary>`,
+        "",
+        ...shown,
+        ...more,
+        "",
+        "</details>",
+        "",
+      ];
 }
 
 /** The row differences, as a pull request's description shows them. */
 export function markdown(outcomes: readonly Outcome[]): string {
+  const lists = outcomes.flatMap((o) =>
+    o.version === undefined
+      ? []
+      : [o.described.added, o.described.removed, o.described.changed],
+  );
+  const shares = new Map<readonly string[], number>();
+  const bySize = lists
+    .map((list) => ({ list, size: list.reduce((n, l) => n + l.length + 3, 0) }))
+    .filter(({ size }) => size > 0)
+    .sort((a, b) => a.size - b.size);
+  let left = BODY_CHARACTERS;
+  for (const [i, { list, size }] of bySize.entries()) {
+    const share = Math.min(size, Math.floor(left / (bySize.length - i)));
+    shares.set(list, share);
+    left -= share;
+  }
+  const share = (list: readonly string[]) => shares.get(list) ?? 0;
   return outcomes
     .map((o) =>
       [
@@ -470,9 +519,17 @@ export function markdown(outcomes: readonly Outcome[]): string {
         ...(o.version === undefined
           ? []
           : [
-              ...listed("Added", o.differences.added),
-              ...listed("Removed", o.differences.removed),
-              ...listed("Changed", o.differences.changed),
+              ...listed("Added", o.described.added, share(o.described.added)),
+              ...listed(
+                "Removed",
+                o.described.removed,
+                share(o.described.removed),
+              ),
+              ...listed(
+                "Changed",
+                o.described.changed,
+                share(o.described.changed),
+              ),
             ]),
       ].join("\n"),
     )
