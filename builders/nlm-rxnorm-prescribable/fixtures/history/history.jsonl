@@ -1,0 +1,5 @@
+{"code":"1000004","answer":{"rxcuiStatusHistory":{"metaData":{"status":"Remapped"},"derivedConcepts":{"remappedConcept":[{"remappedRxCui":"999970","remappedTTY":"SBDF","remappedActive":"YES"}]}}}}
+{"code":"1000406","answer":{"rxcuiStatusHistory":{"metaData":{"status":"Obsolete"},"derivedConcepts":{"ingredientConcept":[{"ingredientRxcui":"7514"}]}}}}
+{"code":"1006611","answer":{"rxcuiStatusHistory":{"metaData":{"status":"Quantified"},"derivedConcepts":{"quantifiedConcept":[{"quantifiedRxcui":"1006608","quantifiedTTY":"SCD","quantifiedActive":"YES"}]}}}}
+{"code":"10000","answer":{"rxcuiStatusHistory":{"metaData":{"status":"NotCurrent"},"derivedConcepts":{}}}}
+{"code":"198085","answer":{"rxcuiStatusHistory":{"metaData":{"status":"Active"},"derivedConcepts":{}}}}

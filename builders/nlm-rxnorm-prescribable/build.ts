@@ -1,9 +1,10 @@
-import { type Build, type Row } from "../../host/src/builder.js";
+import { type Build, Refusal, type Row } from "../../host/src/builder.js";
 
 const INGREDIENTS = "urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6";
 const GENERICS = "urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4";
 const NDCS = "urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf";
 const NAMES = "urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba";
+const STATUS = "urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88";
 const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
 const BROAD_MATCH = "http://www.w3.org/2004/02/skos/core#broadMatch";
 const CURATED = "https://w3id.org/semapv/vocab/ManualMappingCuration";
@@ -143,3 +144,51 @@ const build: Build = async function* (release) {
 };
 
 export default build;
+
+interface Answer {
+  readonly rxcuiStatusHistory?: {
+    readonly metaData?: { readonly status?: string };
+    readonly derivedConcepts?: {
+      readonly remappedConcept?: readonly { readonly remappedRxCui: string }[];
+      readonly quantifiedConcept?: readonly {
+        readonly quantifiedRxcui: string;
+      }[];
+    };
+  };
+}
+
+/**
+ * `history.jsonl`: for each RxCUI, RxNav's `getRxcuiHistoryStatus` answer. A code is retired when RxNav calls it
+ * remapped, quantified, obsolete or not current; one it calls active only left the Prescribable content.
+ */
+export const history: Build = async function* (release) {
+  const rxnorm = (code: string): string =>
+    release.codeIri(`${REC}RxNorm`, code);
+  for await (const { number, value } of release.file("history.jsonl").json()) {
+    const { code, answer } = value as { code: string; answer: Answer };
+    const status = answer.rxcuiStatusHistory?.metaData?.status;
+    const derived = answer.rxcuiStatusHistory?.derivedConcepts;
+    const replacedBy = (codes: readonly string[]): Row => ({
+      series: STATUS,
+      subject: rxnorm(code),
+      ...(codes.length === 0
+        ? {}
+        : { replacedBy: [...new Set(codes.map(rxnorm))].sort() }),
+    });
+    if (status === "Active") continue;
+    if (status === "Remapped")
+      yield replacedBy(
+        (derived?.remappedConcept ?? []).map((c) => c.remappedRxCui),
+      );
+    else if (status === "Quantified")
+      yield replacedBy(
+        (derived?.quantifiedConcept ?? []).map((c) => c.quantifiedRxcui),
+      );
+    else if (status === "Obsolete" || status === "NotCurrent")
+      yield replacedBy([]);
+    else
+      throw new Refusal(
+        `history.jsonl line ${number} gives ${code} the status "${status ?? "none"}", which this builder does not map`,
+      );
+  }
+};

@@ -3,6 +3,7 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
 @prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -84,4 +85,20 @@ tables:builds a owl:ObjectProperty ;
 tables:builderVersion a owl:DatatypeProperty ;
     rdfs:label "builder version"@en ;
     rdfs:comment "On a builder, its version now; on a table version, the builder's version that built it."@en ;
+    rdfs:range xsd:string .
+
+tables:carriesForward a owl:DatatypeProperty ;
+    rdfs:label "carries forward"@en ;
+    rdfs:domain rec:ReferenceSeries ;
+    rdfs:range xsd:boolean .
+
+tables:historyLookup a owl:ObjectProperty ;
+    rdfs:label "history lookup"@en ;
+    rdfs:domain tables:Source .
+
+tables:codeSystem a owl:ObjectProperty ;
+    rdfs:label "code system"@en .
+
+tables:urlTemplate a owl:DatatypeProperty ;
+    rdfs:label "URL template"@en ;
     rdfs:range xsd:string .

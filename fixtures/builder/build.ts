@@ -46,3 +46,27 @@ const build: Build = async function* (release) {
 };
 
 export default build;
+
+/** `history.jsonl`: each line's answer is a status, `Retired` or `Active`, and the codes that replace a retired code. */
+export const history: Build = async function* (release) {
+  for await (const { number, value } of release.file("history.jsonl").json()) {
+    const { code, answer } = value as {
+      code: string;
+      answer: { status: string; replacedBy?: string[] };
+    };
+    if (answer.status === "Active") continue;
+    if (answer.status !== "Retired")
+      throw new Refusal(
+        `history.jsonl line ${number} gives ${code} the status "${answer.status}", which this builder does not map`,
+      );
+    yield {
+      series: STATUS,
+      subject: release.codeIri(CVX, code),
+      ...(answer.replacedBy === undefined
+        ? {}
+        : {
+            replacedBy: answer.replacedBy.map((to) => release.codeIri(CVX, to)),
+          }),
+    };
+  }
+};

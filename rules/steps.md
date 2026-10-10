@@ -99,3 +99,17 @@ The releases of a publishing example are the rows files its builds wrote; the si
 | `the site holds the rows files of these versions of {string}: {string}, {string}`                   | of the series' versions, exactly those labelled have their rows files on the site                   |
 | `the publish is stopped, saying {string}`                                                           | the publish stopped with a reason containing the text                                               |
 | `the site holds nothing`                                                                            | the site's folder was never written                                                                 |
+
+## Carrying rows forward
+
+The examples' source is `fixtures/carrying/`, built with the example builder's code and its `history`. The publisher's
+history answers `https://publisher.example/history/<code>` with `{"status", "replacedBy"}` from the table, and any other
+address with 404.
+
+| Step                                                               | What happens, or must hold                                                                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `the history answers:`                                             | the publisher's history says what the table says of each code                                                                       |
+| `the carrying example's release {string} is built as {string}`     | that release folder of `fixtures/builder/fixtures/` is built with the carrying source, its versions labelled with the second string |
+| `the last build asked the history for {string}`                    | the last build asked for exactly those codes, comma-separated                                                                       |
+| `the last build did not ask the history`                           | the last build asked for no code                                                                                                    |
+| `each version of the last build records {string} among its inputs` | every version the last build made names a file of that title among the files it was built from                                      |
