@@ -7,7 +7,7 @@ Feature: Detection by conditional GET
   The publisher of the examples serves the example builder's `codes.txt` from one of the release folders under
   `fixtures/builder/fixtures/`, as `Last-Modified` the time given.
 
-  Rule: H8. With no version in the feed, what the publisher has is new
+  Rule: H8. With no version in the feed, or none built by the builder as it is now, what the publisher has is new
 
     Example: the first check finds a release, labelled by its Last-Modified date
       Given the publisher serves "release", last modified "Thu, 17 Sep 2026 21:01:41 GMT"
@@ -20,6 +20,19 @@ Feature: Detection by conditional GET
       And the example source is built from the publisher
       When the example source, with a series added, is checked
       Then the check finds a new release labelled "2026-09-17"
+
+    Example: a builder with a new version rebuilds a release it has built, though no file changed
+      Given the publisher serves "release", last modified "Thu, 17 Sep 2026 21:01:41 GMT"
+      And the example source is built from the publisher
+      When the example source, with its builder at version "2", is checked
+      Then the check finds a new release labelled "2026-09-17"
+
+    Example: a builder with a new version that builds nothing new is not asked to rebuild at the next check
+      Given the publisher serves "release", last modified "Thu, 17 Sep 2026 21:01:41 GMT"
+      And the example source is built from the publisher
+      And the example source, with its builder at version "2", is built from the publisher
+      When the example source, with its builder at version "2", is checked
+      Then the check finds nothing new
 
     Example: an unparsable Last-Modified leaves the release unlabelled
       Given the publisher serves "release", last modified "not a date"

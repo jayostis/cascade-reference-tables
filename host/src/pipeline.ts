@@ -276,10 +276,19 @@ async function rowsAtHand(
   throw new Error(`${file} is not at hand`);
 }
 
-/** Each release file's checksum and `Last-Modified`, by name, as the last check that built no new version saw them. */
-export type Seen = Readonly<
+/** Each release file's checksum and `Last-Modified`, by name. */
+export type SeenInputs = Readonly<
   Record<string, { readonly checksum: string; readonly modified?: string }>
 >;
+
+/**
+ * What the last check that built no new version saw: the release's files, and the version of the builder that built
+ * nothing new from them, so a builder bump that changes no rows is built once.
+ */
+export interface Seen {
+  readonly inputs: SeenInputs;
+  readonly builder?: string;
+}
 
 /**
  * Writes `<out>/checked.json`: when the source was checked, whether it gave a new version, and what it saw if not. A
@@ -290,7 +299,7 @@ export async function writeChecked(
   source: Source,
   at: string,
   found: "new" | "nothing new" | { readonly notChecked: string },
-  inputs?: Seen,
+  seen?: Seen,
 ): Promise<void> {
   await mkdir(out, { recursive: true });
   const checked = {
@@ -301,7 +310,12 @@ export async function writeChecked(
         ...(typeof found === "string"
           ? { found }
           : { found: "not checked", reason: found.notChecked }),
-        ...(inputs === undefined ? {} : { inputs }),
+        ...(seen === undefined
+          ? {}
+          : {
+              inputs: seen.inputs,
+              ...(seen.builder === undefined ? {} : { builder: seen.builder }),
+            }),
       },
     },
   };
@@ -377,6 +391,7 @@ export async function build(
     });
   }
   const outcomes: Outcome[] = [];
+  const labels = new Set<string>();
   const files: { file: string; bytes: Buffer; checksum: string }[] = [];
   for (const description of source.series) {
     const rows = series.get(description.iri)!;
@@ -404,11 +419,18 @@ export async function build(
     );
     const file = await rowsFile(version, rows.triples());
     files.push(file);
+    const revised = previous === undefined ? undefined : feed.labelOf(previous);
+    const label =
+      revised === options.label ||
+      revised?.startsWith(`${options.label} (builder `)
+        ? `${options.label} (builder ${source.builder.version})`
+        : options.label;
+    labels.add(label);
     feed.add(
       {
         series: description,
         iri: version,
-        label: options.label,
+        label,
         previous,
         notes: notes(found),
         issued: options.now,
@@ -445,7 +467,7 @@ export async function build(
     );
     const release = {
       tag: `${basename(source.folder)}-${sum.toString("hex").slice(0, 12)}`,
-      title: `${source.label} ${options.label}`,
+      title: `${source.label} ${[...labels].join(", ")}`,
       files: archived.map(({ file }) => file),
     };
     await writeFile(
@@ -463,12 +485,15 @@ export async function build(
     built ? "new" : "nothing new",
     built
       ? undefined
-      : Object.fromEntries(
-          released.map(({ title, checksum, modified }) => [
-            title,
-            modified === undefined ? { checksum } : { checksum, modified },
-          ]),
-        ),
+      : {
+          inputs: Object.fromEntries(
+            released.map(({ title, checksum, modified }) => [
+              title,
+              modified === undefined ? { checksum } : { checksum, modified },
+            ]),
+          ),
+          builder: source.builder.version,
+        },
   );
   return outcomes;
 }

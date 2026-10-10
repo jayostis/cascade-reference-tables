@@ -26,3 +26,8 @@ Feature: Versions
         | series                      | added                           | removed                        | changed                         |
         | Example vaccine names       | http://hl7.org/fhir/sid/cvx/140 | http://hl7.org/fhir/sid/cvx/57 | http://hl7.org/fhir/sid/cvx/150 |
         | Example vaccine code status | http://hl7.org/fhir/sid/cvx/03  | http://hl7.org/fhir/sid/cvx/57 |                                 |
+
+    Example: a version built by a new builder version of a release already built is labelled to differ from the version it revises
+      When the example builder's release "release" is built as "1"
+      And the example builder at version "2" builds the release "release-2" as "1"
+      Then each series has the versions "1" and "1 (builder 2)", and "1 (builder 2)" is current

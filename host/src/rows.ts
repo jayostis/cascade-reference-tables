@@ -37,6 +37,15 @@ export function toRdf(row: Row): RdfRow {
         triple(key, `${OWL}annotatedProperty`, row.predicate_id),
         triple(key, `${OWL}annotatedTarget`, row.object_id),
         triple(key, `${SSSOM}mapping_justification`, row.mapping_justification),
+        ...(row.mapping_cardinality === undefined
+          ? []
+          : [
+              triple(
+                key,
+                `${SSSOM}mapping_cardinality`,
+                literal(row.mapping_cardinality),
+              ),
+            ]),
       ],
     };
   }

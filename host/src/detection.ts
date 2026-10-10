@@ -42,7 +42,7 @@ function held(
   >();
   const inputs = [
     ...source.series.flatMap((series) => [...feed.inputsOf(series.iri)]),
-    ...Object.entries(seen),
+    ...Object.entries(seen.inputs),
   ];
   for (const [title, input] of inputs) {
     const before = found.get(title) ?? { checksums: new Set<string>() };
@@ -63,15 +63,15 @@ function xsdDateTime(httpDate: string | null): string | undefined {
 
 /**
  * A conditional GET of each file of the source: `If-Modified-Since` its recorded `Last-Modified`. Nothing new when
- * every series has a version and every file answers 304, or 200 with a checksum recorded. Otherwise every file is
- * saved into the folder.
+ * every series has a version, one of them built by the builder at its present version, and every file answers 304, or
+ * 200 with a checksum recorded. Otherwise every file is saved into the folder.
  */
 export async function check(
   source: Source,
   feed: Feed,
   fetchWith: Fetch,
   folder: string,
-  seen: Seen = {},
+  seen: Seen = { inputs: {} },
   now: string = new Date().toISOString(),
 ): Promise<Checked> {
   if (source.detectedBy === `${TABLES}ReleaseApi`)
@@ -108,8 +108,10 @@ export async function check(
       bytes !== undefined &&
       !recorded.get(name)?.checksums.has(sha256(bytes).toString("hex")),
   );
-  const unbuilt = source.series.some(
-    (series) => feed.current(series.iri) === undefined,
+  const unbuilt = feed.unbuilt(
+    source.series.map((series) => series.iri),
+    source.builder.version,
+    seen.builder,
   );
   if (!changed && !unbuilt) return { found: "nothing new" };
   await mkdir(folder, { recursive: true });
@@ -174,8 +176,10 @@ async function checkReleaseApi(
       `${api} lists ${current.length} current releases with a file, a version and a download URL, not one`,
     );
   const release = current[0]!;
-  const unbuilt = source.series.some(
-    (series) => feed.current(series.iri) === undefined,
+  const unbuilt = feed.unbuilt(
+    source.series.map((series) => series.iri),
+    source.builder.version,
+    seen.builder,
   );
   if (!unbuilt && held(source, feed, seen).has(release.fileName))
     return { found: "nothing new" };
@@ -319,8 +323,10 @@ async function checkFolderListing(
         `no release folder in effect at ${listing.url} has a file for ${title}`,
       );
   }
-  const unbuilt = source.series.some(
-    (series) => feed.current(series.iri) === undefined,
+  const unbuilt = feed.unbuilt(
+    source.series.map((series) => series.iri),
+    source.builder.version,
+    seen.builder,
   );
   const recorded = held(source, feed, seen);
   if (
@@ -380,7 +386,10 @@ export async function buildLatest(
       options.source,
       options.now,
       "nothing new",
-      options.seen,
+      {
+        inputs: options.seen?.inputs ?? {},
+        builder: options.source.builder.version,
+      },
     );
     return "nothing new";
   }

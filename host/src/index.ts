@@ -13,6 +13,7 @@ export {
   readContract,
   rowsOf,
   type Seen,
+  type SeenInputs,
 } from "./pipeline.js";
 export type { Checked } from "./publish.js";
 export { loadBuild, readSource, type Source, sourceFolder } from "./source.js";
