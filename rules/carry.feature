@@ -4,6 +4,9 @@ Feature: Carrying rows forward
   subject. A source declaring a `tables:historyLookup` asks the publisher for the history of each carried code not yet
   retired, and its builder's `history` maps the answers to rows of the source's code status series.
 
+  A row is carried only while its code lies in the `void:uriSpace` of a code system the vocabulary registers; the
+  rows of a code outside every space are withdrawn.
+
   The examples' source is `fixtures/carrying/`: the example builder's series, the groups and the names carrying
   forward, and a history lookup at `https://publisher.example/history/{code}`. The `release-carry` release drops 141,
   03 and 57 and takes 150 out of its group.
@@ -41,6 +44,19 @@ Feature: Carrying rows forward
         | series                      | revises | notes                         |
         | Example vaccine groups      | 2       | 1 added, 0 removed, 0 changed |
         | Example vaccine code status | 2       | 0 added, 1 removed, 0 changed |
+      And the last build did not ask the history
+
+  Rule: H21. A carried row whose code is in no registered code system's space is withdrawn, not carried
+
+    Example: a code system's space moves, and every row of the old space is withdrawn and never looked up
+      When the carrying example's release "release" is built as "1"
+      And the vocabulary moves CVX's space to "https://codes.example/cvx/"
+      And the carrying example's release "release" is built as "2"
+      Then the last build made these versions:
+        | series                      | revises | notes                         |
+        | Example vaccine groups      | 1       | 4 added, 4 removed, 0 changed |
+        | Example vaccine names       | 1       | 5 added, 5 removed, 0 changed |
+        | Example vaccine code status | 1       | 1 added, 1 removed, 0 changed |
       And the last build did not ask the history
 
   Rule: H20. A history answer the builder does not map refuses the build

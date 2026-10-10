@@ -11,6 +11,7 @@ The `n`th build of an example happens on 2026-10-0`n` at 00:00 UTC.
 | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `the example builder's release {string} is built as {string}`                     | the release folder of that name under `fixtures/builder/fixtures/` is built, its versions labelled with the second string                 |
 | `the example builder at version {string} builds the release {string} as {string}` | the same as the first, the example builder declared at that version                                                                       |
+| `the vocabulary moves CVX's space to {string}`                                    | the builds that follow read a vocabulary whose `rec:CVX` has that `void:uriSpace`                                                         |
 | `the example builder, given the release {string}, yields {}`                      | a build of the release folder of that name, which need not exist, whose builder yields the rows of the JSON array given and opens no file |
 
 ## Then

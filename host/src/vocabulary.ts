@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rename, rm } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { promisify } from "node:util";
-import { Graph, parseTurtle, type Quad, REC, VOID } from "./rdf.js";
+import { Graph, parseTurtle, type Quad, RDF, REC, VOID } from "./rdf.js";
 
 const run = promisify(execFile);
 const RECORDS = "ontologies/records/v1-draft/";
@@ -84,6 +84,8 @@ export interface Kind {
 
 /** What the host reads from the vocabulary: the table kinds, their row shapes and the code systems. */
 export class Vocabulary {
+  #spaces: { system: string; space: string }[] | undefined;
+
   private constructor(
     readonly folder: string,
     readonly terms: Graph,
@@ -114,6 +116,18 @@ export class Vocabulary {
     const space = this.terms.value(system, `${VOID}uriSpace`);
     if (space === undefined) throw new Error(`${system} is not a code system`);
     return codeIri.startsWith(space) ? codeIri.slice(space.length) : undefined;
+  }
+
+  /** The code system whose `void:uriSpace` the IRI starts with, the longest space first; `undefined` for none. */
+  systemOf(codeIri: string): string | undefined {
+    this.#spaces ??= this.terms
+      .subjects(`${RDF}type`, `${REC}CodeSystem`)
+      .flatMap((system) => {
+        const space = this.terms.value(system, `${VOID}uriSpace`);
+        return space === undefined ? [] : [{ system, space }];
+      })
+      .sort((a, b) => b.space.length - a.space.length);
+    return this.#spaces.find(({ space }) => codeIri.startsWith(space))?.system;
   }
 
   /** A code's IRI: its system's `void:uriSpace` followed by the code. */
