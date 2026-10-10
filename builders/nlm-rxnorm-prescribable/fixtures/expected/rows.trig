@@ -84,6 +84,12 @@
   <urn:uuid:bc1e7ba2-095d-8b64-978b-12c223677c8f> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://www.nlm.nih.gov/research/umls/rxnorm/13> .
   <urn:uuid:bc1e7ba2-095d-8b64-978b-12c223677c8f> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
 }
+<urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12> {
+  <http://www.nlm.nih.gov/research/umls/rxnorm/11> <https://ns.cascadeprotocol.org/records/v1-draft#termType> "SCD" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/13> <https://ns.cascadeprotocol.org/records/v1-draft#termType> "SBD" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/19> <https://ns.cascadeprotocol.org/records/v1-draft#termType> "GPCK" .
+  <http://www.nlm.nih.gov/research/umls/rxnorm/20> <https://ns.cascadeprotocol.org/records/v1-draft#termType> "BPCK" .
+}
 <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba> {
   <http://www.nlm.nih.gov/research/umls/rxnorm/1> <http://www.w3.org/2004/02/skos/core#prefLabel> "alpha" .
   <http://www.nlm.nih.gov/research/umls/rxnorm/1> <http://www.w3.org/2004/02/skos/core#notation> "1" .

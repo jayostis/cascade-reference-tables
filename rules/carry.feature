@@ -1,7 +1,7 @@
 Feature: Carrying rows forward
   A series declaring `tables:carriesForward true` keeps the rows of a code its new release no longer names. A code is
-  named by a row the builder yielded from the release: a mapping row's source or target, a names or status row's
-  subject. A source declaring a `tables:historyLookup` asks the publisher for the history of each carried code not yet
+  named by a row the builder yielded from the release: a mapping row's source or target, a names, status or term
+  type row's subject. A source declaring a `tables:historyLookup` asks the publisher for the history of each carried code not yet
   retired, and its builder's `history` maps the answers to rows of the source's code status series.
 
   A row is carried only while its code lies in the `void:uriSpace` of a code system the vocabulary registers; the

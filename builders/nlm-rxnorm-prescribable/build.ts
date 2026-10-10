@@ -3,6 +3,7 @@ import { type Build, Refusal, type Row } from "../../host/src/builder.js";
 const INGREDIENTS = "urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6";
 const GENERICS = "urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4";
 const NDCS = "urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf";
+const PRODUCTS = "urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12";
 const NAMES = "urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba";
 const STATUS = "urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88";
 const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
@@ -12,6 +13,9 @@ const CHAINED = "https://w3id.org/semapv/vocab/MappingChaining";
 
 /** Term types other names are given as. */
 const OTHER_NAMES = new Set(["SY", "TMSY", "PSN"]);
+
+/** Term types of a single drug product. */
+const PRODUCT_TYPES = new Set(["SCD", "SBD", "GPCK", "BPCK"]);
 
 /** Each branded term type and its generic's. */
 const GENERIC = new Map([
@@ -96,6 +100,8 @@ const build: Build = async function* (release) {
     mapping_justification: chained ? CHAINED : CURATED,
   });
   for (const [code, type] of [...termType].sort()) {
+    if (PRODUCT_TYPES.has(type))
+      yield { series: PRODUCTS, subject: rxnorm(code), termType: type };
     if (type === "IN" || type === "MIN") {
       yield mapping(INGREDIENTS, rxnorm(code), rxnorm(code), false);
       continue;

@@ -1,5 +1,5 @@
 Feature: Versions
-  A row's key is the subject of its triples: a mapping row's `record_id`, a names or status row's code. Between two
+  A row's key is the subject of its triples: a mapping row's `record_id`, a names, status or term type row's code. Between two
   versions of a series, a key in one only is added or removed, and a key in both with other triples is changed
   (cascade-vocabulary#89).
 

@@ -49,8 +49,10 @@ function groups(triples: readonly Quad[]): Group[] {
 function formOf({ triples }: Group): Form {
   if (triples.some((t) => t.predicate.value === `${OWL}annotatedSource`))
     return "mapping";
-  return triples.some((t) => t.predicate.value === `${SKOS}prefLabel`)
-    ? "names"
+  if (triples.some((t) => t.predicate.value === `${SKOS}prefLabel`))
+    return "names";
+  return triples.some((t) => t.predicate.value === `${REC}termType`)
+    ? "termType"
     : "status";
 }
 
@@ -62,7 +64,7 @@ function subjectOf(group: Group): string {
   );
 }
 
-/** Every code the builder's rows name: mapping rows' sources and targets, names and status rows' subjects. */
+/** Every code the builder's rows name: mapping rows' sources and targets, the other forms' subjects. */
 function named(built: ReadonlyMap<string, SeriesRows>): Set<string> {
   const codes = new Set<string>();
   for (const rows of built.values())

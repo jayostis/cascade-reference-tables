@@ -9,13 +9,14 @@ import {
   OWL,
   type Quad,
   RDF,
+  REC,
   SKOS,
   SSSOM,
   triple,
   XSD,
 } from "./rdf.js";
 
-export type Form = "mapping" | "names" | "status";
+export type Form = "mapping" | "names" | "status" | "termType";
 
 /** A row as RDF: its key, the subject every one of its triples is about. */
 export interface RdfRow {
@@ -60,6 +61,12 @@ export function toRdf(row: Row): RdfRow {
         ),
         triple(row.subject, `${SKOS}notation`, literal(row.notation)),
       ],
+    };
+  if ("termType" in row)
+    return {
+      form: "termType",
+      key: row.subject,
+      triples: [triple(row.subject, `${REC}termType`, literal(row.termType))],
     };
   return {
     form: "status",

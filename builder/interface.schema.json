@@ -5,7 +5,8 @@
   "oneOf": [
     { "$ref": "#/$defs/mapping" },
     { "$ref": "#/$defs/names" },
-    { "$ref": "#/$defs/status" }
+    { "$ref": "#/$defs/status" },
+    { "$ref": "#/$defs/termType" }
   ],
   "$defs": {
     "iri": {
@@ -52,6 +53,16 @@
         "series": { "$ref": "#/$defs/iri" },
         "subject": { "$ref": "#/$defs/iri" },
         "replacedBy": { "type": "array", "items": { "$ref": "#/$defs/iri" } }
+      }
+    },
+    "termType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["series", "subject", "termType"],
+      "properties": {
+        "series": { "$ref": "#/$defs/iri" },
+        "subject": { "$ref": "#/$defs/iri" },
+        "termType": { "$ref": "#/$defs/text" }
       }
     }
   }
