@@ -10,6 +10,7 @@ import { buildLatest, check } from "./detection.js";
 import { Feed } from "./feed.js";
 import { build, readContract, type Seen } from "./pipeline.js";
 import { type Checked, mergeChecked, publish } from "./publish.js";
+import { patientFetch } from "./patient.js";
 import { loadBuild, readSource, type Source, sourceFolder } from "./source.js";
 import { folderStore, releaseStore } from "./stores.js";
 
@@ -50,7 +51,9 @@ async function checkCommand(root: string, args: string[]): Promise<number> {
   const folder = await mkdtemp(join(tmpdir(), "check-"));
   try {
     const seen = await seenBy(values.checked, source);
-    console.log((await check(source, feed, fetch, folder, seen)).found);
+    console.log(
+      (await check(source, feed, patientFetch(), folder, seen)).found,
+    );
   } finally {
     await rm(folder, { recursive: true, force: true });
   }
@@ -97,7 +100,7 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
     values.release === undefined || values.label === undefined
       ? await buildLatest(contract, {
           ...options,
-          fetch,
+          fetch: patientFetch(),
           ...(seen === undefined ? {} : { seen }),
         })
       : await build(contract, {

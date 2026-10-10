@@ -361,7 +361,16 @@ export async function buildLatest(
     join(options.out, "release"),
     options.seen,
     options.now,
-  );
+  ).catch(async (error: unknown) => {
+    await writeChecked(
+      options.out,
+      options.source,
+      options.now,
+      { notChecked: (error as Error).message },
+      options.seen,
+    );
+    throw error;
+  });
   if (checked.found === "nothing new") {
     await writeChecked(
       options.out,

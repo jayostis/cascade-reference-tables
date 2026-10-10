@@ -291,12 +291,15 @@ export type Seen = Readonly<
   Record<string, { readonly checksum: string; readonly modified?: string }>
 >;
 
-/** Writes `<out>/checked.json`: when the source was checked, whether it gave a new version, and what it saw if not. */
+/**
+ * Writes `<out>/checked.json`: when the source was checked, whether it gave a new version, and what it saw if not. A
+ * source that could not be checked says why, and keeps what the last check saw.
+ */
 export async function writeChecked(
   out: string,
   source: Source,
   at: string,
-  found: "new" | "nothing new",
+  found: "new" | "nothing new" | { readonly notChecked: string },
   inputs?: Seen,
 ): Promise<void> {
   await mkdir(out, { recursive: true });
@@ -305,7 +308,9 @@ export async function writeChecked(
       [source.iri]: {
         label: source.label,
         at,
-        found,
+        ...(typeof found === "string"
+          ? { found }
+          : { found: "not checked", reason: found.notChecked }),
         ...(inputs === undefined ? {} : { inputs }),
       },
     },
