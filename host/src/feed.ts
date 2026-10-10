@@ -111,20 +111,30 @@ export class Feed {
     return this.graph.value(series, `${DCAT}hasCurrentVersion`);
   }
 
+  /** The label of a version. */
+  labelOf(version: string): string | undefined {
+    return this.graph.value(version, `${DCAT}version`);
+  }
+
   /**
-   * Whether a series has no version, or none of the series' current versions was built by the builder at this version.
-   * A series whose rows a new builder leaves as they were gets no new version, so asked of each series this would
-   * rebuild the release at every check.
+   * Whether a series has no version, or none of the series' current versions was built by the builder at this version
+   * and the last check did not see it build nothing new. A series whose rows a new builder leaves as they were gets no
+   * new version, so only that check records the builder built the release.
    */
-  unbuilt(series: readonly string[], builderVersion: string): boolean {
+  unbuilt(
+    series: readonly string[],
+    builderVersion: string,
+    seenBuilder?: string,
+  ): boolean {
     const graph = this.graph;
     const current = series.map((iri) => this.current(iri));
     return (
       current.some((version) => version === undefined) ||
-      !current.some(
-        (version) =>
-          graph.value(version!, `${TABLES}builderVersion`) === builderVersion,
-      )
+      (seenBuilder !== builderVersion &&
+        !current.some(
+          (version) =>
+            graph.value(version!, `${TABLES}builderVersion`) === builderVersion,
+        ))
     );
   }
 

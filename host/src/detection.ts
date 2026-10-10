@@ -42,7 +42,7 @@ function held(
   >();
   const inputs = [
     ...source.series.flatMap((series) => [...feed.inputsOf(series.iri)]),
-    ...Object.entries(seen),
+    ...Object.entries(seen.inputs),
   ];
   for (const [title, input] of inputs) {
     const before = found.get(title) ?? { checksums: new Set<string>() };
@@ -71,7 +71,7 @@ export async function check(
   feed: Feed,
   fetchWith: Fetch,
   folder: string,
-  seen: Seen = {},
+  seen: Seen = { inputs: {} },
   now: string = new Date().toISOString(),
 ): Promise<Checked> {
   if (source.detectedBy === `${TABLES}ReleaseApi`)
@@ -111,6 +111,7 @@ export async function check(
   const unbuilt = feed.unbuilt(
     source.series.map((series) => series.iri),
     source.builder.version,
+    seen.builder,
   );
   if (!changed && !unbuilt) return { found: "nothing new" };
   await mkdir(folder, { recursive: true });
@@ -178,6 +179,7 @@ async function checkReleaseApi(
   const unbuilt = feed.unbuilt(
     source.series.map((series) => series.iri),
     source.builder.version,
+    seen.builder,
   );
   if (!unbuilt && held(source, feed, seen).has(release.fileName))
     return { found: "nothing new" };
@@ -324,6 +326,7 @@ async function checkFolderListing(
   const unbuilt = feed.unbuilt(
     source.series.map((series) => series.iri),
     source.builder.version,
+    seen.builder,
   );
   const recorded = held(source, feed, seen);
   if (
@@ -383,7 +386,10 @@ export async function buildLatest(
       options.source,
       options.now,
       "nothing new",
-      options.seen,
+      {
+        inputs: options.seen?.inputs ?? {},
+        builder: options.source.builder.version,
+      },
     );
     return "nothing new";
   }

@@ -35,7 +35,13 @@ async function seenBy(
 ): Promise<Seen | undefined> {
   if (file === undefined) return undefined;
   const { checked } = JSON.parse(await readFile(file, "utf8")) as Checked;
-  return checked[source.iri]?.inputs;
+  const last = checked[source.iri];
+  return last?.inputs === undefined
+    ? undefined
+    : {
+        inputs: last.inputs,
+        ...(last.builder === undefined ? {} : { builder: last.builder }),
+      };
 }
 
 async function checkCommand(root: string, args: string[]): Promise<number> {

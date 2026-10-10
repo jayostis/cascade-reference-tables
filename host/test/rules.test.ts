@@ -24,6 +24,7 @@ import {
   type Outcome,
   readContract,
   type Seen,
+  type SeenInputs,
 } from "../src/pipeline.js";
 import {
   DCAT,
@@ -303,6 +304,16 @@ const steps = new Steps<World>()
     "the example builder's release {string} is built as {string}",
     (world, [release, label]) =>
       runBuild(world, release as string, label as string),
+  )
+  .define(
+    "the example builder at version {string} builds the release {string} as {string}",
+    (world, [version, release, label]) =>
+      runBuild(world, release as string, label as string, undefined, {
+        source: {
+          ...example,
+          builder: { ...example.builder, version: version as string },
+        },
+      }),
   )
   .define(
     "the example builder, given the release {string}, yields {}",
@@ -660,22 +671,22 @@ const steps = new Steps<World>()
         await Feed.read(world.feed),
         publisher(world),
         join(world.dir, "checked"),
+        lastSeen(world),
       );
     },
   )
-  .define("the example source is built from the publisher", async (world) => {
-    const outcomes = await buildLatest(contract, {
-      source: example,
-      build: await loadBuild(ROOT, EXAMPLE),
-      feed: world.feed,
-      out: world.out,
-      now: `2026-10-0${world.builds.length + 1}T00:00:00Z`,
-      fetch: publisher(world),
-      seen: lastSeen(world),
-    });
-    world.builds.push(outcomes === "nothing new" ? [] : outcomes);
-    world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
-  })
+  .define(
+    "the example source, with its builder at version {string}, is built from the publisher",
+    async (world, [version]) => {
+      await builtFromPublisher(world, {
+        ...example,
+        builder: { ...example.builder, version: version as string },
+      });
+    },
+  )
+  .define("the example source is built from the publisher", (world) =>
+    builtFromPublisher(world, example),
+  )
   .define(
     "the publisher cannot be reached, saying {string}",
     (world, [why]) => {
@@ -1005,7 +1016,8 @@ function checksOf(table: readonly (readonly string[])[]): SiteChecks {
 function recordOf(out: string): {
   found: string;
   reason?: string;
-  inputs?: Seen;
+  inputs?: SeenInputs;
+  builder?: string;
 } {
   const { checked } = JSON.parse(
     readFileSync(join(out, "checked.json"), "utf8"),
@@ -1013,11 +1025,29 @@ function recordOf(out: string): {
   return checked[example.iri]!;
 }
 
+async function builtFromPublisher(world: World, source: Source): Promise<void> {
+  const outcomes = await buildLatest(contract, {
+    source,
+    build: await loadBuild(ROOT, EXAMPLE),
+    feed: world.feed,
+    out: world.out,
+    now: `2026-10-0${world.builds.length + 1}T00:00:00Z`,
+    fetch: publisher(world),
+    seen: lastSeen(world),
+  });
+  world.builds.push(outcomes === "nothing new" ? [] : outcomes);
+  world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
+}
+
 function lastSeen(world: World): Seen {
   const file = join(world.out, "checked.json");
-  if (!existsSync(file)) return {};
+  if (!existsSync(file)) return { inputs: {} };
   const { checked } = JSON.parse(readFileSync(file, "utf8")) as SiteChecks;
-  return checked[example.iri]?.inputs ?? {};
+  const last = checked[example.iri];
+  return {
+    inputs: last?.inputs ?? {},
+    ...(last?.builder === undefined ? {} : { builder: last.builder }),
+  };
 }
 
 /** A publisher serving the example builder's files from a release folder, answering a conditional GET as CDC does. */

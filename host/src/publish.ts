@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { readRowsFile } from "./distribution.js";
 import { Feed } from "./feed.js";
 import { versionName } from "./names.js";
-import type { Seen } from "./pipeline.js";
+import type { SeenInputs } from "./pipeline.js";
 import { PROV, RDF, RDFS, REC } from "./rdf.js";
 import type { RowsStore } from "./stores.js";
 
@@ -17,7 +17,8 @@ export interface Checked {
         readonly at: string;
         readonly found: string;
         readonly reason?: string;
-        readonly inputs?: Seen;
+        readonly inputs?: SeenInputs;
+        readonly builder?: string;
       }
     >
   >;

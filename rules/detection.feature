@@ -27,6 +27,13 @@ Feature: Detection by conditional GET
       When the example source, with its builder at version "2", is checked
       Then the check finds a new release labelled "2026-09-17"
 
+    Example: a builder with a new version that builds nothing new is not asked to rebuild at the next check
+      Given the publisher serves "release", last modified "Thu, 17 Sep 2026 21:01:41 GMT"
+      And the example source is built from the publisher
+      And the example source, with its builder at version "2", is built from the publisher
+      When the example source, with its builder at version "2", is checked
+      Then the check finds nothing new
+
     Example: an unparsable Last-Modified leaves the release unlabelled
       Given the publisher serves "release", last modified "not a date"
       When the example source is checked
