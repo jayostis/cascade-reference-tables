@@ -110,6 +110,7 @@ export function patientFetch(
           headers: out,
         });
       } catch (error) {
+        if (init?.signal?.aborted) throw error;
         stalled = have > furthest ? 0 : stalled + 1;
         furthest = Math.max(furthest, have);
         if (stalled === attempts)
@@ -117,9 +118,20 @@ export function patientFetch(
             `${String(input)} could not be downloaded: ${attempts} attempts in a row read nothing new, the last because ${why(error)}`,
             { cause: error },
           );
-        await new Promise((done) =>
-          setTimeout(done, delayMs * 2 ** Math.max(0, stalled - 1)),
-        );
+        await new Promise((done) => {
+          const timer = setTimeout(
+            done,
+            delayMs * 2 ** Math.max(0, stalled - 1),
+          );
+          init?.signal?.addEventListener(
+            "abort",
+            () => {
+              clearTimeout(timer);
+              done(undefined);
+            },
+            { once: true },
+          );
+        });
       }
     }
   };

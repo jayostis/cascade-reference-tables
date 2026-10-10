@@ -326,17 +326,13 @@ export async function build(
     folderStore([options.out, dirname(options.feed)]),
     ...(options.rows === undefined ? [] : [options.rows]),
   ];
-  const current = new Map<string, readonly Quad[]>();
-  for (const { iri } of source.series) {
+  const current = async (iri: string): Promise<readonly Quad[]> => {
     const previous = feed.current(iri);
     const held = previous === undefined ? undefined : feed.rowsOf(previous);
-    current.set(
-      iri,
-      held === undefined
-        ? []
-        : await rowsAtHand(held.file, held.checksum, folders),
-    );
-  }
+    return held === undefined
+      ? []
+      : await rowsAtHand(held.file, held.checksum, folders);
+  };
   const carried = await carry({
     contract,
     source,
@@ -385,7 +381,7 @@ export async function build(
   for (const description of source.series) {
     const rows = series.get(description.iri)!;
     const previous = feed.current(description.iri);
-    const beforeRows = current.get(description.iri)!;
+    const beforeRows = await current(description.iri);
     const after = rows.byKey();
     const found = differences(keyed(beforeRows), after);
     const same =

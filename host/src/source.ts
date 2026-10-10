@@ -179,7 +179,9 @@ export async function readSource(folder: string): Promise<Source> {
         license: value(iri, `${DCT}license`),
         publisher: value(iri, `${DCT}publisher`),
         credit: value(iri, `${DCT}bibliographicCitation`),
-        carriesForward: value(series, `${TABLES}carriesForward`) === "true",
+        carriesForward: ["true", "1"].includes(
+          value(series, `${TABLES}carriesForward`),
+        ),
       })),
     builder: {
       iri: builder,

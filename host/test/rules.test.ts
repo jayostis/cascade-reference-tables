@@ -687,6 +687,29 @@ const steps = new Steps<World>()
     },
   )
   .define(
+    "the example source is built from the publisher by a builder that fails, saying {string}, and the build fails",
+    async (world, [reason]) => {
+      try {
+        await buildLatest(contract, {
+          source: example,
+          build: () => {
+            throw new Error(reason as string);
+          },
+          feed: world.feed,
+          out: world.out,
+          now: "2026-10-01T00:00:00Z",
+          fetch: publisher(world),
+        });
+      } catch (error) {
+        world.failure = error as Error;
+      }
+    },
+  )
+  .define("the build fails, saying {string}", ({ failure }, [reason]) => {
+    assert.ok(failure, "the build did not fail");
+    assert.ok(failure.message.includes(reason as string), failure.message);
+  })
+  .define(
     "the build records the source as not checked, saying {string}",
     ({ out }, [reason]) => {
       const entry = recordOf(out);

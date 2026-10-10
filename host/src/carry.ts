@@ -24,8 +24,8 @@ export interface CarryInput {
   readonly source: Source;
   /** The rows the builder gave from the release, by series. */
   readonly built: ReadonlyMap<string, SeriesRows>;
-  /** Each series' rows in its current version. */
-  readonly current: ReadonlyMap<string, readonly Quad[]>;
+  /** A series' rows in its current version, read when asked for so that one series' rows are held at a time. */
+  readonly current: (series: string) => Promise<readonly Quad[]>;
   readonly history?: Build | undefined;
   readonly fetch?: Fetch | undefined;
 }
@@ -85,6 +85,7 @@ async function ask(
   fetchWith: Fetch,
 ): Promise<string[]> {
   const lines: string[] = [];
+  const stop = new AbortController();
   let next = 0;
   let free = 0;
   let failed = false;
@@ -97,7 +98,7 @@ async function ask(
       await new Promise((done) => setTimeout(done, start - Date.now()));
       try {
         const url = template.replace("{code}", encodeURIComponent(code));
-        const response = await fetchWith(url);
+        const response = await fetchWith(url, { signal: stop.signal });
         if (!response.ok) throw new Error(`${url} answered ${response.status}`);
         lines[at] = JSON.stringify({
           code,
@@ -105,6 +106,7 @@ async function ask(
         });
       } catch (error) {
         failed = true;
+        stop.abort();
         throw error;
       }
     }
@@ -138,7 +140,7 @@ export async function carry(input: CarryInput): Promise<Carried> {
       triples: group.triples,
     });
   for (const { iri } of carrying)
-    for (const group of groups(current.get(iri) ?? [])) {
+    for (const group of groups(await current(iri))) {
       const subject = subjectOf(group);
       if (taken.has(subject)) continue;
       keep(iri, group);
@@ -148,7 +150,7 @@ export async function carry(input: CarryInput): Promise<Carried> {
     return { rows };
   const { system, urlTemplate } = source.historyLookup;
   const retired = new Set<string>();
-  for (const group of groups(current.get(status.iri) ?? [])) {
+  for (const group of groups(await current(status.iri))) {
     retired.add(group.key);
     if (!taken.has(group.key)) keep(status.iri, group);
   }
