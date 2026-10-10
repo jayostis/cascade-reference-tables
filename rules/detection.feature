@@ -69,3 +69,16 @@ Feature: Detection by conditional GET
       Then the last build made these versions:
         | series                | revises    | notes                         |
         | Example vaccine names | 2026-09-17 | 0 added, 0 removed, 1 changed |
+
+  Rule: H18. A source that cannot be checked is recorded as not checked, with why, and keeps what its last check saw
+
+    Example: a publisher that cannot be reached
+      Given the publisher serves "release", last modified "Thu, 17 Sep 2026 21:01:41 GMT"
+      And the example source is built from the publisher
+      And the publisher serves "release-reordered", last modified "Fri, 18 Sep 2026 08:00:00 GMT"
+      And the example source is built from the publisher
+      And the publisher cannot be reached, saying "ETIMEDOUT"
+      When the example source is built from the publisher, and the build fails
+      Then the check fails, saying "ETIMEDOUT"
+      And the build records the source as not checked, saying "ETIMEDOUT"
+      And the build's record keeps "codes.txt" among what the last check saw

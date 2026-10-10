@@ -16,6 +16,7 @@ export interface Checked {
         readonly label: string;
         readonly at: string;
         readonly found: string;
+        readonly reason?: string;
         readonly inputs?: Seen;
       }
     >

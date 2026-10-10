@@ -65,6 +65,8 @@ interface World {
   /** The release the publisher's API marks current, with its version, and the path its zip lacks; none for none. */
   api?: { release?: string; version?: string; lacking?: string };
   failure?: Error;
+  /** The error every request to the publisher fails with. */
+  unreachable?: string;
   /** The time the publisher's folders list each file at, and whether their zips lack the codes. */
   listed?: { at: string; lacking: boolean };
   /** Each address the publisher was asked for, in order. */
@@ -580,6 +582,44 @@ const steps = new Steps<World>()
     world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
   })
   .define(
+    "the publisher cannot be reached, saying {string}",
+    (world, [why]) => {
+      world.unreachable = why as string;
+    },
+  )
+  .define(
+    "the example source is built from the publisher, and the build fails",
+    async (world) => {
+      try {
+        await buildLatest(contract, {
+          source: example,
+          build: await loadBuild(ROOT, EXAMPLE),
+          feed: world.feed,
+          out: world.out,
+          now: `2026-10-0${world.builds.length + 1}T00:00:00Z`,
+          fetch: publisher(world),
+          seen: lastSeen(world),
+        });
+      } catch (error) {
+        world.failure = error as Error;
+      }
+    },
+  )
+  .define(
+    "the build records the source as not checked, saying {string}",
+    ({ out }, [reason]) => {
+      const entry = recordOf(out);
+      assert.equal(entry.found, "not checked");
+      assert.ok(entry.reason?.includes(reason as string), entry.reason);
+    },
+  )
+  .define(
+    "the build's record keeps {string} among what the last check saw",
+    ({ out }, [file]) => {
+      assert.ok(recordOf(out).inputs?.[file as string]);
+    },
+  )
+  .define(
     "the publisher's release API marks {string} current as {string}",
     (world, [release, version]) => {
       world.api = { release: release as string, version: version as string };
@@ -844,6 +884,17 @@ function checksOf(table: readonly (readonly string[])[]): SiteChecks {
   };
 }
 
+function recordOf(out: string): {
+  found: string;
+  reason?: string;
+  inputs?: Seen;
+} {
+  const { checked } = JSON.parse(
+    readFileSync(join(out, "checked.json"), "utf8"),
+  ) as SiteChecks;
+  return checked[example.iri]!;
+}
+
 function lastSeen(world: World): Seen {
   const file = join(world.out, "checked.json");
   if (!existsSync(file)) return {};
@@ -854,6 +905,7 @@ function lastSeen(world: World): Seen {
 /** A publisher serving the example builder's files from a release folder, answering a conditional GET as CDC does. */
 function publisher(world: World): Fetch {
   return async (input, init) => {
+    if (world.unreachable !== undefined) throw new Error(world.unreachable);
     const { release, modified, ignoresSince } = world.publisher!;
     const since =
       new Headers(init?.headers).get("If-Modified-Since") ?? undefined;

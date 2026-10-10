@@ -29,5 +29,7 @@ jobs:
             echo "::warning::$url cannot be read: no check has been published"
             exit 0
           fi
-          jq -r '.checked[] | select(now - (.at | fromdateiso8601) > 3 * 86400)
-            | "::warning::\(.label) was last checked at \(.at)"' checked.json
+          jq -r '.checked[]
+            | if .found == "not checked" then "::warning::\(.label) could not be checked at \(.at): \(.reason)"
+              elif now - (.at | fromdateiso8601) > 3 * 86400 then "::warning::\(.label) was last checked at \(.at)"
+              else empty end' checked.json
