@@ -470,7 +470,9 @@ function listed(
   }
   const more =
     lines.length > shown.length
-      ? [`- and ${lines.length - shown.length} more`]
+      ? [
+          `- and ${lines.length - shown.length} more; the complete rows are in the release's rows files`,
+        ]
       : [];
   const summary = `${heading} (${lines.length})`;
   return lines.length < FOLDED_FROM
@@ -493,9 +495,18 @@ export function markdown(outcomes: readonly Outcome[]): string {
       ? []
       : [o.described.added, o.described.removed, o.described.changed],
   );
-  const share = Math.floor(
-    BODY_CHARACTERS / Math.max(1, lists.filter((l) => l.length > 0).length),
-  );
+  const shares = new Map<readonly string[], number>();
+  const bySize = lists
+    .map((list) => ({ list, size: list.reduce((n, l) => n + l.length + 3, 0) }))
+    .filter(({ size }) => size > 0)
+    .sort((a, b) => a.size - b.size);
+  let left = BODY_CHARACTERS;
+  for (const [i, { list, size }] of bySize.entries()) {
+    const share = Math.min(size, Math.floor(left / (bySize.length - i)));
+    shares.set(list, share);
+    left -= share;
+  }
+  const share = (list: readonly string[]) => shares.get(list) ?? 0;
   return outcomes
     .map((o) =>
       [
@@ -508,9 +519,17 @@ export function markdown(outcomes: readonly Outcome[]): string {
         ...(o.version === undefined
           ? []
           : [
-              ...listed("Added", o.described.added, share),
-              ...listed("Removed", o.described.removed, share),
-              ...listed("Changed", o.described.changed, share),
+              ...listed("Added", o.described.added, share(o.described.added)),
+              ...listed(
+                "Removed",
+                o.described.removed,
+                share(o.described.removed),
+              ),
+              ...listed(
+                "Changed",
+                o.described.changed,
+                share(o.described.changed),
+              ),
             ]),
       ].join("\n"),
     )

@@ -1,5 +1,5 @@
 import type { Differences } from "./pipeline.js";
-import { DCT, OWL, type Quad, SKOS } from "./rdf.js";
+import { DCT, OWL, type Quad, SKOS, SSSOM } from "./rdf.js";
 
 /** Each difference as a line a person can read, sorted by code. */
 export interface Described {
@@ -16,11 +16,13 @@ interface Line {
 const NUMERIC = new Intl.Collator("en", { numeric: true });
 
 function codeOf(iri: string): string {
-  return decodeURIComponent(iri.split(/[/#]/).pop()!);
+  return iri.split(/[/#]/).pop()!;
 }
 
 function plain(text: string): string {
-  return text.replace(/[\\`*_[\]<>&|]/g, (c) => `\\${c}`).replace(/\s+/g, " ");
+  return text
+    .replace(/[\\`*_[\]<>&|@~#]/g, (c) => `\\${c}`)
+    .replace(/\s+/g, " ");
 }
 
 function code(iri: string): string {
@@ -34,24 +36,27 @@ function objectsOf(rows: readonly Quad[], predicate: string): string[] {
 }
 
 /** A row by what it says: a mapping as source code, target code and predicate, names as code and label, status as code and status. */
-function line(rows: readonly Quad[]): Line {
+function line(rows: readonly Quad[], whole = false): Line {
   const [source] = objectsOf(rows, `${OWL}annotatedSource`);
   if (source !== undefined) {
     const target = objectsOf(rows, `${OWL}annotatedTarget`)[0]!;
     const predicate = codeOf(objectsOf(rows, `${OWL}annotatedProperty`)[0]!);
+    const [justification] = objectsOf(rows, `${SSSOM}mapping_justification`);
     return {
       sort: [codeOf(source), predicate, codeOf(target)],
-      text: `${code(source)} → ${code(target)} (${predicate})`,
+      text: `${code(source)} → ${code(target)} (${predicate}${whole && justification !== undefined ? `, justified by ${codeOf(justification)}` : ""})`,
     };
   }
   const subject = rows[0]!.subject.value;
   const [label] = objectsOf(rows, `${SKOS}prefLabel`);
   const notation = objectsOf(rows, `${SKOS}notation`)[0] ?? codeOf(subject);
-  if (label !== undefined)
+  if (label !== undefined) {
+    const alternatives = objectsOf(rows, `${SKOS}altLabel`).sort();
     return {
       sort: [notation],
-      text: `\`${notation}\`: ${plain(label)}`,
+      text: `\`${notation}\`: ${plain(label)}${whole && alternatives.length > 0 ? `, also called ${alternatives.map(plain).join("; ")}` : ""}`,
     };
+  }
   const replacements = objectsOf(rows, `${DCT}isReplacedBy`).map(code);
   return {
     sort: [codeOf(subject)],
@@ -94,10 +99,10 @@ export function describe(
     removed: sorted(found.removed.map((key) => line(was.get(key)!))),
     changed: sorted(
       found.changed.map((key) => {
-        const next = line(now.get(key)!);
+        const next = line(now.get(key)!, true);
         return {
           ...next,
-          text: `${next.text} (was ${line(was.get(key)!).text})`,
+          text: `${next.text} (was ${line(was.get(key)!, true).text})`,
         };
       }),
     ),

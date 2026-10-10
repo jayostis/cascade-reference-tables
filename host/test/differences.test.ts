@@ -30,12 +30,16 @@ const name = (code: string, prefLabel: string): Row => ({
   prefLabel,
   notation: code,
 });
-const mapping = (from: string, to: string): Row => ({
+const mapping = (
+  from: string,
+  to: string,
+  justification = "ManualMappingCuration",
+): Row => ({
   series: SERIES,
   subject_id: `${CVX}${from}`,
   predicate_id: `${SKOS}broadMatch`,
   object_id: `${CVX}${to}`,
-  mapping_justification: "https://w3id.org/semapv/vocab/ManualMappingCuration",
+  mapping_justification: `https://w3id.org/semapv/vocab/${justification}`,
 });
 const retired = (code: string, replacedBy: string[] = []): Row => ({
   series: SERIES,
@@ -68,6 +72,29 @@ test("a version's differences read by their codes, sorted by code, whatever the 
         added: ["`8` → `88` (broadMatch)", "`88` → `88` (broadMatch)"],
         removed: ["`77` → `222` (broadMatch)"],
       },
+    ],
+    [
+      "a change in a part the line does not otherwise show: alternative names, justification",
+      [
+        { ...name("45", "Hep B"), altLabel: ["hepatitis B"] },
+        mapping("1", "2"),
+      ],
+      [
+        { ...name("45", "Hep B"), altLabel: ["hepatitis B vaccine"] },
+        mapping("1", "2", "LexicalMatching"),
+      ],
+      {
+        changed: [
+          "`1` → `2` (broadMatch, justified by LexicalMatching) (was `1` → `2` (broadMatch, justified by ManualMappingCuration))",
+          "`45`: Hep B, also called hepatitis B vaccine (was `45`: Hep B, also called hepatitis B)",
+        ],
+      },
+    ],
+    [
+      "a code with a percent sign, and labels GitHub would turn into a mention, an issue link or strikethrough",
+      [],
+      [name("a%zz", "@octocat ~~fixes~~ #12")],
+      { added: ["`a%zz`: \\@octocat \\~\\~fixes\\~\\~ \\#12"] },
     ],
     [
       "status: code and its status, with what replaces it",
@@ -104,5 +131,11 @@ test("a long list is folded after its count, and a very long one is cut to what 
   assert.doesNotMatch(folded, /urn:uuid/);
   const huge = markdown([outcomeOf([], rows(2000))]);
   assert.ok(huge.length < 65536);
-  assert.match(huge, /- and \d+ more/);
+  assert.match(huge, /- and \d+ more; the complete rows are in the release/);
+  const lopsided = markdown([outcomeOf(rows(3), rows(2000).slice(3))]);
+  assert.ok(lopsided.length < 65536);
+  assert.ok(
+    (lopsided.match(/^- `/gm) ?? []).length > 450,
+    "the short removed list leaves its share to the long added one",
+  );
 });
