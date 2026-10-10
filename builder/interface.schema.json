@@ -28,7 +28,8 @@
         "subject_id": { "$ref": "#/$defs/iri" },
         "predicate_id": { "$ref": "#/$defs/iri" },
         "object_id": { "$ref": "#/$defs/iri" },
-        "mapping_justification": { "$ref": "#/$defs/iri" }
+        "mapping_justification": { "$ref": "#/$defs/iri" },
+        "mapping_cardinality": { "enum": ["1:1", "1:n", "n:1", "n:n"] }
       }
     },
     "names": {

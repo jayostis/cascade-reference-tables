@@ -111,6 +111,23 @@ export class Feed {
     return this.graph.value(series, `${DCAT}hasCurrentVersion`);
   }
 
+  /**
+   * Whether a series has no version, or none of the series' current versions was built by the builder at this version.
+   * A series whose rows a new builder leaves as they were gets no new version, so asked of each series this would
+   * rebuild the release at every check.
+   */
+  unbuilt(series: readonly string[], builderVersion: string): boolean {
+    const graph = this.graph;
+    const current = series.map((iri) => this.current(iri));
+    return (
+      current.some((version) => version === undefined) ||
+      !current.some(
+        (version) =>
+          graph.value(version!, `${TABLES}builderVersion`) === builderVersion,
+      )
+    );
+  }
+
   /** The rows file of a version, relative to the feed, and its checksum. */
   rowsOf(version: string): { file: string; checksum: string } {
     const graph = this.graph;

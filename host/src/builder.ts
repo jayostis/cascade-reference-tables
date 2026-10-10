@@ -31,6 +31,7 @@ export interface MappingRow {
   readonly predicate_id: string;
   readonly object_id: string;
   readonly mapping_justification: string;
+  readonly mapping_cardinality?: "1:1" | "1:n" | "n:1" | "n:n";
 }
 
 /** A row of a names kind, by SKOS. */

@@ -43,6 +43,7 @@ its `Last-Modified`, otherwise 200 with the file and its `Last-Modified`.
 | `the publisher serves {string}, last modified {string}, ignoring If-Modified-Since` | and answers 200 to every request                                                 |
 | `the example source is checked`                                                     | the example source is checked against the feed                                   |
 | `the example source, with a series added, is checked`                               | the same, its declaration holding one more series                                |
+| `the example source, with its builder at version {string}, is checked`              | the same, its declaration holding the builder at that version                    |
 | `the example source is built from the publisher`                                    | the example source is checked, and what is new is built                          |
 | `the check finds nothing new`                                                       |                                                                                  |
 | `the check finds a new release labelled {string}`                                   |                                                                                  |

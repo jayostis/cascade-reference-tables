@@ -3,5 +3,5 @@
 
 <urn:uuid:11f8c90d-2a3f-45f4-992d-a6d8952c4834> a tables:Builder ;
     rdfs:label "cdc-icd-10-cm" ;
-    tables:builderVersion "1" ;
+    tables:builderVersion "2" ;
     tables:builds <urn:uuid:273aeb46-e2b3-4ff6-81dd-5ab327489d0c> .

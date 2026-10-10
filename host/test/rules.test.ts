@@ -649,6 +649,20 @@ const steps = new Steps<World>()
       );
     },
   )
+  .define(
+    "the example source, with its builder at version {string}, is checked",
+    async (world, [version]) => {
+      world.checked = await check(
+        {
+          ...example,
+          builder: { ...example.builder, version: version as string },
+        },
+        await Feed.read(world.feed),
+        publisher(world),
+        join(world.dir, "checked"),
+      );
+    },
+  )
   .define("the example source is built from the publisher", async (world) => {
     const outcomes = await buildLatest(contract, {
       source: example,

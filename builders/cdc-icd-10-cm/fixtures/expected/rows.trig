@@ -27,26 +27,43 @@
     icd:C88.0 owl:deprecated true ; dct:isReplacedBy icd:C88.00 .
     icd:D69.1 owl:deprecated true ; dct:isReplacedBy icd:D69.11 , icd:D69.19 .
     icd:E66.8 owl:deprecated true ; dct:isReplacedBy icd:E66.813 .
-    icd:H02.109 owl:deprecated true ; dct:isReplacedBy icd:H02.151 .
+    icd:H02.109 owl:deprecated true .
     icd:T84.040A owl:deprecated true ; dct:isReplacedBy icd:M97.01XA .
 }
 
 <urn:uuid:14f76251-2926-43ef-90c3-47101c1da3dd> {
-    <urn:uuid:cdad4595-ef8d-86e3-8c73-e73e0a50fc65> a owl:Axiom ;
+    <urn:uuid:5b201078-bf05-8399-bd63-1e92584d2a47> a owl:Axiom ;
         owl:annotatedSource icd:C88.0 ;
-        owl:annotatedProperty skos:exactMatch ;
+        owl:annotatedProperty dct:isReplacedBy ;
         owl:annotatedTarget icd:C88.00 ;
-        sssom:mapping_justification semapv:ManualMappingCuration .
+        sssom:mapping_justification semapv:ManualMappingCuration ;
+        sssom:mapping_cardinality "1:1" .
 
-    <urn:uuid:9790044d-616d-8eaf-903c-76b05d833da9> a owl:Axiom ;
+    <urn:uuid:654e89f9-f295-870b-8825-05f3971b1cf9> a owl:Axiom ;
+        owl:annotatedSource icd:D69.1 ;
+        owl:annotatedProperty dct:isReplacedBy ;
+        owl:annotatedTarget icd:D69.11 ;
+        sssom:mapping_justification semapv:ManualMappingCuration ;
+        sssom:mapping_cardinality "1:n" .
+
+    <urn:uuid:f5d8e1a8-c79f-89f9-aac8-4c58802f0c36> a owl:Axiom ;
+        owl:annotatedSource icd:D69.1 ;
+        owl:annotatedProperty dct:isReplacedBy ;
+        owl:annotatedTarget icd:D69.19 ;
+        sssom:mapping_justification semapv:ManualMappingCuration ;
+        sssom:mapping_cardinality "1:n" .
+
+    <urn:uuid:86655e98-a232-894d-87d1-2a47bf45d175> a owl:Axiom ;
         owl:annotatedSource icd:E66.8 ;
-        owl:annotatedProperty skos:exactMatch ;
+        owl:annotatedProperty dct:isReplacedBy ;
         owl:annotatedTarget icd:E66.813 ;
-        sssom:mapping_justification semapv:ManualMappingCuration .
+        sssom:mapping_justification semapv:ManualMappingCuration ;
+        sssom:mapping_cardinality "n:1" .
 
-    <urn:uuid:780a84d2-9379-83dc-87c5-641881e911e9> a owl:Axiom ;
+    <urn:uuid:c1b69dc8-b286-803d-8e9c-334a173bc96a> a owl:Axiom ;
         owl:annotatedSource icd:T84.040A ;
-        owl:annotatedProperty skos:exactMatch ;
+        owl:annotatedProperty dct:isReplacedBy ;
         owl:annotatedTarget icd:M97.01XA ;
-        sssom:mapping_justification semapv:ManualMappingCuration .
+        sssom:mapping_justification semapv:ManualMappingCuration ;
+        sssom:mapping_cardinality "1:1" .
 }
