@@ -50,8 +50,15 @@ export interface StatusRow {
   readonly replacedBy?: readonly string[];
 }
 
+/** A row of a drug products kind: the code and its term type. */
+export interface TermTypeRow {
+  readonly series: string;
+  readonly subject: string;
+  readonly termType: string;
+}
+
 /** A row in one of `builder/interface.schema.json`'s forms. */
-export type Row = MappingRow | NamesRow | StatusRow;
+export type Row = MappingRow | NamesRow | StatusRow | TermTypeRow;
 
 /** A builder's `build.ts` exports this as its default. */
 export type Build = (release: Release) => AsyncIterable<Row>;
