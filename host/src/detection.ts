@@ -366,7 +366,9 @@ export async function buildLatest(
       options.out,
       options.source,
       options.now,
-      { notChecked: (error as Error).message },
+      {
+        notChecked: error instanceof Error ? error.message : String(error),
+      },
       options.seen,
     );
     throw error;

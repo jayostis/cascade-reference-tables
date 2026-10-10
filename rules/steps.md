@@ -37,17 +37,21 @@ The `n`th build of an example happens on 2026-10-0`n` at 00:00 UTC.
 The publisher of a detection example answers a conditional GET as CDC does: 304 when `If-Modified-Since` is at or after
 its `Last-Modified`, otherwise 200 with the file and its `Last-Modified`.
 
-| Step                                                                                | What happens, or must hold                                                   |
-| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `the publisher serves {string}, last modified {string}`                             | the publisher serves the files of that release folder of the example builder |
-| `the publisher serves {string}, last modified {string}, ignoring If-Modified-Since` | and answers 200 to every request                                             |
-| `the example source is checked`                                                     | the example source is checked against the feed                               |
-| `the example source, with a series added, is checked`                               | the same, its declaration holding one more series                            |
-| `the example source is built from the publisher`                                    | the example source is checked, and what is new is built                      |
-| `the check finds nothing new`                                                       |                                                                              |
-| `the check finds a new release labelled {string}`                                   |                                                                              |
-| `the publisher was last asked with no If-Modified-Since`                            |                                                                              |
-| `the publisher was last asked with If-Modified-Since {string}`                      |                                                                              |
+| Step                                                                                | What happens, or must hold                                                       |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `the publisher serves {string}, last modified {string}`                             | the publisher serves the files of that release folder of the example builder     |
+| `the publisher serves {string}, last modified {string}, ignoring If-Modified-Since` | and answers 200 to every request                                                 |
+| `the example source is checked`                                                     | the example source is checked against the feed                                   |
+| `the example source, with a series added, is checked`                               | the same, its declaration holding one more series                                |
+| `the example source is built from the publisher`                                    | the example source is checked, and what is new is built                          |
+| `the check finds nothing new`                                                       |                                                                                  |
+| `the check finds a new release labelled {string}`                                   |                                                                                  |
+| `the publisher was last asked with no If-Modified-Since`                            |                                                                                  |
+| `the publisher was last asked with If-Modified-Since {string}`                      |                                                                                  |
+| `the publisher cannot be reached, saying {string}`                                  | every request to the publisher fails with an error of that message               |
+| `the example source is built from the publisher, and the build fails`               | the same, the build stopping as an error                                         |
+| `the build records the source as not checked, saying {string}`                      | `checked.json` says `not checked` for the source, its reason containing the text |
+| `the build's record keeps {string} among what the last check saw`                   | that file is among the `inputs` of that record                                   |
 
 ## Detection by release API
 

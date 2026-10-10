@@ -15,6 +15,9 @@
         "type": "object",
         "additionalProperties": false,
         "required": ["label", "at", "found"],
+        "if": { "properties": { "found": { "const": "not checked" } } },
+        "then": { "required": ["reason"] },
+        "else": { "not": { "required": ["reason"] } },
         "properties": {
           "label": { "type": "string", "minLength": 1 },
           "at": {

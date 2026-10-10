@@ -132,13 +132,19 @@ test("the checked.json a build and a publish write conforms to its schema", asyn
               },
             },
           },
+          "urn:uuid:5b1d3c52-7d4e-4b8a-9c61-2e5d8f0b7a14": {
+            label: "CDC ICD-10-CM",
+            at: "2026-10-07T06:23:00Z",
+            found: "not checked",
+            reason: "ETIMEDOUT",
+          },
         },
       }),
     });
     const published = JSON.parse(
       await readFile(join(dir, "site", "checked.json"), "utf8"),
     ) as Checked;
-    assert.equal(Object.keys(published.checked).length, 2);
+    assert.equal(Object.keys(published.checked).length, 3);
     for (const written of [built, published])
       assert.ok(validate(written), JSON.stringify(validate.errors));
   } finally {
@@ -158,6 +164,22 @@ test("the checked.json a build and a publish write conforms to its schema", asyn
       false,
     ],
     [{ checked: {}, extra: 1 }, false],
+    ...(["new", "not checked"] as const).flatMap(
+      (found): [unknown, boolean][] =>
+        [undefined, "ETIMEDOUT"].map((reason) => [
+          {
+            checked: {
+              "urn:uuid:5b1d3c52-7d4e-4b8a-9c61-2e5d8f0b7a14": {
+                label: "CDC ICD-10-CM",
+                at: "2026-10-08T06:23:00Z",
+                found,
+                ...(reason === undefined ? {} : { reason }),
+              },
+            },
+          },
+          (found === "not checked") === (reason !== undefined),
+        ]),
+    ),
   ];
   for (const [checked, valid] of cases)
     assert.equal(validate(checked), valid, JSON.stringify(checked));
