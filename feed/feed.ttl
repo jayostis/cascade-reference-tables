@@ -66,6 +66,28 @@
     dct:title "CVX.txt" ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "efd2a6770f0f648ce76e10ac2889602b2ea8fa8ca4b63deb33ca883e7d0d7413" ] .
 
+<ni:///sha-256;ARd__QN4ztoDE7SCxo2P3zU2QypNowEdTz6R8-_rbxw>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "2961 added, 72 removed, 0 changed" ;
+    dcat:distribution <rows/ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35.nq.gz> ;
+    dcat:version "2026-10-01 (builder 2)" ;
+    dct:issued "2026-10-10T23:58:28Z"^^xsd:dateTime ;
+    pav:version "2026-10-01 (builder 2)" ;
+    prov:specializationOf <urn:uuid:14f76251-2926-43ef-90c3-47101c1da3dd> ;
+    prov:wasAttributedTo <urn:uuid:11f8c90d-2a3f-45f4-992d-a6d8952c4834> ;
+    prov:wasDerivedFrom <ni:///sha-256;1HVYVDYA4Qj1ivM5wrzvPHwgJ4DOHZauw9wp7o3dl44>,
+        <ni:///sha-256;k-OtYAS630cMVb_mebdIroj9mytCGFHkCe7DgsdxO5o>,
+        <ni:///sha-256;mbXCvhb_U-q4YcwL5LHay6J_aHuP9LxwBnmUQ1UDfuA> ;
+    prov:wasRevisionOf <ni:///sha-256;vCHwBYQbINtxv64W2WPuctcGQ6ZSf06bsTYkACjpmtQ> ;
+    sssom:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    sssom:mapping_set_version "2026-10-01 (builder 2)" ;
+    sssom:mapping_tool "cdc-icd-10-cm" ;
+    sssom:mapping_tool_version "2" ;
+    sssom:subject_source_version "2026-10-01 (builder 2)" ;
+    tables:builderVersion "2" .
+
 <ni:///sha-256;Bldp7_nf-OGuyFYioV_cgFlDgPFsNWCXaNZxj-YZoG8>
     a dcat:Dataset,
         prov:Entity ;
@@ -188,6 +210,21 @@
     prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
     prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
     tables:builderVersion "4" .
+<ni:///sha-256;TWm1el7r6UDZSNAVrRNiiZM8gFs5ng4lbuhfhBSvZqI>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "0 added, 0 removed, 8 changed" ;
+    dcat:distribution <rows/f6f89f529344127842cc79b7924e1e91abe023b5c0dafee56f6b19cb96d8db15.nq.gz> ;
+    dcat:version "2026-10-01 (builder 2)" ;
+    dct:issued "2026-10-10T23:58:28Z"^^xsd:dateTime ;
+    pav:version "2026-10-01 (builder 2)" ;
+    prov:specializationOf <urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540> ;
+    prov:wasAttributedTo <urn:uuid:11f8c90d-2a3f-45f4-992d-a6d8952c4834> ;
+    prov:wasDerivedFrom <ni:///sha-256;1HVYVDYA4Qj1ivM5wrzvPHwgJ4DOHZauw9wp7o3dl44>,
+        <ni:///sha-256;k-OtYAS630cMVb_mebdIroj9mytCGFHkCe7DgsdxO5o>,
+        <ni:///sha-256;mbXCvhb_U-q4YcwL5LHay6J_aHuP9LxwBnmUQ1UDfuA> ;
+    prov:wasRevisionOf <ni:///sha-256;tpZm07us0enkqQZrq5oSYnvQQv5HS7esFT1JncGL77w> ;
+    tables:builderVersion "2" .
 
 <ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE>
     a dcat:Dataset,
@@ -388,6 +425,12 @@
     dcat:downloadURL <rows/db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d" ] .
+<rows/ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35" ] .
 
 <rows/f62225727688fef87b3b002bc1235f055c5d8836ffc038be2c8cdfdc15bbd9e3.nq.gz>
     a dcat:Distribution ;
@@ -395,6 +438,13 @@
     dcat:downloadURL <rows/f62225727688fef87b3b002bc1235f055c5d8836ffc038be2c8cdfdc15bbd9e3.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "f62225727688fef87b3b002bc1235f055c5d8836ffc038be2c8cdfdc15bbd9e3" ] .
+
+<rows/f6f89f529344127842cc79b7924e1e91abe023b5c0dafee56f6b19cb96d8db15.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/f6f89f529344127842cc79b7924e1e91abe023b5c0dafee56f6b19cb96d8db15.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "f6f89f529344127842cc79b7924e1e91abe023b5c0dafee56f6b19cb96d8db15" ] .
 
 <urn:uuid:11f8c90d-2a3f-45f4-992d-a6d8952c4834>
     a tables:Builder ;
@@ -407,8 +457,9 @@
 <urn:uuid:14f76251-2926-43ef-90c3-47101c1da3dd>
     a dcat:Dataset,
         rec:ReferenceSeries ;
-    dcat:hasCurrentVersion <ni:///sha-256;vCHwBYQbINtxv64W2WPuctcGQ6ZSf06bsTYkACjpmtQ> ;
-    dcat:hasVersion <ni:///sha-256;vCHwBYQbINtxv64W2WPuctcGQ6ZSf06bsTYkACjpmtQ> ;
+    dcat:hasCurrentVersion <ni:///sha-256;ARd__QN4ztoDE7SCxo2P3zU2QypNowEdTz6R8-_rbxw> ;
+    dcat:hasVersion <ni:///sha-256;ARd__QN4ztoDE7SCxo2P3zU2QypNowEdTz6R8-_rbxw>,
+        <ni:///sha-256;vCHwBYQbINtxv64W2WPuctcGQ6ZSf06bsTYkACjpmtQ> ;
     dct:bibliographicCitation "Source: CDC" ;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
     dct:publisher <https://ror.org/042twtr12> ;
@@ -533,8 +584,9 @@
 <urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540>
     a dcat:Dataset,
         rec:ReferenceSeries ;
-    dcat:hasCurrentVersion <ni:///sha-256;tpZm07us0enkqQZrq5oSYnvQQv5HS7esFT1JncGL77w> ;
-    dcat:hasVersion <ni:///sha-256;tpZm07us0enkqQZrq5oSYnvQQv5HS7esFT1JncGL77w> ;
+    dcat:hasCurrentVersion <ni:///sha-256;TWm1el7r6UDZSNAVrRNiiZM8gFs5ng4lbuhfhBSvZqI> ;
+    dcat:hasVersion <ni:///sha-256;TWm1el7r6UDZSNAVrRNiiZM8gFs5ng4lbuhfhBSvZqI>,
+        <ni:///sha-256;tpZm07us0enkqQZrq5oSYnvQQv5HS7esFT1JncGL77w> ;
     dct:bibliographicCitation "Source: CDC" ;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
     dct:publisher <https://ror.org/042twtr12> ;
