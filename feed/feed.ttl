@@ -17,13 +17,15 @@
         <urn:uuid:25623afd-6445-4394-8174-93ffacaea90e>,
         <urn:uuid:2f1d04ac-2101-4d15-8251-566846a14488>,
         <urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf>,
+        <urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12>,
         <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>,
+        <urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88>,
         <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>,
         <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>,
         <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4>,
         <urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540>,
         <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> ;
-    dct:modified "2026-10-10T12:43:39Z"^^xsd:dateTime ;
+    dct:modified "2026-10-11T00:01:45Z"^^xsd:dateTime ;
     dct:title "Cascade reference tables (DRAFT)" .
 
 <ni:///sha-256;1HVYVDYA4Qj1ivM5wrzvPHwgJ4DOHZauw9wp7o3dl44>
@@ -134,6 +136,59 @@
     sssom:subject_source_version "2026-10-05" ;
     tables:builderVersion "1" .
 
+<ni:///sha-256;GtXGNa2VLBkvTgNDAmpFUsBtn6IZZoUmhlIsiKdoC1M>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "0 added, 22919 removed, 0 changed" ;
+    dcat:distribution <rows/db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d.nq.gz> ;
+    dcat:version "2026-10-05 (builder 4)" ;
+    dct:issued "2026-10-11T00:01:45Z"^^xsd:dateTime ;
+    pav:version "2026-10-05 (builder 4)" ;
+    prov:specializationOf <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    prov:wasRevisionOf <ni:///sha-256;F0FaPQH1w75tY2g4up1goTUEHq9Jvzmt9WbYLJNyKvA> ;
+    sssom:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    sssom:mapping_set_version "2026-10-05 (builder 4)" ;
+    sssom:mapping_tool "nlm-rxnorm-prescribable" ;
+    sssom:mapping_tool_version "4" ;
+    sssom:subject_source_version "2026-10-05 (builder 4)" ;
+    tables:builderVersion "4" .
+
+<ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "239059 added, 239059 removed, 0 changed" ;
+    dcat:distribution <rows/4ba692c708476a8ae049fbb87b52b2d9e0beecd17df3687e5a8939f1532c668a.nq.gz> ;
+    dcat:version "2026-10-05 (builder 4)" ;
+    dct:issued "2026-10-11T00:01:45Z"^^xsd:dateTime ;
+    pav:version "2026-10-05 (builder 4)" ;
+    prov:specializationOf <urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    prov:wasRevisionOf <ni:///sha-256;BszJQatQDH2rTURFnE-sFfwAjvBu7yj2mFMS3Dlxr8I> ;
+    sssom:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    sssom:mapping_set_version "2026-10-05 (builder 4)" ;
+    sssom:mapping_tool "nlm-rxnorm-prescribable" ;
+    sssom:mapping_tool_version "4" ;
+    sssom:subject_source_version "2026-10-05 (builder 4)" ;
+    tables:builderVersion "4" .
+
+<ni:///sha-256;Th5sT_qWjb26xofek35qG9Sm88egbWa8GibjkQ1D22M>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "0 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64.nq.gz> ;
+    dcat:version "2026-10-05" ;
+    dct:issued "2026-10-11T00:01:45Z"^^xsd:dateTime ;
+    pav:version "2026-10-05" ;
+    prov:specializationOf <urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    tables:builderVersion "4" .
+
 <ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE>
     a dcat:Dataset,
         prov:Entity ;
@@ -230,6 +285,19 @@
         <ni:///sha-256;mbXCvhb_U-q4YcwL5LHay6J_aHuP9LxwBnmUQ1UDfuA> ;
     tables:builderVersion "1" .
 
+<ni:///sha-256;yPNnVXOEiVM_teaQ_gNI7qegPyDrxKMslyEPD1HNGM0>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "21514 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/86bbb17c89fb68ec417ecee42074ca0c398af489f88e17cf8eca9005f07b729d.nq.gz> ;
+    dcat:version "2026-10-05" ;
+    dct:issued "2026-10-11T00:01:45Z"^^xsd:dateTime ;
+    pav:version "2026-10-05" ;
+    prov:specializationOf <urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    tables:builderVersion "4" .
+
 <rows/14d2555ae05dc5e7b08ad0249f60a263c2991c72aa08778fcbcb269a44f8021f.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
@@ -243,6 +311,13 @@
     dcat:downloadURL <rows/1901f8f66b71df214453e69825301b78502eb225cb565f3fc626f364ed7d06db.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "1901f8f66b71df214453e69825301b78502eb225cb565f3fc626f364ed7d06db" ] .
+
+<rows/4ba692c708476a8ae049fbb87b52b2d9e0beecd17df3687e5a8939f1532c668a.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/4ba692c708476a8ae049fbb87b52b2d9e0beecd17df3687e5a8939f1532c668a.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "4ba692c708476a8ae049fbb87b52b2d9e0beecd17df3687e5a8939f1532c668a" ] .
 
 <rows/5317b49cea0b92fe52c0e329f0481f842a8073306933fdec2e3c4463b74b4fd4.nq.gz>
     a dcat:Distribution ;
@@ -265,6 +340,13 @@
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "6b636e1eb269bef9f296f035f1c440f7b64eae70a2b971e4588d1e2427420bdc" ] .
 
+<rows/86bbb17c89fb68ec417ecee42074ca0c398af489f88e17cf8eca9005f07b729d.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/86bbb17c89fb68ec417ecee42074ca0c398af489f88e17cf8eca9005f07b729d.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "86bbb17c89fb68ec417ecee42074ca0c398af489f88e17cf8eca9005f07b729d" ] .
+
 <rows/8bdab49dedcdb831167d58cd2cbf4273cd98476eefa45b9bd6fbaa96ea64d721.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
@@ -286,12 +368,26 @@
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "9a43e56efd682723321755f7e23ea5d1a505c92f6d48140edc0c04f1a4290753" ] .
 
+<rows/9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64" ] .
+
 <rows/9d003f3a0b46b834ea2dc7d68af68f84dd7b8bacc120a0db3804d0e0bcbed999.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
     dcat:downloadURL <rows/9d003f3a0b46b834ea2dc7d68af68f84dd7b8bacc120a0db3804d0e0bcbed999.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "9d003f3a0b46b834ea2dc7d68af68f84dd7b8bacc120a0db3804d0e0bcbed999" ] .
+
+<rows/db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d" ] .
 
 <rows/f62225727688fef87b3b002bc1235f055c5d8836ffc038be2c8cdfdc15bbd9e3.nq.gz>
     a dcat:Distribution ;
@@ -347,8 +443,9 @@
 <urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf>
     a dcat:Dataset,
         rec:ReferenceSeries ;
-    dcat:hasCurrentVersion <ni:///sha-256;BszJQatQDH2rTURFnE-sFfwAjvBu7yj2mFMS3Dlxr8I> ;
-    dcat:hasVersion <ni:///sha-256;BszJQatQDH2rTURFnE-sFfwAjvBu7yj2mFMS3Dlxr8I> ;
+    dcat:hasCurrentVersion <ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ> ;
+    dcat:hasVersion <ni:///sha-256;BszJQatQDH2rTURFnE-sFfwAjvBu7yj2mFMS3Dlxr8I>,
+        <ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ> ;
     dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
     dct:publisher <https://ror.org/0060t0j89> ;
@@ -360,6 +457,18 @@
     a tables:Builder ;
     rdfs:label "nlm-rxnorm-prescribable" .
 
+<urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;yPNnVXOEiVM_teaQ_gNI7qegPyDrxKMslyEPD1HNGM0> ;
+    dcat:hasVersion <ni:///sha-256;yPNnVXOEiVM_teaQ_gNI7qegPyDrxKMslyEPD1HNGM0> ;
+    dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/0060t0j89> ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
+    rdfs:label "NLM RxNorm Prescribable drug products" ;
+    rec:tableKind rec:DrugProducts .
+
 <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>
     a dcat:Dataset,
         rec:ReferenceSeries ;
@@ -370,6 +479,18 @@
     dct:publisher <https://ror.org/042twtr12> ;
     dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> ;
     rdfs:label "CDC CVX code status" ;
+    rec:tableKind rec:CodeStatus .
+
+<urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;Th5sT_qWjb26xofek35qG9Sm88egbWa8GibjkQ1D22M> ;
+    dcat:hasVersion <ni:///sha-256;Th5sT_qWjb26xofek35qG9Sm88egbWa8GibjkQ1D22M> ;
+    dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/0060t0j89> ;
+    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
+    rdfs:label "NLM RxNorm Prescribable code status" ;
     rec:tableKind rec:CodeStatus .
 
 <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>
@@ -399,8 +520,9 @@
 <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4>
     a dcat:Dataset,
         rec:ReferenceSeries ;
-    dcat:hasCurrentVersion <ni:///sha-256;F0FaPQH1w75tY2g4up1goTUEHq9Jvzmt9WbYLJNyKvA> ;
-    dcat:hasVersion <ni:///sha-256;F0FaPQH1w75tY2g4up1goTUEHq9Jvzmt9WbYLJNyKvA> ;
+    dcat:hasCurrentVersion <ni:///sha-256;GtXGNa2VLBkvTgNDAmpFUsBtn6IZZoUmhlIsiKdoC1M> ;
+    dcat:hasVersion <ni:///sha-256;F0FaPQH1w75tY2g4up1goTUEHq9Jvzmt9WbYLJNyKvA>,
+        <ni:///sha-256;GtXGNa2VLBkvTgNDAmpFUsBtn6IZZoUmhlIsiKdoC1M> ;
     dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
     dct:publisher <https://ror.org/0060t0j89> ;
