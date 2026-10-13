@@ -14,18 +14,20 @@
     a dcat:Catalog ;
     adms:status <http://purl.org/adms/status/UnderDevelopment> ;
     dcat:dataset <urn:uuid:14f76251-2926-43ef-90c3-47101c1da3dd>,
+        <urn:uuid:1653be1a-b871-4e0f-8c22-f13bbbf1b6d6>,
         <urn:uuid:25623afd-6445-4394-8174-93ffacaea90e>,
         <urn:uuid:2f1d04ac-2101-4d15-8251-566846a14488>,
         <urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf>,
         <urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12>,
         <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>,
         <urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88>,
+        <urn:uuid:84a9f86a-f5e4-45b1-9e92-cd4ba027a389>,
         <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>,
         <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>,
         <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4>,
         <urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540>,
         <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> ;
-    dct:modified "2026-10-11T00:01:45Z"^^xsd:dateTime ;
+    dct:modified "2026-10-13T14:59:41Z"^^xsd:dateTime ;
     dct:title "Cascade reference tables (DRAFT)" .
 
 <ni:///sha-256;1HVYVDYA4Qj1ivM5wrzvPHwgJ4DOHZauw9wp7o3dl44>
@@ -33,6 +35,31 @@
     dct:modified "2026-08-13T14:25:00Z"^^xsd:dateTime ;
     dct:title "ICD-10-CM-CONVERSION-TABLE-FY2027.xlsx" ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "d47558543600e108f58af339c2bcef3c7c202780ce1d96aec3dc29ee8ddd978e" ] .
+
+<ni:///sha-256;4g2HI-n2y8OLnc1DFChcgrsoq7RUOKOcGiwHJOFKUik>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "32983 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/26be80bd6720d2be1110ec4aad4b22bfe87013670794142f72ccf0b3eaf8dfc8.nq.gz> ;
+    dcat:version "2026-10" ;
+    dct:issued "2026-10-13T14:59:41Z"^^xsd:dateTime ;
+    pav:version "2026-10" ;
+    prov:specializationOf <urn:uuid:84a9f86a-f5e4-45b1-9e92-cd4ba027a389> ;
+    prov:wasAttributedTo <urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a> ;
+    prov:wasDerivedFrom <ni:///sha-256;5MYYudJvAXrPiy1ORMhmajJ91rszxOwMfgnXlgeR8gg>,
+        <ni:///sha-256;pqWN9NkEnJGHp5qPtOcPHztVUOFwjGx0t74LJo9QMto> ;
+    rec:coversGene "EPCAM",
+        "MLH1",
+        "MSH2",
+        "MSH6",
+        "PMS2" ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;5MYYudJvAXrPiy1ORMhmajJ91rszxOwMfgnXlgeR8gg>
+    a prov:Entity ;
+    dct:modified "2026-10-11T06:55:38Z"^^xsd:dateTime ;
+    dct:title "hgvs4variation.txt.gz" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "e4c618b9d26f017acf8b2d4e44c8666a327dd6bb33c4ec0c7e09d7960791f208" ] .
 
 <ni:///sha-256;5_uyiQaVbIiSdYxJsLag5SiqlzI7Z5OUSh13hrkXsw0>
     a prov:Entity ;
@@ -198,18 +225,6 @@
     sssom:subject_source_version "2026-10-05 (builder 4)" ;
     tables:builderVersion "4" .
 
-<ni:///sha-256;Th5sT_qWjb26xofek35qG9Sm88egbWa8GibjkQ1D22M>
-    a dcat:Dataset,
-        prov:Entity ;
-    adms:versionNotes "0 added, 0 removed, 0 changed" ;
-    dcat:distribution <rows/9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64.nq.gz> ;
-    dcat:version "2026-10-05" ;
-    dct:issued "2026-10-11T00:01:45Z"^^xsd:dateTime ;
-    pav:version "2026-10-05" ;
-    prov:specializationOf <urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88> ;
-    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
-    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
-    tables:builderVersion "4" .
 <ni:///sha-256;TWm1el7r6UDZSNAVrRNiiZM8gFs5ng4lbuhfhBSvZqI>
     a dcat:Dataset,
         prov:Entity ;
@@ -225,6 +240,33 @@
         <ni:///sha-256;mbXCvhb_U-q4YcwL5LHay6J_aHuP9LxwBnmUQ1UDfuA> ;
     prov:wasRevisionOf <ni:///sha-256;tpZm07us0enkqQZrq5oSYnvQQv5HS7esFT1JncGL77w> ;
     tables:builderVersion "2" .
+
+<ni:///sha-256;Th5sT_qWjb26xofek35qG9Sm88egbWa8GibjkQ1D22M>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "0 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64.nq.gz> ;
+    dcat:version "2026-10-05" ;
+    dct:issued "2026-10-11T00:01:45Z"^^xsd:dateTime ;
+    pav:version "2026-10-05" ;
+    prov:specializationOf <urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    tables:builderVersion "4" .
+
+<ni:///sha-256;VIf0Nkcq8y_q_E4BCgLWyvnbGB-e90qEiHPPVUuBM04>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "32983 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/a2a89e359ca902da8b425d75b1185a540f528ddf7e475880634c63c165db3909.nq.gz> ;
+    dcat:version "2026-10" ;
+    dct:issued "2026-10-13T14:59:41Z"^^xsd:dateTime ;
+    pav:version "2026-10" ;
+    prov:specializationOf <urn:uuid:1653be1a-b871-4e0f-8c22-f13bbbf1b6d6> ;
+    prov:wasAttributedTo <urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a> ;
+    prov:wasDerivedFrom <ni:///sha-256;5MYYudJvAXrPiy1ORMhmajJ91rszxOwMfgnXlgeR8gg>,
+        <ni:///sha-256;pqWN9NkEnJGHp5qPtOcPHztVUOFwjGx0t74LJo9QMto> ;
+    tables:builderVersion "1" .
 
 <ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE>
     a dcat:Dataset,
@@ -256,6 +298,13 @@
     dct:modified "2026-06-16T09:20:00Z"^^xsd:dateTime ;
     dct:title "icd10cm-table-and-index-2027.zip" ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "99b5c2be16ff53eab861cc0be4b1dacba27f687b8ff4bc700679944355037ee0" ] .
+
+<ni:///sha-256;pqWN9NkEnJGHp5qPtOcPHztVUOFwjGx0t74LJo9QMto>
+    a prov:Entity ;
+    dct:modified "2026-10-01T04:05:02Z"^^xsd:dateTime ;
+    dct:source <https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/archive/variant_summary_2026-10.txt.gz> ;
+    dct:title "variant_summary_2026-10.txt.gz" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "a6a58df4d9049c9187a79a8fb4e70f1f3b5550e1708c6c74b7be0b268f5032da" ] .
 
 <ni:///sha-256;tjAJHzXlxhRB4xsChH6CrnVIADVMekpg0Ywr2BJ06xk>
     a dcat:Dataset,
@@ -349,6 +398,13 @@
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "1901f8f66b71df214453e69825301b78502eb225cb565f3fc626f364ed7d06db" ] .
 
+<rows/26be80bd6720d2be1110ec4aad4b22bfe87013670794142f72ccf0b3eaf8dfc8.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/26be80bd6720d2be1110ec4aad4b22bfe87013670794142f72ccf0b3eaf8dfc8.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "26be80bd6720d2be1110ec4aad4b22bfe87013670794142f72ccf0b3eaf8dfc8" ] .
+
 <rows/4ba692c708476a8ae049fbb87b52b2d9e0beecd17df3687e5a8939f1532c668a.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
@@ -419,18 +475,26 @@
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "9d003f3a0b46b834ea2dc7d68af68f84dd7b8bacc120a0db3804d0e0bcbed999" ] .
 
-<rows/db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d.nq.gz>
+<rows/a2a89e359ca902da8b425d75b1185a540f528ddf7e475880634c63c165db3909.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
-    dcat:downloadURL <rows/db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d.nq.gz> ;
+    dcat:downloadURL <rows/a2a89e359ca902da8b425d75b1185a540f528ddf7e475880634c63c165db3909.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d" ] .
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "a2a89e359ca902da8b425d75b1185a540f528ddf7e475880634c63c165db3909" ] .
+
 <rows/ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
     dcat:downloadURL <rows/ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35" ] .
+
+<rows/db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d" ] .
 
 <rows/f62225727688fef87b3b002bc1235f055c5d8836ffc038be2c8cdfdc15bbd9e3.nq.gz>
     a dcat:Distribution ;
@@ -466,6 +530,18 @@
     dct:source <urn:uuid:273aeb46-e2b3-4ff6-81dd-5ab327489d0c> ;
     rdfs:label "CDC ICD-10-CM code conversions" ;
     rec:tableKind rec:CodeConversions .
+
+<urn:uuid:1653be1a-b871-4e0f-8c22-f13bbbf1b6d6>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;VIf0Nkcq8y_q_E4BCgLWyvnbGB-e90qEiHPPVUuBM04> ;
+    dcat:hasVersion <ni:///sha-256;VIf0Nkcq8y_q_E4BCgLWyvnbGB-e90qEiHPPVUuBM04> ;
+    dct:bibliographicCitation "Source: ClinVar, National Center for Biotechnology Information, U.S. National Library of Medicine; Landrum MJ et al., Nucleic Acids Res. 2018;46(D1):D1062-D1067, PMID 29165669. NCBI places no restrictions on the use or distribution of the data. Some submitters may claim patent, copyright, or other intellectual property rights in all or a portion of the data, which NCBI is not in a position to assess. ClinVar data is not intended for direct diagnostic use or medical decision-making without review by a genetics professional." ;
+    dct:license <https://www.ncbi.nlm.nih.gov/home/about/policies/> ;
+    dct:publisher <https://ror.org/02meqm098> ;
+    dct:source <urn:uuid:5f313f75-f35d-496e-aca0-c5cde375f116> ;
+    rdfs:label "ClinVar variation names, Lynch syndrome genes" ;
+    rec:tableKind rec:CodeNames .
 
 <urn:uuid:25623afd-6445-4394-8174-93ffacaea90e>
     a dcat:Dataset,
@@ -544,6 +620,18 @@
     rdfs:label "NLM RxNorm Prescribable code status" ;
     rec:tableKind rec:CodeStatus .
 
+<urn:uuid:84a9f86a-f5e4-45b1-9e92-cd4ba027a389>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;4g2HI-n2y8OLnc1DFChcgrsoq7RUOKOcGiwHJOFKUik> ;
+    dcat:hasVersion <ni:///sha-256;4g2HI-n2y8OLnc1DFChcgrsoq7RUOKOcGiwHJOFKUik> ;
+    dct:bibliographicCitation "Source: ClinVar, National Center for Biotechnology Information, U.S. National Library of Medicine; Landrum MJ et al., Nucleic Acids Res. 2018;46(D1):D1062-D1067, PMID 29165669. NCBI places no restrictions on the use or distribution of the data. Some submitters may claim patent, copyright, or other intellectual property rights in all or a portion of the data, which NCBI is not in a position to assess. ClinVar data is not intended for direct diagnostic use or medical decision-making without review by a genetics professional." ;
+    dct:license <https://www.ncbi.nlm.nih.gov/home/about/policies/> ;
+    dct:publisher <https://ror.org/02meqm098> ;
+    dct:source <urn:uuid:5f313f75-f35d-496e-aca0-c5cde375f116> ;
+    rdfs:label "ClinVar variant classifications, Lynch syndrome genes" ;
+    rec:tableKind rec:VariantClassifications .
+
 <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>
     a dcat:Dataset,
         rec:ReferenceSeries ;
@@ -555,6 +643,10 @@
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
     rdfs:label "NLM RxNorm Prescribable names" ;
     rec:tableKind rec:CodeNames .
+
+<urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a>
+    a tables:Builder ;
+    rdfs:label "ncbi-clinvar" .
 
 <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>
     a dcat:Dataset,
