@@ -259,6 +259,7 @@ const build: Build = async function* (release: Release) {
   const notCoding: string[] = [];
   const unmapped = new Map<string, number>();
   const disagreeing: string[] = [];
+  const unreadDates = new Map<string, number>();
   const unmappedIn = (kind: string, term: string): void => {
     const key = `${kind} "${term}"`;
     unmapped.set(key, (unmapped.get(key) ?? 0) + 1);
@@ -295,7 +296,10 @@ const build: Build = async function* (release: Release) {
     const lastEvaluated =
       said.lastEvaluated === "-" ? undefined : day(said.lastEvaluated);
     if (said.lastEvaluated !== "-" && lastEvaluated === undefined)
-      unmappedIn("last evaluated", said.lastEvaluated);
+      unreadDates.set(
+        said.lastEvaluated,
+        (unreadDates.get(said.lastEvaluated) ?? 0) + 1,
+      );
 
     const expressions = new Set<string>(submitted.get(id));
     const named = nameExpression(name);
@@ -332,25 +336,31 @@ const build: Build = async function* (release: Release) {
     };
   }
 
+  const counted = (n: number, one: string, many: string): string =>
+    `${n} ${n === 1 ? one : many}`;
   if (ambiguous.size > 0)
     release.finding(
-      `${ambiguous.size} expressions name more than one VariationID in ${HGVS4VARIATION} or ${VARIANT_SUMMARY} and key no row: ${[...ambiguous].sort().slice(0, SHOWN).join(", ")}${ambiguous.size > SHOWN ? ", …" : ""}`,
+      `${counted(ambiguous.size, "expression names", "expressions name")} more than one VariationID in ${HGVS4VARIATION} or ${VARIANT_SUMMARY} and key no row: ${[...ambiguous].sort().slice(0, SHOWN).join(", ")}${ambiguous.size > SHOWN ? ", …" : ""}`,
     );
   if (notCoding.length > 0)
     release.finding(
-      `${notCoding.length} expressions are no coding NM_ expression in its normal form and key no row: ${notCoding.slice(0, SHOWN).join(", ")}${notCoding.length > SHOWN ? ", …" : ""}`,
+      `${counted(notCoding.length, "expression is", "expressions are")} no coding NM_ expression in its normal form and key no row: ${notCoding.slice(0, SHOWN).join(", ")}${notCoding.length > SHOWN ? ", …" : ""}`,
     );
   for (const [term, rows] of [...unmapped].sort())
     release.finding(
-      `${term} is in no concept of the vocabulary's schemes: ${rows} variations hold it, and keep the terms that matched`,
+      `${term} is in no concept of the vocabulary's schemes: ${counted(rows, "variation holds", "variations hold")} it, and keep the terms that matched`,
+    );
+  for (const [date, rows] of [...unreadDates].sort())
+    release.finding(
+      `last evaluated "${date}" is not a date the builder reads: ${counted(rows, "variation holds", "variations hold")} it, and state no date`,
     );
   if (disagreeing.length > 0)
     release.finding(
-      `${disagreeing.length} variations have GRCh38 and GRCh37 lines that disagree, and GRCh38 was taken: ${firstOf(disagreeing)}`,
+      `${counted(disagreeing.length, "variation has", "variations have")} GRCh38 and GRCh37 lines that disagree, and GRCh38 was taken: ${firstOf(disagreeing)}`,
     );
   if (unlisted.size > 0)
     release.finding(
-      `${unlisted.size} VariationIDs of ${[...genes].sort().join(", ")} are in ${HGVS4VARIATION} and not in ${VARIANT_SUMMARY}, and were skipped: ${firstOf(unlisted)}`,
+      `${counted(unlisted.size, "VariationID", "VariationIDs")} of ${[...genes].sort().join(", ")} ${unlisted.size === 1 ? "is" : "are"} in ${HGVS4VARIATION} and not in ${VARIANT_SUMMARY}, and ${unlisted.size === 1 ? "was" : "were"} skipped: ${firstOf(unlisted)}`,
     );
 };
 

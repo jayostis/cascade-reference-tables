@@ -207,7 +207,7 @@ test("the fixture release gives 90011's row both of its expressions, and each th
   for (const expected of [
     /NM_000249\.3:c\.100A>G/,
     /NM_001300\.5:n\.123A>G/,
-    /"made-up term" .* 1 variations/,
+    /"made-up term" .* 1 variation holds/,
     /GRCh38 and GRCh37 lines that disagree.*: 90015/,
     /not in variant_summary\.txt\.gz.*: 90019/,
   ])
