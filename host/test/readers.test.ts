@@ -3,6 +3,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
+import { gzipSync } from "node:zlib";
 import { Refusal } from "../src/builder.js";
 import { delimited, fixedWidth, jsonLines, xlsx } from "../src/readers.js";
 
@@ -44,6 +45,32 @@ test("a release file is read line by line, as each reader cuts it", async () => 
       for await (const line of reader(path)) found.push(line);
       assert.deepEqual(found, expected, JSON.stringify(text));
     }
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test("a gzip file is read line for line as its plain twin is, and a file that is not gzip is refused", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "readers-"));
+  try {
+    const text = "﻿a|b\r\n\n".concat("c|d\n".repeat(50000), "e|f");
+    await writeFile(join(dir, "plain.txt"), text);
+    await writeFile(join(dir, "zipped.txt.gz"), gzipSync(text));
+    const read = async (path: string, gzip: boolean) => {
+      const found: unknown[] = [];
+      for await (const line of delimited(path, "|", gzip)) found.push(line);
+      return found;
+    };
+    const plain = await read(join(dir, "plain.txt"), false);
+    assert.equal(plain.length, 50002);
+    assert.deepEqual(await read(join(dir, "zipped.txt.gz"), true), plain);
+    await assert.rejects(
+      read(join(dir, "plain.txt"), true),
+      (error) =>
+        error instanceof Refusal && /not a gzip file/.test(error.message),
+    );
+    await writeFile(join(dir, "cut.txt.gz"), gzipSync(text).subarray(0, 40));
+    await assert.rejects(read(join(dir, "cut.txt.gz"), true), Refusal);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

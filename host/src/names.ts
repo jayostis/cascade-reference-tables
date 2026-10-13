@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { createReadStream } from "node:fs";
 import { canonize } from "rdf-canonize";
 import { defaultGraph, PROV, type Quad, quad, triple } from "./rdf.js";
 
@@ -13,7 +14,20 @@ export function sha256(bytes: Uint8Array | string): Buffer {
 
 /** A document's name from its bytes (cascade-vocabulary runtime/rules.md, N5). */
 export function documentName(bytes: Uint8Array | string): string {
-  return NI + sha256(bytes).toString("base64url");
+  return documentNameOf(sha256(bytes));
+}
+
+/** A document's name from the SHA-256 of its bytes. */
+export function documentNameOf(digest: Buffer): string {
+  return NI + digest.toString("base64url");
+}
+
+/** The SHA-256 of a file, read as a stream. */
+export async function sha256OfFile(path: string): Promise<Buffer> {
+  const hash = createHash("sha256");
+  for await (const chunk of createReadStream(path))
+    hash.update(chunk as Buffer);
+  return hash.digest();
 }
 
 /** A name from its inputs by the Bridge's record rule (N2). */

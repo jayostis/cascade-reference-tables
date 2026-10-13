@@ -1,8 +1,12 @@
-import { mkdir, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { createWriteStream } from "node:fs";
+import { mkdir, rm } from "node:fs/promises";
 import { basename, join } from "node:path";
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
+import type { ReadableStream as WebReadableStream } from "node:stream/web";
 import { Refusal } from "./builder.js";
 import { Feed } from "./feed.js";
-import { sha256 } from "./names.js";
 import {
   build,
   type BuildOptions,
@@ -78,62 +82,197 @@ export async function check(
     return checkReleaseApi(source, feed, fetchWith, folder, seen);
   if (source.detectedBy === `${TABLES}FolderListing`)
     return checkFolderListing(source, feed, fetchWith, folder, seen, now);
+  if (source.detectedBy === `${TABLES}DatedUrl`)
+    return checkDatedUrl(source, feed, fetchWith, folder, seen, now);
   if (source.detectedBy !== `${TABLES}ConditionalGet`)
     throw new Error(
       `the host cannot yet detect a release by ${source.detectedBy}`,
     );
   const recorded = held(source, feed, seen);
-  const answers = new Map<string, { bytes?: Buffer; modified?: string }>();
-  for (const [name, url] of source.files) {
-    const since = recorded.get(name)?.modified;
-    const response = await fetchWith(url, {
-      headers:
-        since === undefined
-          ? {}
-          : { "If-Modified-Since": new Date(since).toUTCString() },
-    });
-    if (response.status === 304) {
-      answers.set(name, {});
-      continue;
+  const answers = new Map<string, { checksum?: string; modified?: string }>();
+  await mkdir(folder, { recursive: true });
+  try {
+    for (const [name, url] of source.files) {
+      const since = recorded.get(name)?.modified;
+      const response = await fetchWith(url, {
+        headers:
+          since === undefined
+            ? {}
+            : { "If-Modified-Since": new Date(since).toUTCString() },
+      });
+      if (response.status === 304) {
+        answers.set(name, {});
+        continue;
+      }
+      if (!response.ok) throw new Error(`${url} answered ${response.status}`);
+      const modified = xsdDateTime(response.headers.get("Last-Modified"));
+      answers.set(name, {
+        checksum: await save(response, join(folder, name)),
+        ...(modified === undefined ? {} : { modified }),
+      });
     }
-    if (!response.ok) throw new Error(`${url} answered ${response.status}`);
-    const modified = xsdDateTime(response.headers.get("Last-Modified"));
-    answers.set(name, {
-      bytes: Buffer.from(await response.arrayBuffer()),
-      ...(modified === undefined ? {} : { modified }),
-    });
+    const changed = [...answers].some(
+      ([name, { checksum }]) =>
+        checksum !== undefined && !recorded.get(name)?.checksums.has(checksum),
+    );
+    const unbuilt = feed.unbuilt(
+      source.series.map((series) => series.iri),
+      source.builder.version,
+      seen.builder,
+    );
+    if (!changed && !unbuilt) {
+      await rm(folder, { recursive: true, force: true });
+      return { found: "nothing new" };
+    }
+    const modified = new Map<string, string>();
+    for (const [name, url] of source.files) {
+      const { checksum } = answers.get(name)!;
+      let when = answers.get(name)!.modified;
+      if (checksum === undefined) {
+        const response = await fetchWith(url);
+        if (!response.ok) throw new Error(`${url} answered ${response.status}`);
+        await save(response, join(folder, name));
+        when = xsdDateTime(response.headers.get("Last-Modified"));
+      }
+      if (when !== undefined) modified.set(name, when);
+    }
+    const newest = [...modified.values()].sort().at(-1);
+    return {
+      found: "new",
+      folder,
+      modified,
+      label: newest === undefined ? "unlabelled" : newest.slice(0, 10),
+    };
+  } catch (error) {
+    await rm(folder, { recursive: true, force: true });
+    throw error;
   }
-  const changed = [...answers].some(
-    ([name, { bytes }]) =>
-      bytes !== undefined &&
-      !recorded.get(name)?.checksums.has(sha256(bytes).toString("hex")),
+}
+
+/** A response's body written to the path as it arrives; its SHA-256 in hex. */
+async function save(response: Response, path: string): Promise<string> {
+  const hash = createHash("sha256");
+  await pipeline(
+    response.body === null
+      ? Readable.from([])
+      : Readable.fromWeb(response.body as unknown as WebReadableStream),
+    async function* (chunks: AsyncIterable<Buffer>) {
+      for await (const chunk of chunks) {
+        hash.update(chunk);
+        yield chunk;
+      }
+    },
+    createWriteStream(path),
   );
+  return hash.digest("hex");
+}
+
+const MONTH = /^\d{4}-\d{2}/;
+
+function monthAfter(month: string, step = 1): string {
+  const total = Number(month.slice(0, 4)) * 12 + Number(month.slice(5, 7)) - 1;
+  const next = total + step;
+  return `${Math.floor(next / 12)}-${String((next % 12) + 1).padStart(2, "0")}`;
+}
+
+/** The newest month a current version of the source's series is labelled with. */
+function latestMonth(source: Source, feed: Feed): string | undefined {
+  return source.series
+    .flatMap((series) => {
+      const version = feed.current(series.iri);
+      const month =
+        version === undefined
+          ? undefined
+          : MONTH.exec(feed.labelOf(version) ?? "")?.[0];
+      return month === undefined ? [] : [month];
+    })
+    .sort()
+    .at(-1);
+}
+
+const MONTHS_LOOKED_BACK = 3;
+
+/**
+ * Asks for the file of the month after the newest version's, at the address the source gives it. Nothing new when the
+ * publisher has none yet, unless the builder is newer than the version's, which re-reads the month it built. With no
+ * version, the newest of the last few months that has a file is new. The release is labelled by its month; the
+ * source's other files are taken as they are.
+ */
+async function checkDatedUrl(
+  source: Source,
+  feed: Feed,
+  fetchWith: Fetch,
+  folder: string,
+  seen: Seen,
+  now: string,
+): Promise<Checked> {
+  if (source.dated.size === 0)
+    throw new Error(`${source.label} has no file with a dated address`);
+  const latest = latestMonth(source, feed);
   const unbuilt = feed.unbuilt(
     source.series.map((series) => series.iri),
     source.builder.version,
     seen.builder,
   );
-  if (!changed && !unbuilt) return { found: "nothing new" };
-  await mkdir(folder, { recursive: true });
   const modified = new Map<string, string>();
-  for (const [name, url] of source.files) {
-    let { bytes, modified: when } = answers.get(name)!;
-    if (bytes === undefined) {
-      const response = await fetchWith(url);
-      if (!response.ok) throw new Error(`${url} answered ${response.status}`);
-      bytes = Buffer.from(await response.arrayBuffer());
-      when = xsdDateTime(response.headers.get("Last-Modified"));
+  await mkdir(folder, { recursive: true });
+  const take = async (
+    name: string,
+    url: string,
+    mayBeAbsent = false,
+  ): Promise<boolean> => {
+    const response = await fetchWith(url);
+    if (mayBeAbsent && response.status === 404) {
+      await response.body?.cancel();
+      return false;
     }
-    await writeFile(join(folder, name), bytes);
+    if (!response.ok) throw new Error(`${url} answered ${response.status}`);
+    const when = xsdDateTime(response.headers.get("Last-Modified"));
+    await save(response, join(folder, name));
     if (when !== undefined) modified.set(name, when);
-  }
-  const newest = [...modified.values()].sort().at(-1);
-  return {
-    found: "new",
-    folder,
-    modified,
-    label: newest === undefined ? "unlabelled" : newest.slice(0, 10),
+    return true;
   };
+  const dated = [...source.dated];
+  const takeMonth = async (month: string, mayBeAbsent = false) => {
+    for (const [i, [name, template]] of dated.entries())
+      if (
+        !(await take(
+          name,
+          template.replaceAll("{month}", month),
+          mayBeAbsent && i === 0,
+        ))
+      )
+        return false;
+    return true;
+  };
+  try {
+    const months =
+      latest === undefined
+        ? Array.from({ length: MONTHS_LOOKED_BACK }, (_, i) =>
+            monthAfter(now.slice(0, 7), -i),
+          )
+        : [monthAfter(latest)];
+    let found: string | undefined;
+    for (const month of months)
+      if (await takeMonth(month, true)) {
+        found = month;
+        break;
+      }
+    if (found === undefined && latest !== undefined && unbuilt) {
+      await takeMonth(latest);
+      found = latest;
+    }
+    if (found === undefined) {
+      await rm(folder, { recursive: true, force: true });
+      return { found: "nothing new" };
+    }
+    for (const [name, url] of source.files)
+      if (!source.dated.has(name)) await take(name, url);
+    return { found: "new", folder, modified, label: found };
+  } catch (error) {
+    await rm(folder, { recursive: true, force: true });
+    throw error;
+  }
 }
 
 /** A release as the publisher's API lists it. */
@@ -188,10 +327,7 @@ async function checkReleaseApi(
     throw new Error(`${release.downloadUrl} answered ${download.status}`);
   await rm(folder, { recursive: true, force: true });
   await mkdir(folder, { recursive: true });
-  await writeFile(
-    join(folder, basename(release.fileName)),
-    Buffer.from(await download.arrayBuffer()),
-  );
+  await save(download, join(folder, basename(release.fileName)));
   return {
     found: "new",
     folder,
@@ -343,10 +479,7 @@ async function checkFolderListing(
   for (const { name, url, modified: when } of taken.values()) {
     const response = await fetchWith(url);
     if (!response.ok) throw new Error(`${url} answered ${response.status}`);
-    await writeFile(
-      join(folder, name),
-      Buffer.from(await response.arrayBuffer()),
-    );
+    await save(response, join(folder, name));
     if (when !== undefined) modified.set(name, when);
   }
   return { found: "new", folder, modified, label };

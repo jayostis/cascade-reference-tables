@@ -30,6 +30,15 @@ tables:ConditionalGet a tables:DetectionMethod ;
     rdfs:label "conditional GET"@en ;
     rdfs:comment "Each file is requested with If-Modified-Since its last Last-Modified; a 304, or a 200 with the checksum already held, is nothing new."@en .
 
+tables:DatedUrl a tables:DetectionMethod ;
+    rdfs:label "dated address"@en ;
+    rdfs:comment "The publisher keeps a file for each month at an address holding the month; a release is the file of a month with the source's other files as they are, and the month after the newest version's is asked for."@en .
+
+tables:archived a owl:DatatypeProperty ;
+    rdfs:label "archived"@en ;
+    rdfs:comment "False on a file that a version names and the release does not keep."@en ;
+    rdfs:range xsd:boolean .
+
 tables:ReleaseApi a tables:DetectionMethod ;
     rdfs:label "release API"@en ;
     rdfs:comment "The publisher's API lists its releases, each with its download URL."@en .
@@ -101,4 +110,5 @@ tables:codeSystem a owl:ObjectProperty ;
 
 tables:urlTemplate a owl:DatatypeProperty ;
     rdfs:label "URL template"@en ;
+    rdfs:comment "An address with {code} where a code goes, of a history lookup, or with {month} where a month as YYYY-MM goes, of a file of a source detected by its dated address."@en ;
     rdfs:range xsd:string .

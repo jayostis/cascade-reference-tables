@@ -56,6 +56,11 @@ export class Shapes {
     return new Shapes(quads);
   }
 
+  /** These shapes and the others. */
+  and(others: readonly Quad[]): Shapes {
+    return new Shapes([...this.shapes, ...others]);
+  }
+
   /** Every result of the shapes' targets on the data; none when it conforms. */
   async violations(data: readonly Quad[]): Promise<string[]> {
     return said(

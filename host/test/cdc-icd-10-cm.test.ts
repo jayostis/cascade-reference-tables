@@ -33,6 +33,9 @@ function release(order: string[][], conversions: string[][]): Release {
         xlsx: () => lines(conversions),
       }) as unknown as ReleaseFile,
     codeIri: (_system, code) => `${ICD}${code}`,
+    concepts: () => new Map(),
+    genes: () => [],
+    finding: () => undefined,
   };
 }
 

@@ -47,6 +47,8 @@ export interface Input {
   readonly title: string;
   readonly checksum: string;
   readonly modified?: string;
+  /** The stable address the publisher keeps the file at, where it keeps it. */
+  readonly source?: string;
 }
 
 /** A new version, as the feed records it. */
@@ -67,6 +69,8 @@ export interface NewVersion {
   readonly rowsFile: string;
   readonly checksum: string;
   readonly mapping: boolean;
+  /** The genes it covers (`rec:coversGene`). */
+  readonly covers: readonly string[];
 }
 
 function checksum(subject: string, hex: string): Quad[] {
@@ -136,6 +140,14 @@ export class Feed {
             graph.value(version!, `${TABLES}builderVersion`) === builderVersion,
         ))
     );
+  }
+
+  /** The genes a version covers, sorted. */
+  coversOf(version: string): string[] {
+    return this.graph
+      .objects(version, `${REC}coversGene`)
+      .map((gene) => gene.value)
+      .sort();
   }
 
   /** The rows file of a version, relative to the feed, and its checksum. */
@@ -224,6 +236,9 @@ export class Feed {
       triple(v, `${PROV}specializationOf`, series.iri),
       triple(v, `${DCAT}version`, label),
       triple(v, `${PAV}version`, label),
+      ...version.covers.map((gene) =>
+        triple(v, `${REC}coversGene`, literal(gene)),
+      ),
       ...(version.previous === undefined
         ? []
         : [triple(v, `${PROV}wasRevisionOf`, version.previous)]),
@@ -251,6 +266,9 @@ export class Feed {
       add(
         triple(input.name, `${RDF}type`, `${PROV}Entity`),
         triple(input.name, `${DCT}title`, literal(input.title)),
+        ...(input.source === undefined
+          ? []
+          : [triple(input.name, `${DCT}source`, input.source)]),
         ...(input.modified === undefined
           ? []
           : [

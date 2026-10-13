@@ -4,7 +4,6 @@ import {
   mkdir,
   mkdtemp,
   readdir,
-  readFile,
   rm,
   writeFile,
 } from "node:fs/promises";
@@ -18,7 +17,13 @@ import { type Described, describe } from "./describe.js";
 import { type Quad, REC, TABLES } from "./rdf.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
 import { Feed, type Input } from "./feed.js";
-import { documentName, sha256, versionName } from "./names.js";
+import {
+  documentName,
+  documentNameOf,
+  sha256,
+  sha256OfFile,
+  versionName,
+} from "./names.js";
 import { releaseOf } from "./release.js";
 import { keyed, RowSchema, SeriesRows, toRdf } from "./rows.js";
 import { Shapes } from "./shapes.js";
@@ -65,7 +70,9 @@ export async function readContract(
       shapes("source.shapes.ttl"),
       shapes("builder.shapes.ttl"),
     ),
-    feedShapes: await Shapes.read(shapes("feed.shapes.ttl")),
+    feedShapes: (await Shapes.read(shapes("feed.shapes.ttl"))).and(
+      vocabulary.shapes,
+    ),
     schema: new RowSchema(join(root, "builder", "interface.schema.json")),
     said: resolved.said,
   };
@@ -139,12 +146,16 @@ export function declarationViolations(
   ]);
 }
 
-/** The builder's rows of each series its source declares, every one checked; a `Refusal` names what is wrong. */
+/**
+ * The builder's rows of each series its source declares, every one checked; a `Refusal` names what is wrong. What the
+ * builder finds worth showing is added to `findings`.
+ */
 export async function rowsOf(
   contract: Contract,
   source: Source,
   build: Build,
   release: string,
+  findings: string[] = [],
 ): Promise<Map<string, SeriesRows>> {
   const declared = await declarationViolations(contract, source);
   if (declared.length > 0)
@@ -166,7 +177,11 @@ export async function rowsOf(
     if (source.detectedBy === BY_LISTING)
       await openListed(source, release, opened);
     for await (const yielded of build(
-      releaseOf(contract.vocabulary, source.label, source.files, opened),
+      releaseOf(contract.vocabulary, source.label, source.files, opened, {
+        gzipped: source.gzipped,
+        genes: new Map(source.series.map((s) => [s.iri, s.coversGene])),
+        finding: (text) => findings.push(text),
+      }),
     )) {
       const row = contract.schema.check(yielded);
       const into = series.get(row.series);
@@ -207,6 +222,26 @@ async function checkShapes(
     throw new Refusal(
       `rows of ${description.label} do not conform:\n${found.join("\n")}`,
     );
+  if (description.kind === `${REC}VariantClassifications`)
+    checkExpressionsUnique(description, rows);
+}
+
+/** Each `rec:hgvsExpression` is on one row of the whole version, which the shape checks only within a chunk. */
+function checkExpressionsUnique(
+  description: SourceSeries,
+  rows: SeriesRows,
+): void {
+  const owner = new Map<string, string>();
+  for (const [key, quads] of rows.rows)
+    for (const q of quads) {
+      if (q.predicate.value !== `${REC}hgvsExpression`) continue;
+      const held = owner.get(q.object.value);
+      if (held !== undefined && held !== key)
+        throw new Refusal(
+          `rows of ${description.label} do not conform: ${q.object.value} is on two rows, ${held} and ${key}`,
+        );
+      owner.set(q.object.value, key);
+    }
 }
 
 /** Keys in one version only, added or removed; in both with other triples, changed. */
@@ -228,6 +263,31 @@ export function differences(
       .map(([key]) => key)
       .sort(),
   };
+}
+
+/** A file the release keeps: its bytes, or where they are. */
+type Kept =
+  | { readonly file: string; readonly bytes: Buffer }
+  | { readonly file: string; readonly path: string };
+
+/** The address of a file of a source with dated addresses, in the month the label names; none for another file. */
+function datedAddress(
+  source: Source,
+  name: string,
+  label: string,
+): string | undefined {
+  const template = source.dated.get(name);
+  if (template === undefined) return undefined;
+  const month = /^\d{4}-\d{2}/.exec(label)?.[0];
+  if (month === undefined)
+    throw new Refusal(
+      `${source.label}'s release is labelled ${label}, not by a month`,
+    );
+  return template.replaceAll("{month}", month);
+}
+
+function sameGenes(a: readonly string[], b: readonly string[]): boolean {
+  return a.length === b.length && a.every((gene, i) => gene === b[i]);
 }
 
 export function notes({ added, removed, changed }: Differences): string {
@@ -334,7 +394,14 @@ export async function build(
   options: BuildOptions,
 ): Promise<Outcome[]> {
   const { source } = options;
-  const series = await rowsOf(contract, source, options.build, options.release);
+  const findings: string[] = [];
+  const series = await rowsOf(
+    contract,
+    source,
+    options.build,
+    options.release,
+    findings,
+  );
   const feed = await Feed.readOrEmpty(options.feed);
   const folders = [
     folderStore([options.out, dirname(options.feed)]),
@@ -362,19 +429,23 @@ export async function build(
       if (description.kind === `${REC}CodeStatus`)
         await checkShapes(contract, description, series.get(description.iri)!);
   const inputs: Input[] = [];
-  const inputFiles: { file: string; bytes: Buffer }[] = [];
-  for (const title of await inputsOf(source, options.release)) {
-    const path = join(options.release, title);
-    if (!existsSync(path)) throw new Refusal(`the release has no ${title}`);
-    const bytes = await readFile(path);
-    const modified = options.modified?.get(title);
-    const checksum = sha256(bytes).toString("hex");
-    inputFiles.push({ file: `inputs/${checksum}-${title}`, bytes });
+  const inputFiles: Kept[] = [];
+  for (const name of await inputsOf(source, options.release)) {
+    const path = join(options.release, name);
+    if (!existsSync(path)) throw new Refusal(`the release has no ${name}`);
+    const digest = await sha256OfFile(path);
+    const modified = options.modified?.get(name);
+    const checksum = digest.toString("hex");
+    const address = datedAddress(source, name, options.label);
+    const title = address === undefined ? name : basename(address);
+    if (!source.unarchived.has(name))
+      inputFiles.push({ file: `inputs/${checksum}-${title}`, path });
     inputs.push({
-      name: documentName(bytes),
+      name: documentNameOf(digest),
       title,
       checksum,
       ...(modified === undefined ? {} : { modified }),
+      ...(address === undefined ? {} : { source: address }),
     });
   }
   const released = [...inputs];
@@ -401,7 +472,8 @@ export async function build(
     const found = differences(keyed(beforeRows), after);
     const same =
       previous !== undefined &&
-      found.added.length + found.removed.length + found.changed.length === 0;
+      found.added.length + found.removed.length + found.changed.length === 0 &&
+      sameGenes(feed.coversOf(previous), description.coversGene);
     if (same) {
       outcomes.push({
         series: description.iri,
@@ -439,6 +511,7 @@ export async function build(
         rowsFile: file.file,
         checksum: file.checksum,
         mapping: rows.form === "mapping",
+        covers: description.coversGene,
       },
       options.now,
     );
@@ -448,7 +521,9 @@ export async function build(
       version,
       ...(previous === undefined ? {} : { previous }),
       differences: found,
-      described: describe(beforeRows, rows.triples(), found),
+      described: describe(beforeRows, rows.triples(), found, (concept) =>
+        contract.vocabulary.labelOf(concept),
+      ),
     });
   }
   if (outcomes.some((o) => o.version !== undefined)) {
@@ -456,9 +531,11 @@ export async function build(
     if (violations.length > 0)
       throw new Error(`the feed would not conform:\n${violations.join("\n")}`);
     const archived = [...files, ...inputFiles];
-    for (const { file, bytes } of archived) {
-      await mkdir(dirname(join(options.out, file)), { recursive: true });
-      await writeFile(join(options.out, file), bytes);
+    for (const kept of archived) {
+      const to = join(options.out, kept.file);
+      await mkdir(dirname(to), { recursive: true });
+      if ("path" in kept) await copyFile(kept.path, to);
+      else await writeFile(to, kept.bytes);
     }
     await mkdir(dirname(options.feed), { recursive: true });
     await feed.write(options.feed);
@@ -476,7 +553,10 @@ export async function build(
     );
   }
   await mkdir(options.out, { recursive: true });
-  await writeFile(join(options.out, "differences.md"), markdown(outcomes));
+  await writeFile(
+    join(options.out, "differences.md"),
+    markdown(outcomes, findings),
+  );
   const built = outcomes.some((o) => o.version !== undefined);
   await writeChecked(
     options.out,
@@ -536,7 +616,10 @@ function listed(
 }
 
 /** The row differences, as a pull request's description shows them. */
-export function markdown(outcomes: readonly Outcome[]): string {
+export function markdown(
+  outcomes: readonly Outcome[],
+  findings: readonly string[] = [],
+): string {
   const lists = outcomes.flatMap((o) =>
     o.version === undefined
       ? []
@@ -547,7 +630,11 @@ export function markdown(outcomes: readonly Outcome[]): string {
     .map((list) => ({ list, size: list.reduce((n, l) => n + l.length + 3, 0) }))
     .filter(({ size }) => size > 0)
     .sort((a, b) => a.size - b.size);
-  let left = BODY_CHARACTERS;
+  const findingsText =
+    findings.length === 0
+      ? ""
+      : `\n## Findings\n\n${findings.map((text) => `- ${text}`).join("\n")}\n`;
+  let left = Math.max(0, BODY_CHARACTERS - findingsText.length);
   for (const [i, { list, size }] of bySize.entries()) {
     const share = Math.min(size, Math.floor(left / (bySize.length - i)));
     shares.set(list, share);
@@ -580,5 +667,6 @@ export function markdown(outcomes: readonly Outcome[]): string {
             ]),
       ].join("\n"),
     )
-    .join("\n");
+    .join("\n")
+    .concat(findingsText);
 }

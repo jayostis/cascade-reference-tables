@@ -6,7 +6,12 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { after, before, describe, test } from "node:test";
 import { crc32, gunzipSync } from "node:zlib";
-import { type Build, Refusal, type Row } from "../src/builder.js";
+import {
+  type Build,
+  type ClassificationRow,
+  Refusal,
+  type Row,
+} from "../src/builder.js";
 import { conformanceExamples, runConformance } from "../src/conformance.js";
 import {
   buildLatest,
@@ -23,6 +28,7 @@ import {
   type Contract,
   type Outcome,
   readContract,
+  rowsOf,
   type Seen,
   type SeenInputs,
 } from "../src/pipeline.js";
@@ -43,7 +49,7 @@ import {
   mergeChecked,
   publish,
 } from "../src/publish.js";
-import { keyed } from "../src/rows.js";
+import { keyed, toRdf } from "../src/rows.js";
 import { folderStore } from "../src/stores.js";
 import {
   loadBuild,
@@ -84,9 +90,14 @@ interface World {
   askedHistory: string[];
   /** The contract of the builds that follow a vocabulary moving a code system's space. */
   moved?: Contract;
+  /** The months the publisher of the dated example has a file for, and each file name it was asked for. */
+  months?: string[];
+  datedAsked?: string[];
 }
 
 let contract: Contract;
+let classifications: Source;
+let dated: Source;
 let example: Source;
 let byReleaseApi: Source;
 let byFolderListing: Source;
@@ -922,6 +933,166 @@ const steps = new Steps<World>()
       assert.equal(asked.at(-1), since);
     },
   )
+  .define("the classifications example builder yields {}", (world, [rows]) =>
+    classificationsGiven(world, JSON.parse(rows as string) as Row[]),
+  )
+  .define(
+    "the classifications example builder is given {int} rows, the first and the last found by the expression {string}",
+    (world, [count, expression]) => {
+      const series = classifications.series[0]!.iri;
+      const found = codeIri(`${REC}HGVS`, expression as string);
+      return classificationsGiven(
+        world,
+        Array.from({ length: count as number }, (_, i) => ({
+          series,
+          variation: `http://www.ncbi.nlm.nih.gov/clinvar/${i + 1}`,
+          ...(i === 0 || i === (count as number) - 1 ? { hgvs: [found] } : {}),
+          submitters: 1,
+        })),
+      );
+    },
+  )
+  .define(
+    "the vocabulary's tests\\/vectors\\/clinvar\\/row.json gives the row of its row.ttl",
+    async () => {
+      const folder = join(
+        contract.vocabulary.folder,
+        "tests",
+        "vectors",
+        "clinvar",
+      );
+      const row = contract.schema.check(
+        JSON.parse(await readFile(join(folder, "row.json"), "utf8")),
+      ) as ClassificationRow;
+      const prefixes = Object.entries(PREFIXES)
+        .map(([prefix, space]) => `@prefix ${prefix}: <${space}> .`)
+        .join("\n");
+      const expected = parseTurtle(
+        `@prefix genomics: <https://ns.cascadeprotocol.org/genomics/v1#> .\n${prefixes}\n${await readFile(join(folder, "row.ttl"), "utf8")}`,
+        "urn:x:",
+      );
+      assert.deepEqual(
+        keyed(toRdf(row).triples).get(row.variation),
+        keyed(expected).get(row.variation),
+      );
+    },
+  )
+  .define("the publisher has the months {string}", (world, [months]) => {
+    world.months = (months as string).split(", ");
+  })
+  .define("the dated example source is checked on {string}", (world, [day]) =>
+    datedChecked(world, dated, day as string),
+  )
+  .define(
+    "the dated example source, with its builder at version {string}, is checked on {string}",
+    (world, [version, day]) =>
+      datedChecked(
+        world,
+        { ...dated, builder: { ...dated.builder, version: version as string } },
+        day as string,
+      ),
+  )
+  .define(
+    "the dated example source is built from the publisher on {string}",
+    (world, [day]) => datedBuiltFromPublisher(world, dated, day as string),
+  )
+  .define("the publisher was asked for {string}", ({ datedAsked }, [files]) => {
+    assert.deepEqual(datedAsked, (files as string).split(", "));
+  })
+  .define(
+    "the publisher was last asked for {string}",
+    ({ datedAsked }, [file]) => {
+      assert.equal(datedAsked?.at(-1), file);
+    },
+  )
+  .define(
+    "the input {string} of the last build is cited at {string}",
+    async (world, [title, address]) => {
+      const feed = await feedOf(world);
+      const inputs = feed.triples.filter(
+        (q) => q.predicate.value === `${DCT}title` && q.object.value === title,
+      );
+      assert.equal(inputs.length, 1, `${title as string} is not one input`);
+      assert.equal(
+        feed.graph.value(inputs[0]!.subject.value, `${DCT}source`),
+        address,
+      );
+    },
+  )
+  .define("the release keeps the input {string}", async ({ out }, [name]) => {
+    const { files } = JSON.parse(
+      await readFile(join(out, "release.json"), "utf8"),
+    ) as { files: string[] };
+    assert.ok(
+      files.some(
+        (file) =>
+          file.startsWith("inputs/") && file.endsWith(`-${name as string}`),
+      ),
+      files.join(", "),
+    );
+  })
+  .define("the release keeps no input", async ({ out }) => {
+    const { files } = JSON.parse(
+      await readFile(join(out, "release.json"), "utf8"),
+    ) as { files: string[] };
+    assert.deepEqual(
+      files.filter((file) => file.startsWith("inputs/")),
+      [],
+    );
+  })
+  .define(
+    "the example builder, finding {string}, builds the release {string} as {string}",
+    async (world, [finding, release, label]) => {
+      const inner = await loadBuild(ROOT, EXAMPLE);
+      const code: Build = async function* (given) {
+        given.finding(finding as string);
+        yield* inner(given);
+      };
+      await runBuild(world, release as string, label as string, code);
+    },
+  )
+  .define(
+    "the build's differences.md lists the finding {string}",
+    async ({ out }, [finding]) => {
+      const text = await readFile(join(out, "differences.md"), "utf8");
+      assert.ok(text.includes(`## Findings\n\n- ${finding as string}\n`), text);
+    },
+  )
+  .define("the last build made a version of each series", (world) => {
+    assert.deepEqual(
+      lastBuild(world)
+        .filter((o) => o.version !== undefined)
+        .map((o) => o.series)
+        .sort(),
+      example.series.map((s) => s.iri).sort(),
+    );
+  })
+  .define(
+    "the example builder's release {string} is built as {string}, the series covering the genes {string}",
+    (world, [release, label, genes]) =>
+      runBuild(world, release as string, label as string, undefined, {
+        source: {
+          ...example,
+          series: example.series.map((s) => ({
+            ...s,
+            coversGene: (genes as string).split(", ").sort(),
+          })),
+        },
+      }),
+  )
+  .define(
+    "each version of the last build covers the genes {string}",
+    async (world, [genes]) => {
+      const feed = await feedOf(world);
+      const made = lastBuild(world).filter((o) => o.version !== undefined);
+      assert.ok(made.length > 0, "the last build made no version");
+      for (const { version } of made)
+        assert.deepEqual(
+          feed.coversOf(version!),
+          (genes as string).split(", ").sort(),
+        );
+    },
+  )
   .define("the site's checks are:", (world, _, step) => {
     const wanted = checksOf(step.table!);
     if (world.site === undefined) {
@@ -1066,11 +1237,94 @@ async function builtFromPublisher(world: World, source: Source): Promise<void> {
   world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
 }
 
-function lastSeen(world: World): Seen {
+const codeIri = (system: string, code: string): string =>
+  contract.vocabulary.codeIri(system, code);
+
+/** The rows the classifications example builder yields, built; a refusal is the world's. */
+async function classificationsGiven(
+  world: World,
+  yielded: readonly Row[],
+): Promise<void> {
+  const code: Build = async function* () {
+    yield* yielded;
+  };
+  try {
+    await rowsOf(
+      contract,
+      classifications,
+      code,
+      join(EXAMPLE, "fixtures", "release"),
+    );
+  } catch (error) {
+    if (!(error instanceof Refusal)) throw error;
+    world.refusal = error;
+  }
+}
+
+/** The publisher of the dated example: `codes.txt` of a month it has, each month the next example release. */
+function datedPublisher(world: World): Fetch {
+  return async (input) => {
+    const file = String(input).split("/").pop()!;
+    (world.datedAsked ??= []).push(file);
+    const month = /^codes_(\d{4}-\d{2})\.txt$/.exec(file)?.[1];
+    const at = month === undefined ? -1 : world.months!.indexOf(month);
+    if (at < 0) return new Response(null, { status: 404 });
+    return new Response(
+      await readFile(
+        join(
+          EXAMPLE,
+          "fixtures",
+          ["release", "release-2", "release-3"][at]!,
+          "codes.txt",
+        ),
+      ),
+      {
+        status: 200,
+        headers: { "Last-Modified": "Thu, 17 Sep 2026 21:01:41 GMT" },
+      },
+    );
+  };
+}
+
+async function datedBuiltFromPublisher(
+  world: World,
+  source: Source,
+  day: string,
+): Promise<void> {
+  const outcomes = await buildLatest(contract, {
+    source,
+    build: await loadBuild(ROOT, EXAMPLE),
+    feed: world.feed,
+    out: world.out,
+    now: `${day}T00:00:00Z`,
+    fetch: datedPublisher(world),
+    seen: lastSeen(world, dated),
+  });
+  world.builds.push(outcomes === "nothing new" ? [] : outcomes);
+  world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
+}
+
+async function datedChecked(
+  world: World,
+  source: Source,
+  day: string,
+): Promise<void> {
+  world.datedAsked = [];
+  world.checked = await check(
+    source,
+    await Feed.readOrEmpty(world.feed),
+    datedPublisher(world),
+    join(world.dir, "checked"),
+    lastSeen(world, dated),
+    `${day}T00:00:00Z`,
+  );
+}
+
+function lastSeen(world: World, source: Source = example): Seen {
   const file = join(world.out, "checked.json");
   if (!existsSync(file)) return { inputs: {} };
   const { checked } = JSON.parse(readFileSync(file, "utf8")) as SiteChecks;
-  const last = checked[example.iri];
+  const last = checked[source.iri];
   return {
     inputs: last?.inputs ?? {},
     ...(last?.builder === undefined ? {} : { builder: last.builder }),
@@ -1106,6 +1360,8 @@ function dropGraph(q: Quad): Quad {
 before(async () => {
   contract = await readContract(ROOT);
   example = await readSource(EXAMPLE);
+  dated = await readSource(join(ROOT, "fixtures", "dated-address"));
+  classifications = await readSource(join(ROOT, "fixtures", "classifications"));
   byReleaseApi = await readSource(join(ROOT, "fixtures", "release-api"));
   byFolderListing = await readSource(join(ROOT, "fixtures", "folder-listing"));
   carrying = await readSource(join(ROOT, "fixtures", "carrying"));

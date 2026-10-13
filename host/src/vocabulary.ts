@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rename, rm } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { promisify } from "node:util";
-import { Graph, parseTurtle, type Quad, RDF, REC, VOID } from "./rdf.js";
+import { Graph, parseTurtle, type Quad, RDF, REC, SKOS, VOID } from "./rdf.js";
 
 const run = promisify(execFile);
 const RECORDS = "ontologies/records/v1-draft/";
@@ -115,7 +115,9 @@ export class Vocabulary {
   codeOf(system: string, codeIri: string): string | undefined {
     const space = this.terms.value(system, `${VOID}uriSpace`);
     if (space === undefined) throw new Error(`${system} is not a code system`);
-    return codeIri.startsWith(space) ? codeIri.slice(space.length) : undefined;
+    return codeIri.startsWith(space)
+      ? decodeURIComponent(codeIri.slice(space.length))
+      : undefined;
   }
 
   /** The code system whose `void:uriSpace` the IRI starts with, the longest space first; `undefined` for none. */
@@ -130,10 +132,40 @@ export class Vocabulary {
     return this.#spaces.find(({ space }) => codeIri.startsWith(space))?.system;
   }
 
-  /** A code's IRI: its system's `void:uriSpace` followed by the code. */
+  /** A code's IRI: its system's `void:uriSpace` followed by the code as SPARQL's `ENCODE_FOR_URI` writes it. */
   codeIri(system: string, code: string): string {
     const space = this.terms.value(system, `${VOID}uriSpace`);
     if (space === undefined) throw new Error(`${system} is not a code system`);
-    return space + code;
+    return (
+      space +
+      encodeURIComponent(code).replace(
+        /[!'()*]/g,
+        (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`,
+      )
+    );
+  }
+
+  /** Each label of a concept of the scheme, its preferred, alternative and notation, with the concept's IRI. */
+  concepts(scheme: string): Map<string, string> {
+    const found = new Map<string, string>();
+    for (const concept of this.terms.subjects(`${SKOS}inScheme`, scheme))
+      for (const predicate of ["prefLabel", "altLabel", "notation"])
+        for (const label of this.terms.objects(
+          concept,
+          `${SKOS}${predicate}`,
+        )) {
+          const held = found.get(label.value);
+          if (held !== undefined && held !== concept)
+            throw new Error(
+              `${scheme} gives "${label.value}" to ${held} and ${concept}`,
+            );
+          found.set(label.value, concept);
+        }
+    return found;
+  }
+
+  /** A concept's preferred label, where the vocabulary gives one. */
+  labelOf(concept: string): string | undefined {
+    return this.terms.value(concept, `${SKOS}prefLabel`);
   }
 }

@@ -30,7 +30,8 @@ npm run host -- publish --site <folder> [--releases <owner/repo>] [--rows <folde
 
 A source is a folder under `builders/`, or a path. Without `--release`, `build` checks the publisher and builds what
 it has when it is new, keeping its files in `<out>/release/`; for a source detected by a release API, a release is
-its one zip, in `--release`'s folder too, and for one detected by a folder listing, every file the check took. `--checked` reads what the last check saw from a
+its one zip, in `--release`'s folder too, for one detected by a folder listing, every file the check took, and for one
+detected by a dated address, the file of the month after the newest version's, labelled by that month. `--checked` reads what the last check saw from a
 `checked.json`. The host reads the vocabulary from
 `$CASCADE_VOCABULARY`, else the sibling checkout `../cascade-vocabulary`, else the pinned commit, fetched into
 `.cache/`.
@@ -42,11 +43,21 @@ A Node program uses the host as a package, depending on a commit:
 `cascade-reference-tables/builder` and is loaded from the compiled `build.js` it provides beside its
 `source.ttl`.
 
+## The builders
+
+| builder                                                                  | reads                                                                 |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| [`builders/cdc-cvx/`](builders/cdc-cvx/)                                 | CDC's CVX codes and vaccine groups                                    |
+| [`builders/cdc-icd-10-cm/`](builders/cdc-icd-10-cm/)                     | CDC's ICD-10-CM order file and conversion table                       |
+| [`builders/nlm-rxnorm-prescribable/`](builders/nlm-rxnorm-prescribable/) | NLM's prescribable RxNorm content                                     |
+| [`builders/ncbi-clinvar/`](builders/ncbi-clinvar/)                       | NCBI's monthly ClinVar `variant_summary` and current `hgvs4variation` |
+
 ## The feed
 
 **https://jayostis.github.io/cascade-reference-tables/feed.ttl**, a DRAFT. Beside it, `checked.json` says when each
 source was last checked, and `rows/` holds each series' current rows and the rows they revise. Every version's rows
-and the publisher's input it was built from are kept in this repository's GitHub releases.
+and the publisher's input it was built from are kept in this repository's GitHub releases, but for an input its source
+marks not archived because its publisher keeps it.
 
 A version is published through review:
 

@@ -34,3 +34,25 @@ Feature: Rows
         | a term type row with a field of another form  | [{"series": "urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f", "subject": "http://hl7.org/fhir/sid/cvx/88", "termType": "SCD", "prefLabel": "flu"}] | is no row of builder/interface.schema.json | release |
         | one key given twice with different triples    | [{"series": "urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c", "subject": "http://hl7.org/fhir/sid/cvx/88", "prefLabel": "flu", "notation": "88"}, {"series": "urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c", "subject": "http://hl7.org/fhir/sid/cvx/88", "prefLabel": "influenza", "notation": "88"}]          | is given twice, with different triples                             | release |
         | a release missing a file its source declares  | []                                                                                                                                                                                                                                                                                                              | the release has no codes.txt                                       | missing |
+
+  Rule: H26. A classification row is a variation with what its source says of it, and its expressions find it
+
+    Example: the vocabulary's row for variation 90011 in the builder's form gives the vocabulary's Turtle
+      Then the vocabulary's tests/vectors/clinvar/row.json gives the row of its row.ttl
+
+    Scenario Outline: a build is refused: <case>
+      When the classifications example builder yields <rows>
+      Then the build is refused, saying "<reason>"
+
+      Examples:
+        | case                                 | rows                                                                                                                                                                                                | reason                                                                  |
+        | both submitter counts                | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "http://www.ncbi.nlm.nih.gov/clinvar/90011", "contributingSubmitters": 5, "submitters": 5}]                              | is no row of builder/interface.schema.json                              |
+        | an empty list of expressions         | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "http://www.ncbi.nlm.nih.gov/clinvar/90011", "hgvs": [], "submitters": 5}]                                               | is no row of builder/interface.schema.json                              |
+        | an expression IRI holding a raw >    | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "http://www.ncbi.nlm.nih.gov/clinvar/90011", "hgvs": ["http://varnomen.hgvs.org/NM_000249.3:c.2042C>T"], "submitters": 5}] | is no row of builder/interface.schema.json                              |
+        | an expression that is not a coding one | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "http://www.ncbi.nlm.nih.gov/clinvar/90011", "hgvs": ["http://varnomen.hgvs.org/NM_000249.3%3An.1A%3EG"], "submitters": 5}] | A variant classification row is found by coding NM_ expressions         |
+        | a classification of no concept       | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "http://www.ncbi.nlm.nih.gov/clinvar/90011", "classification": ["https://ns.cascadeprotocol.org/genomics/v1#Maybe"], "submitters": 5}] | A classification is a concept of rec:ClinVarClassifications.            |
+        | a second review status               | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "http://www.ncbi.nlm.nih.gov/clinvar/90011", "reviewStatus": "https://ns.cascadeprotocol.org/records/v1-draft#ClinVarExpertPanel", "submitters": 5}, {"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "http://www.ncbi.nlm.nih.gov/clinvar/90011", "reviewStatus": "https://ns.cascadeprotocol.org/records/v1-draft#ClinVarSingleSubmitter", "submitters": 5}] | is given twice, with different triples |
+
+    Example: one expression on two rows of a version, a chunk of rows apart, is refused naming it
+      When the classifications example builder is given 2001 rows, the first and the last found by the expression "NM_000249.3:c.1A>G"
+      Then the build is refused, saying "http://varnomen.hgvs.org/NM_000249.3%3Ac.1A%3EG is on two rows, http://www.ncbi.nlm.nih.gov/clinvar/1 and http://www.ncbi.nlm.nih.gov/clinvar/2001"

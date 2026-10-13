@@ -9,6 +9,7 @@ import {
   OWL,
   type Quad,
   RDF,
+  type Term,
   REC,
   SKOS,
   SSSOM,
@@ -16,7 +17,8 @@ import {
   XSD,
 } from "./rdf.js";
 
-export type Form = "mapping" | "names" | "status" | "termType";
+export type Form =
+  "mapping" | "names" | "status" | "termType" | "classification";
 
 /** A row as RDF: its key, the subject every one of its triples is about. */
 export interface RdfRow {
@@ -47,6 +49,51 @@ export function toRdf(row: Row): RdfRow {
                 literal(row.mapping_cardinality),
               ),
             ]),
+      ],
+    };
+  }
+  if ("variation" in row) {
+    const count = (n: number): Term => literal(String(n), `${XSD}integer`);
+    return {
+      form: "classification",
+      key: row.variation,
+      triples: [
+        ...(row.hgvs ?? []).map((code) =>
+          triple(row.variation, `${REC}hgvsExpression`, code),
+        ),
+        ...(row.classification ?? []).map((concept) =>
+          triple(row.variation, `${REC}clinvarClassification`, concept),
+        ),
+        ...(row.reviewStatus === undefined
+          ? []
+          : [
+              triple(
+                row.variation,
+                `${REC}clinvarReviewStatus`,
+                row.reviewStatus,
+              ),
+            ]),
+        ...(row.lastEvaluated === undefined
+          ? []
+          : [
+              triple(
+                row.variation,
+                `${REC}lastEvaluated`,
+                literal(row.lastEvaluated, `${XSD}date`),
+              ),
+            ]),
+        ...(row.contributingSubmitters === undefined
+          ? []
+          : [
+              triple(
+                row.variation,
+                `${REC}contributingSubmitters`,
+                count(row.contributingSubmitters),
+              ),
+            ]),
+        ...(row.submitters === undefined
+          ? []
+          : [triple(row.variation, `${REC}submitters`, count(row.submitters))]),
       ],
     };
   }
