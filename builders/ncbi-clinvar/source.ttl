@@ -1,0 +1,36 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:5f313f75-f35d-496e-aca0-c5cde375f116> a tables:Source, dcat:Dataset ;
+    rdfs:label "NCBI ClinVar" ;
+    dct:publisher <https://ror.org/02meqm098> ;
+    dct:license <https://www.ncbi.nlm.nih.gov/home/about/policies/> ;
+    dct:bibliographicCitation "Source: ClinVar, National Center for Biotechnology Information, U.S. National Library of Medicine; Landrum MJ et al., Nucleic Acids Res. 2018;46(D1):D1062-D1067, PMID 29165669. NCBI places no restrictions on the use or distribution of the data. Some submitters may claim patent, copyright, or other intellectual property rights in all or a portion of the data, which NCBI is not in a position to assess. ClinVar data is not intended for direct diagnostic use or medical decision-making without review by a genetics professional." ;
+    tables:detectedBy tables:DatedUrl ;
+    dcat:distribution
+        [
+            dct:title "variant_summary.txt.gz" ;
+            tables:urlTemplate "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/archive/variant_summary_{month}.txt.gz" ;
+            dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+            tables:archived false
+        ] ,
+        [
+            dcat:downloadURL <https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/hgvs4variation.txt.gz> ;
+            dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip>
+        ] .
+
+<https://ror.org/02meqm098> rdfs:label "National Center for Biotechnology Information" .
+
+<urn:uuid:84a9f86a-f5e4-45b1-9e92-cd4ba027a389> a rec:ReferenceSeries ;
+    rdfs:label "ClinVar variant classifications, Lynch syndrome genes" ;
+    rec:tableKind rec:VariantClassifications ;
+    rec:coversGene "MLH1", "MSH2", "MSH6", "PMS2", "EPCAM" ;
+    dct:source <urn:uuid:5f313f75-f35d-496e-aca0-c5cde375f116> .
+
+<urn:uuid:1653be1a-b871-4e0f-8c22-f13bbbf1b6d6> a rec:ReferenceSeries ;
+    rdfs:label "ClinVar variation names, Lynch syndrome genes" ;
+    rec:tableKind rec:CodeNames ;
+    dct:source <urn:uuid:5f313f75-f35d-496e-aca0-c5cde375f116> .

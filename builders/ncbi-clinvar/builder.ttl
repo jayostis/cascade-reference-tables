@@ -1,0 +1,7 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a> a tables:Builder ;
+    rdfs:label "ncbi-clinvar" ;
+    tables:builderVersion "1" ;
+    tables:builds <urn:uuid:5f313f75-f35d-496e-aca0-c5cde375f116> .
