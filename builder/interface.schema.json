@@ -6,7 +6,8 @@
     { "$ref": "#/$defs/mapping" },
     { "$ref": "#/$defs/names" },
     { "$ref": "#/$defs/status" },
-    { "$ref": "#/$defs/termType" }
+    { "$ref": "#/$defs/termType" },
+    { "$ref": "#/$defs/classification" }
   ],
   "$defs": {
     "iri": {
@@ -53,6 +54,32 @@
         "series": { "$ref": "#/$defs/iri" },
         "subject": { "$ref": "#/$defs/iri" },
         "replacedBy": { "type": "array", "items": { "$ref": "#/$defs/iri" } }
+      }
+    },
+    "iris": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/iri" }
+    },
+    "count": { "type": "integer", "minimum": 0 },
+    "classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["series", "variation"],
+      "minProperties": 3,
+      "not": { "required": ["contributingSubmitters", "submitters"] },
+      "properties": {
+        "series": { "$ref": "#/$defs/iri" },
+        "variation": { "$ref": "#/$defs/iri" },
+        "hgvs": { "$ref": "#/$defs/iris" },
+        "classification": { "$ref": "#/$defs/iris" },
+        "reviewStatus": { "$ref": "#/$defs/iri" },
+        "lastEvaluated": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "contributingSubmitters": { "$ref": "#/$defs/count" },
+        "submitters": { "$ref": "#/$defs/count" }
       }
     },
     "termType": {

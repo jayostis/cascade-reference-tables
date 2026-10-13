@@ -8,6 +8,8 @@ export class Refusal extends Error {
 /** A file of the release, opened by the reader its format needs. */
 export interface ReleaseFile {
   readonly name: string;
+  /** Each non-empty line as text, for a builder that cuts only the fields it needs of a very large file. */
+  lines(): AsyncIterable<{ readonly number: number; readonly text: string }>;
   delimited(delimiter: string): AsyncIterable<Line>;
   fixedWidth(
     columns: readonly (readonly [number, number])[],
@@ -17,11 +19,20 @@ export interface ReleaseFile {
   xlsx(): AsyncIterable<Line>;
 }
 
-/** What a builder is handed: the release's files, and the IRIs of codes. */
+/** What a builder is handed: the release's files, the IRIs of codes, and what the vocabulary and its source state. */
 export interface Release {
   file(name: string): ReleaseFile;
   /** A code's IRI in a code system the vocabulary names, such as `rec:CVX`. */
   codeIri(system: string, code: string): string;
+  /**
+   * Each label of a concept of the scheme, its `skos:prefLabel`, `skos:altLabel` and `skos:notation`, with the
+   * concept's IRI, as the pinned vocabulary states them.
+   */
+  concepts(scheme: string): ReadonlyMap<string, string>;
+  /** The genes (`rec:coversGene`) the source declares for the series, sorted. */
+  genes(series: string): readonly string[];
+  /** Something a person should see on the pull request; the build goes on. */
+  finding(text: string): void;
 }
 
 /** A row of a mapping kind, by SSSOM's slots. */
@@ -57,8 +68,21 @@ export interface TermTypeRow {
   readonly termType: string;
 }
 
+/** A row of a variant classifications kind: a variation, its expressions and what its source says of it. */
+export interface ClassificationRow {
+  readonly series: string;
+  readonly variation: string;
+  readonly hgvs?: readonly string[];
+  readonly classification?: readonly string[];
+  readonly reviewStatus?: string;
+  readonly lastEvaluated?: string;
+  readonly contributingSubmitters?: number;
+  readonly submitters?: number;
+}
+
 /** A row in one of `builder/interface.schema.json`'s forms. */
-export type Row = MappingRow | NamesRow | StatusRow | TermTypeRow;
+export type Row =
+  MappingRow | NamesRow | StatusRow | TermTypeRow | ClassificationRow;
 
 /** A builder's `build.ts` exports this as its default. */
 export type Build = (release: Release) => AsyncIterable<Row>;

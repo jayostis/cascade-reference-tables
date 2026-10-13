@@ -31,3 +31,38 @@ Feature: Versions
       When the example builder's release "release" is built as "1"
       And the example builder at version "2" builds the release "release-2" as "1"
       Then each series has the versions "1" and "1 (builder 2)", and "1 (builder 2)" is current
+
+  Rule: H23. A file the source marks not archived is named by the version and not kept in the release
+
+    Example: a file kept by default is in the release
+      When the example builder's release "release" is built as "1"
+      Then the release keeps the input "codes.txt"
+
+    Example: a file marked not archived is named by the version, and the release holds the rows alone
+      Given the publisher has the months "2026-08"
+      When the dated example source is built from the publisher on "2026-08-20"
+      Then each version of the last build records "codes_2026-08.txt" among its inputs
+      And the release keeps no input
+
+  Rule: H24. A finding of the build is shown with the differences, and the build goes on
+
+    Example: a finding is listed under Findings and the version is built
+      When the example builder, finding "3 expressions are no key", builds the release "release" as "1"
+      Then the last build made a version of each series
+      And the build's differences.md lists the finding "3 expressions are no key"
+
+  Rule: H25. A version states the genes its series declares, and a changed list is a new version
+
+    Example: each version states the genes
+      When the example builder's release "release" is built as "1", the series covering the genes "MLH1, MSH2"
+      Then each version of the last build covers the genes "MLH1, MSH2"
+
+    Example: the same rows with another list of genes is a new version
+      When the example builder's release "release" is built as "1", the series covering the genes "MLH1"
+      And the example builder's release "release" is built as "1 again", the series covering the genes "MLH1, MSH2"
+      Then the last build made these versions:
+        | series                      | revises | notes                         |
+        | Example vaccine groups      | 1       | 0 added, 0 removed, 0 changed |
+        | Example vaccine names       | 1       | 0 added, 0 removed, 0 changed |
+        | Example vaccine code status | 1       | 0 added, 0 removed, 0 changed |
+      And each version of the last build covers the genes "MLH1, MSH2"

@@ -41,10 +41,14 @@ export interface Listing {
   readonly files: ReadonlyMap<string, ListedFile>;
 }
 
-/** A series a source declares, and whether its rows are kept when their code leaves the release. */
+/** A series a source declares, whether its rows are kept when their code leaves the release, and the genes it covers. */
 export interface SourceSeries extends SeriesDescription {
   readonly carriesForward: boolean;
+  /** The `rec:coversGene` symbols the declaration states, sorted. */
+  readonly coversGene: readonly string[];
 }
+
+const GZIP = "https://www.iana.org/assignments/media-types/application/gzip";
 
 /** Where the history of a code is asked for: its code system, and the address with `{code}` where the code goes. */
 export interface HistoryLookup {
@@ -67,6 +71,12 @@ export interface Source {
    * by its release API, its path in the release's zip.
    */
   readonly files: ReadonlyMap<string, string>;
+  /** The names of the files that are gzip. */
+  readonly gzipped: ReadonlySet<string>;
+  /** The names of the files a version names and the release does not keep. */
+  readonly unarchived: ReadonlySet<string>;
+  /** For a source detected by a dated address, the files whose address holds `{month}`, by name. */
+  readonly dated: ReadonlyMap<string, string>;
   readonly series: readonly SourceSeries[];
   readonly historyLookup?: HistoryLookup;
   readonly builder: {
@@ -114,12 +124,26 @@ export async function readSource(folder: string): Promise<Source> {
   const value = (subject: string | Term, predicate: string): string =>
     graph.value(subject, predicate) ?? "";
   const files = new Map<string, string>();
+  const gzipped = new Set<string>();
+  const unarchived = new Set<string>();
+  const dated = new Map<string, string>();
   for (const distribution of graph.objects(iri, `${DCAT}distribution`)) {
+    const template = graph.value(distribution, `${TABLES}urlTemplate`);
     const where =
+      template ??
       graph.value(distribution, `${DCAT}downloadURL`) ??
       graph.value(distribution, `${DCT}title`) ??
       "";
-    files.set(decodeURIComponent(where.split("/").pop() ?? ""), where);
+    const name =
+      template === undefined
+        ? decodeURIComponent(where.split("/").pop() ?? "")
+        : value(distribution, `${DCT}title`);
+    files.set(name, where);
+    if (template !== undefined) dated.set(name, template);
+    if (graph.value(distribution, `${DCAT}compressFormat`) === GZIP)
+      gzipped.add(name);
+    if (graph.value(distribution, `${TABLES}archived`) === "false")
+      unarchived.add(name);
   }
   const lookup = graph.one(iri, `${TABLES}historyLookup`);
   const historyLookup =
@@ -168,6 +192,9 @@ export async function readSource(folder: string): Promise<Source> {
     ...(listing === undefined ? {} : { listing }),
     ...(historyLookup === undefined ? {} : { historyLookup }),
     files,
+    gzipped,
+    unarchived,
+    dated,
     series: graph
       .subjects(`${DCT}source`, iri)
       .sort()
@@ -182,6 +209,10 @@ export async function readSource(folder: string): Promise<Source> {
         carriesForward: ["true", "1"].includes(
           value(series, `${TABLES}carriesForward`),
         ),
+        coversGene: graph
+          .objects(series, `${REC}coversGene`)
+          .map((gene) => gene.value)
+          .sort(),
       })),
     builder: {
       iri: builder,

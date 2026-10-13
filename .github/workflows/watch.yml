@@ -129,7 +129,9 @@ jobs:
         if: ${{ github.ref_name != 'main' && steps.build.outputs.built != '' }}
         with:
           name: build
-          path: cascade-reference-tables/build
+          path: |
+            cascade-reference-tables/build
+            !cascade-reference-tables/build/*/release
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:

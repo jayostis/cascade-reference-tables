@@ -1,6 +1,8 @@
 import { createReadStream } from "node:fs";
-import { createInterface } from "node:readline";
-import { posix } from "node:path";
+import { basename, posix } from "node:path";
+import { pipeline } from "node:stream";
+import { StringDecoder } from "node:string_decoder";
+import { createGunzip } from "node:zlib";
 import { SaxesParser } from "saxes";
 import { texts } from "./archive.js";
 import { Refusal } from "./builder.js";
@@ -143,19 +145,56 @@ export interface JsonLine {
   readonly value: unknown;
 }
 
-/** The file's non-empty lines as text, its byte order mark dropped, CRLF or LF. */
+/**
+ * The file's non-empty lines as text, its byte order mark dropped, CRLF or LF; a gzip file is gunzipped as it is read,
+ * and one that is not gzip is refused.
+ */
 export async function* lines(
   path: string,
+  gzip = false,
 ): AsyncIterable<{ number: number; text: string }> {
-  const reader = createInterface({
-    input: createReadStream(path, { encoding: "utf8" }),
-    crlfDelay: Infinity,
-  });
+  const file = createReadStream(path, { highWaterMark: 1 << 20 });
+  const input = gzip
+    ? pipeline(file, createGunzip({ chunkSize: 1 << 20 }), () => undefined)
+    : file;
+  const decoder = new StringDecoder("utf8");
   let number = 0;
-  for await (const read of reader) {
+  let rest = "";
+  const whole = (
+    read: string,
+  ): { number: number; text: string } | undefined => {
     number += 1;
-    const text = number === 1 ? read.replace(/^\uFEFF/, "") : read;
-    if (text !== "") yield { number, text };
+    const cut = read.endsWith("\r") ? read.slice(0, -1) : read;
+    const text = number === 1 ? cut.replace(/^\uFEFF/, "") : cut;
+    return text === "" ? undefined : { number, text };
+  };
+  try {
+    for await (const chunk of input) {
+      const text = rest + decoder.write(chunk as Buffer);
+      let at = 0;
+      for (
+        let end = text.indexOf("\n");
+        end >= 0;
+        end = text.indexOf("\n", at)
+      ) {
+        const line = whole(text.slice(at, end));
+        at = end + 1;
+        if (line !== undefined) yield line;
+      }
+      rest = text.slice(at);
+    }
+  } catch (error) {
+    const code = (error as { code?: unknown }).code;
+    if (gzip && typeof code === "string" && code.startsWith("Z_"))
+      throw new Refusal(
+        `${basename(path)} is not a gzip file: ${(error as Error).message}`,
+      );
+    throw error;
+  }
+  rest += decoder.end();
+  if (rest !== "") {
+    const line = whole(rest);
+    if (line !== undefined) yield line;
   }
 }
 
@@ -163,8 +202,9 @@ export async function* lines(
 export async function* delimited(
   path: string,
   delimiter: string,
+  gzip = false,
 ): AsyncIterable<Line> {
-  for await (const { number, text } of lines(path))
+  for await (const { number, text } of lines(path, gzip))
     yield { number, fields: text.split(delimiter) };
 }
 
@@ -172,8 +212,9 @@ export async function* delimited(
 export async function* fixedWidth(
   path: string,
   columns: readonly (readonly [number, number])[],
+  gzip = false,
 ): AsyncIterable<Line> {
-  for await (const { number, text } of lines(path))
+  for await (const { number, text } of lines(path, gzip))
     yield {
       number,
       fields: columns.map(([start, end]) => text.slice(start, end)),
@@ -181,7 +222,10 @@ export async function* fixedWidth(
 }
 
 /** Each line parsed as JSON. */
-export async function* jsonLines(path: string): AsyncIterable<JsonLine> {
-  for await (const { number, text } of lines(path))
+export async function* jsonLines(
+  path: string,
+  gzip = false,
+): AsyncIterable<JsonLine> {
+  for await (const { number, text } of lines(path, gzip))
     yield { number, value: JSON.parse(text) as unknown };
 }

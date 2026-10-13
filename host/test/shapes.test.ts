@@ -6,7 +6,12 @@ import { test } from "node:test";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import * as oxigraph from "oxigraph";
 import { FEED_BASE, Feed } from "../src/feed.js";
-import { build, declarationViolations, readContract } from "../src/pipeline.js";
+import {
+  build,
+  type Contract,
+  declarationViolations,
+  readContract,
+} from "../src/pipeline.js";
 import { type Checked, mergeChecked, publish } from "../src/publish.js";
 import { fromOxigraph, PREFIXES, type Quad, toOxigraph } from "../src/rdf.js";
 import { Shapes } from "../src/shapes.js";
@@ -188,7 +193,7 @@ test("the checked.json a build and a publish write conforms to its schema", asyn
 test("a source names its files as its detection method needs them, or its declarations are refused with the message", async () => {
   const contract = await readContract(ROOT);
   const message =
-    "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; any other source names each file's one download URL.";
+    "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; one detected by a dated address names at least one file by its name and its address with {month}, and its other files by their download URL; any other source names each file's one download URL.";
   const cases: [string, string][] = [
     ["nlm-rxnorm-prescribable", "DELETE WHERE { ?s tables:releaseApi ?a }"],
     [
@@ -208,18 +213,72 @@ test("a source names its files as its detection method needs them, or its declar
       "cdc-icd-10-cm",
       'DELETE { ?f tables:namePattern ?p } WHERE { ?f dct:title "conversion-table.xlsx" ; tables:namePattern ?p }',
     ],
+    ["ncbi-clinvar", "DELETE WHERE { ?f tables:urlTemplate ?t }"],
+    [
+      "ncbi-clinvar",
+      'DELETE { ?f dcat:downloadURL ?u } INSERT { ?f dct:title "hgvs4variation.txt.gz" } WHERE { ?f dcat:downloadURL ?u }',
+    ],
+    [
+      "ncbi-clinvar",
+      "INSERT { ?f dcat:downloadURL <https://publisher.example/variant_summary.txt.gz> } WHERE { ?f tables:urlTemplate ?t }",
+    ],
   ];
   for (const [builder, update] of cases) {
-    const source = await readSource(join(ROOT, "builders", builder));
-    const store = new oxigraph.Store(source.declarations.map(toOxigraph));
-    store.update(`${prefixes}\n${update}`);
-    const found = await declarationViolations(contract, {
-      ...source,
-      declarations: store.match(null, null, null, null).map(fromOxigraph),
-    });
+    const found = await violationsAfter(contract, builder, update);
     assert.ok(
       found.some((violation) => violation.endsWith(`: ${message}`)),
       `${builder}: ${update}\ngave:\n${found.join("\n")}`,
+    );
+  }
+});
+
+async function violationsAfter(
+  contract: Contract,
+  builder: string,
+  update: string,
+): Promise<string[]> {
+  const source = await readSource(join(ROOT, "builders", builder));
+  const store = new oxigraph.Store(source.declarations.map(toOxigraph));
+  store.update(`${prefixes}\n${update}`);
+  return declarationViolations(contract, {
+    ...source,
+    declarations: store.match(null, null, null, null).map(fromOxigraph),
+  });
+}
+
+test("a source states a file's compression as gzip and whether it is archived once, or its declarations are refused with the message", async () => {
+  const contract = await readContract(ROOT);
+  const cases: [string, string][] = [
+    [
+      "INSERT { ?f dcat:compressFormat <https://www.iana.org/assignments/media-types/application/zip> } WHERE { ?f tables:urlTemplate ?t }",
+      "A file of a source is compressed, if at all, as gzip.",
+    ],
+    [
+      'INSERT { ?f tables:archived "no" } WHERE { ?f tables:urlTemplate ?t }',
+      "A file of a source says once, as a boolean, whether the release archives it.",
+    ],
+    [
+      "INSERT { ?f tables:archived true } WHERE { ?f tables:urlTemplate ?t }",
+      "A file of a source says once, as a boolean, whether the release archives it.",
+    ],
+    [
+      "INSERT { ?s rec:coversGene 7 } WHERE { ?s rec:coversGene 'MLH1' }",
+      "A source fills at least one series, each a urn:uuid: with one name and one table kind.",
+    ],
+  ];
+  assert.deepEqual(
+    await violationsAfter(
+      contract,
+      "ncbi-clinvar",
+      "DELETE WHERE { ?s a tables:Nothing }",
+    ),
+    [],
+  );
+  for (const [update, message] of cases) {
+    const found = await violationsAfter(contract, "ncbi-clinvar", update);
+    assert.ok(
+      found.some((violation) => violation.endsWith(`: ${message}`)),
+      `${update}\ngave:\n${found.join("\n")}`,
     );
   }
 });

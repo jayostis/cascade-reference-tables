@@ -115,6 +115,39 @@ test("a version's differences read by their codes, sorted by code, whatever the 
   }
 });
 
+test("a classification row's difference names its variation, its classes by label, its status, its day and its expressions, never retired", () => {
+  const GENOMICS = "https://ns.cascadeprotocol.org/genomics/v1#";
+  const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
+  const row = (classes: string[], hgvs: string[]): Row => ({
+    series: SERIES,
+    variation: "http://www.ncbi.nlm.nih.gov/clinvar/90011",
+    hgvs: hgvs.map((h) => `http://varnomen.hgvs.org/${h}`),
+    classification: classes.map((c) => `${GENOMICS}${c}`),
+    reviewStatus: `${REC}ClinVarExpertPanel`,
+    lastEvaluated: "2024-12-11",
+    contributingSubmitters: 5,
+  });
+  const labels = new Map([
+    [`${GENOMICS}Pathogenic`, "Pathogenic"],
+    [`${GENOMICS}LikelyPathogenic`, "Likely pathogenic"],
+    [`${REC}ClinVarExpertPanel`, "reviewed by expert panel"],
+  ]);
+  const before = quadsOf([row(["Pathogenic"], ["NM_1.1%3Ac.1A%3EG"])]);
+  const after = quadsOf([
+    row(
+      ["Pathogenic", "LikelyPathogenic"],
+      ["NM_1.1%3Ac.1A%3EG", "NM_1.2%3Ac.1A%3EG"],
+    ),
+  ]);
+  const found = differences(keyed(before), keyed(after));
+  assert.deepEqual(
+    describe(before, after, found, (iri) => labels.get(iri)).changed,
+    [
+      "`90011`: Likely pathogenic, Pathogenic (reviewed by expert panel), 2024-12-11, 2 expressions (was `90011`: Pathogenic (reviewed by expert panel), 2024-12-11, 1 expression)",
+    ],
+  );
+});
+
 test("a long list is folded after its count, and a very long one is cut to what a pull request body holds", () => {
   const rows = (n: number) =>
     Array.from({ length: n }, (_, i) =>

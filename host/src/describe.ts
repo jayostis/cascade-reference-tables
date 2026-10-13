@@ -1,5 +1,8 @@
 import type { Differences } from "./pipeline.js";
-import { DCT, OWL, type Quad, SKOS, SSSOM } from "./rdf.js";
+import { DCT, OWL, type Quad, REC, SKOS, SSSOM } from "./rdf.js";
+
+/** The label of a concept IRI, where the vocabulary gives one. */
+export type LabelOf = (iri: string) => string | undefined;
 
 /** Each difference as a line a person can read, sorted by code. */
 export interface Described {
@@ -35,8 +38,39 @@ function objectsOf(rows: readonly Quad[], predicate: string): string[] {
     .map((q) => q.object.value);
 }
 
+const CLASSIFICATION_PREDICATES = [
+  "hgvsExpression",
+  "clinvarClassification",
+  "clinvarReviewStatus",
+  "lastEvaluated",
+  "contributingSubmitters",
+  "submitters",
+].map((name) => `${REC}${name}`);
+
+/** A classification row by its variation, what its source classes it as, when, and how many expressions find it. */
+function classification(rows: readonly Quad[], labelOf: LabelOf): Line {
+  const subject = rows[0]!.subject.value;
+  const named = (iri: string): string => plain(labelOf(iri) ?? codeOf(iri));
+  const classes = objectsOf(rows, `${REC}clinvarClassification`)
+    .map(named)
+    .sort();
+  const [status] = objectsOf(rows, `${REC}clinvarReviewStatus`);
+  const [evaluated] = objectsOf(rows, `${REC}lastEvaluated`);
+  const expressions = objectsOf(rows, `${REC}hgvsExpression`).length;
+  const parts = [
+    classes.length === 0 ? "no classification" : classes.join(", "),
+    ...(status === undefined ? [] : [`(${named(status)})`]),
+  ];
+  return {
+    sort: [codeOf(subject)],
+    text: `${code(subject)}: ${parts.join(" ")}${evaluated === undefined ? "" : `, ${evaluated}`}, ${expressions} ${expressions === 1 ? "expression" : "expressions"}`,
+  };
+}
+
 /** A row by what it says: a mapping as source code, target code and predicate, names as code and label, status as code and status. */
-function line(rows: readonly Quad[], whole = false): Line {
+function line(rows: readonly Quad[], labelOf: LabelOf, whole = false): Line {
+  if (rows.some((q) => CLASSIFICATION_PREDICATES.includes(q.predicate.value)))
+    return classification(rows, labelOf);
   const [source] = objectsOf(rows, `${OWL}annotatedSource`);
   if (source !== undefined) {
     const target = objectsOf(rows, `${OWL}annotatedTarget`)[0]!;
@@ -91,18 +125,19 @@ export function describe(
   before: readonly Quad[],
   after: readonly Quad[],
   found: Differences,
+  labelOf: LabelOf = () => undefined,
 ): Described {
   const was = byKey(before);
   const now = byKey(after);
   return {
-    added: sorted(found.added.map((key) => line(now.get(key)!))),
-    removed: sorted(found.removed.map((key) => line(was.get(key)!))),
+    added: sorted(found.added.map((key) => line(now.get(key)!, labelOf))),
+    removed: sorted(found.removed.map((key) => line(was.get(key)!, labelOf))),
     changed: sorted(
       found.changed.map((key) => {
-        const next = line(now.get(key)!, true);
+        const next = line(now.get(key)!, labelOf, true);
         return {
           ...next,
-          text: `${next.text} (was ${line(was.get(key)!, true).text})`,
+          text: `${next.text} (was ${line(was.get(key)!, labelOf, true).text})`,
         };
       }),
     ),

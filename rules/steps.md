@@ -89,6 +89,38 @@ and `2027` `codes-2027.zip` and `notes-2027.txt`; each zip holds the codes of `r
 | `the check took {string}`                                                                     | the files the check saved are exactly those named           |
 | `the check downloaded nothing`                                                                | the check asked for no address but a folder's listing       |
 
+## Detection by dated address
+
+The examples' source is `fixtures/dated-address/`: the example builder's series, its names series covering the gene
+MLH1, detected by the dated address `https://publisher.example/archive/codes_{month}.txt`, a file the source does not
+archive. The publisher has a file for each month a step gives, the first month's the codes of `release`, the second's
+of `release-2`, the third's of `release-3`, and answers 404 for any other.
+
+| Step                                                                                     | What happens, or must hold                                            |
+| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `the publisher has the months {string}`                                                  | the publisher has a file for each of the months, comma-separated      |
+| `the dated example source is checked on {string}`                                        | the source is checked against the feed on that day                    |
+| `the dated example source, with its builder at version {string}, is checked on {string}` | the same, its declaration holding the builder at that version         |
+| `the dated example source is built from the publisher on {string}`                       | the source is checked on that day, and what is new is built           |
+| `the publisher was asked for {string}`                                                   | the files the last check asked for, in order, are exactly those named |
+| `the publisher was last asked for {string}`                                              | the last file asked for is that one                                   |
+| `the input {string} of the last build is cited at {string}`                              | the one input of that title states that address as its `dct:source`   |
+
+## Builds
+
+| Step                                                                                                               | What happens, or must hold                                                                                |
+| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `the example builder, finding {string}, builds the release {string} as {string}`                                   | the release is built as the second string says, the builder reporting the finding                         |
+| `the example builder's release {string} is built as {string}, the series covering the genes {string}`              | the release is built with each series declaring the genes, comma-separated                                |
+| `the last build made a version of each series`                                                                     | every series of the example source has a version in the last build                                        |
+| `each version of the last build covers the genes {string}`                                                         | every version the last build made states exactly those genes with `rec:coversGene`                        |
+| `the build's differences.md lists the finding {string}`                                                            | `differences.md` has a "Findings" heading with the finding beneath it                                     |
+| `the release keeps the input {string}`                                                                             | `release.json` lists the input of that name among the files to keep                                       |
+| `the release keeps no input`                                                                                       | `release.json` lists no input                                                                             |
+| `the classifications example builder yields {}`                                                                    | the rows of the JSON array given are checked as the rows of the one series of `fixtures/classifications/` |
+| `the classifications example builder is given {int} rows, the first and the last found by the expression {string}` | that many rows, one variation each, the first and the last holding the expression's `rec:HGVS` IRI        |
+| `the vocabulary's tests/vectors/clinvar/row.json gives the row of its row.ttl`                                     | the schema accepts the row, and the host's triples for it are those of the Turtle                         |
+
 ## Publishing
 
 The releases of a publishing example are the rows files its builds wrote; the site is a folder of its own.

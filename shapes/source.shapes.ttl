@@ -36,7 +36,7 @@ tables:SourceShape a sh:NodeShape ;
         sh:message "A source states the credit its publisher asks for."@en
     ] , [
         sh:path tables:detectedBy ;
-        sh:in ( tables:ConditionalGet tables:ReleaseApi tables:FolderListing ) ;
+        sh:in ( tables:ConditionalGet tables:ReleaseApi tables:FolderListing tables:DatedUrl ) ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:message "A source is detected by one of the host's methods."@en
@@ -85,8 +85,51 @@ tables:SourceFilesShape a sh:NodeShape ;
                 [ sh:path tables:folderListing ; sh:maxCount 0 ] ,
                 [ sh:path dcat:distribution ; sh:node tables:SourceFileShape ]
         ]
+        [
+            sh:property [ sh:path tables:detectedBy ; sh:hasValue tables:DatedUrl ] ,
+                [ sh:path tables:releaseApi ; sh:maxCount 0 ] ,
+                [ sh:path tables:folderListing ; sh:maxCount 0 ] ,
+                [ sh:path dcat:distribution ; sh:or ( tables:SourceFileShape tables:DatedFileShape ) ] ,
+                [
+                    sh:path dcat:distribution ;
+                    sh:qualifiedValueShape tables:DatedFileShape ;
+                    sh:qualifiedMinCount 1
+                ]
+        ]
     ) ;
-    sh:message "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; any other source names each file's one download URL."@en .
+    sh:message "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; one detected by a dated address names at least one file by its name and its address with {month}, and its other files by their download URL; any other source names each file's one download URL."@en .
+
+tables:DatedFileShape a sh:NodeShape ;
+    sh:property [
+        sh:path dct:title ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[^/]+$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path tables:urlTemplate ;
+        sh:datatype xsd:string ;
+        sh:pattern "^https://[^/]+/.*[{]month[}].*[^/]$" ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] , [
+        sh:path dcat:downloadURL ;
+        sh:maxCount 0
+    ] .
+
+tables:FileDeclarationShape a sh:NodeShape ;
+    sh:targetObjectsOf dcat:distribution ;
+    sh:property [
+        sh:path dcat:compressFormat ;
+        sh:in ( <https://www.iana.org/assignments/media-types/application/gzip> ) ;
+        sh:maxCount 1 ;
+        sh:message "A file of a source is compressed, if at all, as gzip."@en
+    ] , [
+        sh:path tables:archived ;
+        sh:datatype xsd:boolean ;
+        sh:maxCount 1 ;
+        sh:message "A file of a source says once, as a boolean, whether the release archives it."@en
+    ] .
 
 tables:ReleaseFolderShape a sh:NodeShape ;
     sh:property [
@@ -162,6 +205,11 @@ tables:SeriesDeclarationShape a sh:NodeShape ;
         sh:class rec:TableKind ;
         sh:minCount 1 ;
         sh:maxCount 1
+    ] , [
+        sh:path rec:coversGene ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message "A series declares the genes it covers by their symbols, each a non-empty plain string."@en
     ] .
 
 tables:CarryingSeriesShape a sh:NodeShape ;
