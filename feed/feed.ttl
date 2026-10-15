@@ -22,14 +22,17 @@
         <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>,
         <urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88>,
         <urn:uuid:84a9f86a-f5e4-45b1-9e92-cd4ba027a389>,
+        <urn:uuid:8caff025-8214-4910-81d7-16dfac334dae>,
         <urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f>,
         <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>,
         <urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a>,
+        <urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943>,
+        <urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c>,
         <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>,
         <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4>,
         <urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540>,
         <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> ;
-    dct:modified "2026-10-15T21:37:54Z"^^xsd:dateTime ;
+    dct:modified "2026-10-15T21:46:25Z"^^xsd:dateTime ;
     dct:title "Cascade reference tables (DRAFT)" .
 
 <ni:///sha-256;1HVYVDYA4Qj1ivM5wrzvPHwgJ4DOHZauw9wp7o3dl44>
@@ -37,6 +40,21 @@
     dct:modified "2026-08-13T14:25:00Z"^^xsd:dateTime ;
     dct:title "ICD-10-CM-CONVERSION-TABLE-FY2027.xlsx" ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "d47558543600e108f58af339c2bcef3c7c202780ce1d96aec3dc29ee8ddd978e" ] .
+
+<ni:///sha-256;3Dv98Vt7f7u-VUHK2RfW8xM-T3tMEDJlh_hUotOEaWE>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "98011 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/170dea4374dc4a3727ec24582aee5e18c35ab9cedf388a509333488d9645a925.nq.gz> ;
+    dcat:version "2.83" ;
+    dct:issued "2026-10-15T21:46:25Z"^^xsd:dateTime ;
+    pav:version "2.83" ;
+    prov:specializationOf <urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943> ;
+    prov:wasAttributedTo <urn:uuid:c5a78758-ff08-4f42-88cb-5fb4e9065e64> ;
+    prov:wasDerivedFrom <ni:///sha-256;VEUbrr1ObxFu38RAJPxeoqAF4ypWrXJRTDEnjP-c59Q>,
+        <ni:///sha-256;XeFGPw_mXWyXhnFTtDFRoHzj-MiobeaB-Y4RAAgDKro>,
+        <ni:///sha-256;d1urREycYX7cfmz05fd1pQDwORlWVS9AsmNe9yCc7rA> ;
+    tables:builderVersion "1" .
 
 <ni:///sha-256;4g2HI-n2y8OLnc1DFChcgrsoq7RUOKOcGiwHJOFKUik>
     a dcat:Dataset,
@@ -247,6 +265,42 @@
     sssom:subject_source_version "2026-10-05 (builder 4)" ;
     tables:builderVersion "4" .
 
+<ni:///sha-256;JqDi3rslgKNd7_FoEXvRe-3zugKIsBxRB_Kav447Q90>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "32774 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/b58ad7ad40928e48b8d9a08aa5cc51f67575917921c54623f6861f698c060d97.nq.gz> ;
+    dcat:version "2.83" ;
+    dct:issued "2026-10-15T21:46:25Z"^^xsd:dateTime ;
+    pav:version "2.83" ;
+    prov:specializationOf <urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c> ;
+    prov:wasAttributedTo <urn:uuid:c5a78758-ff08-4f42-88cb-5fb4e9065e64> ;
+    prov:wasDerivedFrom <ni:///sha-256;VEUbrr1ObxFu38RAJPxeoqAF4ypWrXJRTDEnjP-c59Q>,
+        <ni:///sha-256;XeFGPw_mXWyXhnFTtDFRoHzj-MiobeaB-Y4RAAgDKro>,
+        <ni:///sha-256;d1urREycYX7cfmz05fd1pQDwORlWVS9AsmNe9yCc7rA> ;
+    sssom:license <https://loinc.org/license/> ;
+    sssom:mapping_set_version "2.83" ;
+    sssom:mapping_tool "regenstrief-loinc" ;
+    sssom:mapping_tool_version "1" ;
+    sssom:subject_source_version "2.83" ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;QGaS7FFPmTI2W9-VbX0nVqAL3G1R299JiCK_Y_jdMzc>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "4129 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/a6dc578052f0883bc51a645742bf6bb3b29dca4920da8e77cdd7f59a177992a4.nq.gz> ;
+    dcat:version "2.83" ;
+    dct:issued "2026-10-15T21:46:25Z"^^xsd:dateTime ;
+    pav:version "2.83" ;
+    prov:specializationOf <urn:uuid:8caff025-8214-4910-81d7-16dfac334dae> ;
+    prov:wasAttributedTo <urn:uuid:c5a78758-ff08-4f42-88cb-5fb4e9065e64> ;
+    prov:wasDerivedFrom <ni:///sha-256;VEUbrr1ObxFu38RAJPxeoqAF4ypWrXJRTDEnjP-c59Q>,
+        <ni:///sha-256;XeFGPw_mXWyXhnFTtDFRoHzj-MiobeaB-Y4RAAgDKro>,
+        <ni:///sha-256;d1urREycYX7cfmz05fd1pQDwORlWVS9AsmNe9yCc7rA> ;
+    tables:builderVersion "1" .
+
 <ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ>
     a dcat:Dataset,
         prov:Entity,
@@ -296,6 +350,11 @@
     prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
     tables:builderVersion "4" .
 
+<ni:///sha-256;VEUbrr1ObxFu38RAJPxeoqAF4ypWrXJRTDEnjP-c59Q>
+    a prov:Entity ;
+    dct:title "AccessoryFiles/PanelsAndForms/PanelsAndForms.csv" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "54451baebd4e6f116edfc44024fc5ea2a005e32a56ad72514c31278cff9ce7d4" ] .
+
 <ni:///sha-256;VIf0Nkcq8y_q_E4BCgLWyvnbGB-e90qEiHPPVUuBM04>
     a dcat:Dataset,
         prov:Entity ;
@@ -309,6 +368,11 @@
     prov:wasDerivedFrom <ni:///sha-256;5MYYudJvAXrPiy1ORMhmajJ91rszxOwMfgnXlgeR8gg>,
         <ni:///sha-256;pqWN9NkEnJGHp5qPtOcPHztVUOFwjGx0t74LJo9QMto> ;
     tables:builderVersion "1" .
+
+<ni:///sha-256;XeFGPw_mXWyXhnFTtDFRoHzj-MiobeaB-Y4RAAgDKro>
+    a prov:Entity ;
+    dct:title "LoincTable/Loinc.csv" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "5de1463f0fe65d6c97867153b43151a07ce3f8c8a86de681f98e110008032aba" ] .
 
 <ni:///sha-256;Yhyi0u35KLH3XvDxcSx7-GZ1GvEttqv1dAKNsFwqca0>
     a dcat:Dataset,
@@ -342,6 +406,11 @@
     prov:wasDerivedFrom <ni:///sha-256;5_uyiQaVbIiSdYxJsLag5SiqlzI7Z5OUSh13hrkXsw0>,
         <ni:///sha-256;79Kmdw8PZIznbhCsKIlgKy6o-oyktj3rM8qIPn0NdBM> ;
     tables:builderVersion "1" .
+
+<ni:///sha-256;d1urREycYX7cfmz05fd1pQDwORlWVS9AsmNe9yCc7rA>
+    a prov:Entity ;
+    dct:title "LoincTable/MapTo.csv" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "775bab444c9c617edc7e6cf4e5f775a500f0391956552f40b2635ef7209ceeb0" ] .
 
 <ni:///sha-256;golhEaB3F5j-Jnd91L4ThPmKnc5zb8LKCCfvWYL-IIQ>
     a dcat:Dataset,
@@ -472,6 +541,13 @@
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "14d2555ae05dc5e7b08ad0249f60a263c2991c72aa08778fcbcb269a44f8021f" ] .
 
+<rows/170dea4374dc4a3727ec24582aee5e18c35ab9cedf388a509333488d9645a925.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/170dea4374dc4a3727ec24582aee5e18c35ab9cedf388a509333488d9645a925.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "170dea4374dc4a3727ec24582aee5e18c35ab9cedf388a509333488d9645a925" ] .
+
 <rows/1901f8f66b71df214453e69825301b78502eb225cb565f3fc626f364ed7d06db.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
@@ -570,12 +646,26 @@
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "a2a89e359ca902da8b425d75b1185a540f528ddf7e475880634c63c165db3909" ] .
 
+<rows/a6dc578052f0883bc51a645742bf6bb3b29dca4920da8e77cdd7f59a177992a4.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/a6dc578052f0883bc51a645742bf6bb3b29dca4920da8e77cdd7f59a177992a4.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "a6dc578052f0883bc51a645742bf6bb3b29dca4920da8e77cdd7f59a177992a4" ] .
+
 <rows/ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
     dcat:downloadURL <rows/ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "ab7d8438c8c41526c6c28e9e535d4d3846e8ce3cc5d52503bedf13163b270c35" ] .
+
+<rows/b58ad7ad40928e48b8d9a08aa5cc51f67575917921c54623f6861f698c060d97.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/b58ad7ad40928e48b8d9a08aa5cc51f67575917921c54623f6861f698c060d97.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "b58ad7ad40928e48b8d9a08aa5cc51f67575917921c54623f6861f698c060d97" ] .
 
 <rows/db0bb45e5eddbc104bb606ba976c22e3542f3eeab5b9d124104ca6d4cdd0ca8d.nq.gz>
     a dcat:Distribution ;
@@ -742,6 +832,18 @@
     rdfs:label "ClinVar variant classifications, Lynch syndrome genes" ;
     rec:tableKind rec:VariantClassifications .
 
+<urn:uuid:8caff025-8214-4910-81d7-16dfac334dae>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;QGaS7FFPmTI2W9-VbX0nVqAL3G1R299JiCK_Y_jdMzc> ;
+    dcat:hasVersion <ni:///sha-256;QGaS7FFPmTI2W9-VbX0nVqAL3G1R299JiCK_Y_jdMzc> ;
+    dct:bibliographicCitation "This material contains content from LOINC (http://loinc.org). LOINC is copyright © Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc." ;
+    dct:license <https://loinc.org/license/> ;
+    dct:publisher <https://ror.org/05f2ywb48> ;
+    dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> ;
+    rdfs:label "Regenstrief LOINC code status" ;
+    rec:tableKind rec:CodeStatus .
+
 <urn:uuid:8ff42a00-01df-410b-b079-79da75a576c4>
     a tables:Builder ;
     rdfs:label "va-med-rt" .
@@ -782,9 +884,37 @@
     rdfs:label "VA MED-RT drug classes" ;
     rec:tableKind rec:DrugClasses .
 
+<urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;3Dv98Vt7f7u-VUHK2RfW8xM-T3tMEDJlh_hUotOEaWE> ;
+    dcat:hasVersion <ni:///sha-256;3Dv98Vt7f7u-VUHK2RfW8xM-T3tMEDJlh_hUotOEaWE> ;
+    dct:bibliographicCitation "This material contains content from LOINC (http://loinc.org). LOINC is copyright © Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc." ;
+    dct:license <https://loinc.org/license/> ;
+    dct:publisher <https://ror.org/05f2ywb48> ;
+    dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> ;
+    rdfs:label "Regenstrief LOINC names" ;
+    rec:tableKind rec:CodeNames .
+
 <urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a>
     a tables:Builder ;
     rdfs:label "ncbi-clinvar" .
+
+<urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;JqDi3rslgKNd7_FoEXvRe-3zugKIsBxRB_Kav447Q90> ;
+    dcat:hasVersion <ni:///sha-256;JqDi3rslgKNd7_FoEXvRe-3zugKIsBxRB_Kav447Q90> ;
+    dct:bibliographicCitation "This material contains content from LOINC (http://loinc.org). LOINC is copyright © Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc." ;
+    dct:license <https://loinc.org/license/> ;
+    dct:publisher <https://ror.org/05f2ywb48> ;
+    dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> ;
+    rdfs:label "Regenstrief LOINC panel members" ;
+    rec:tableKind rec:PanelMembers .
+
+<urn:uuid:c5a78758-ff08-4f42-88cb-5fb4e9065e64>
+    a tables:Builder ;
+    rdfs:label "regenstrief-loinc" .
 
 <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>
     a dcat:Dataset,
