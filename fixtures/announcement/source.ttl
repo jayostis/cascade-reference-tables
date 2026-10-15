@@ -1,0 +1,30 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:3b1e5c64-8d2a-4f7b-9a10-6c2d4e8f1b35> a tables:Source, dcat:Dataset ;
+    rdfs:label "Example vaccine codes, by announcement" ;
+    dct:publisher <https://publisher.example/> ;
+    dct:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+    dct:bibliographicCitation "Source: an example publisher" ;
+    tables:detectedBy tables:Announcement ;
+    tables:announcementPage <https://publisher.example/downloads/> ;
+    tables:namePattern "codes_([0-9]+\\.[0-9]+)\\.zip" ;
+    dcat:distribution [ dct:title "codes.txt" ; tables:archived false ] .
+
+<urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> a rec:ReferenceSeries ;
+    rdfs:label "Example vaccine groups" ;
+    rec:tableKind rec:VaccineGroups ;
+    dct:source <urn:uuid:3b1e5c64-8d2a-4f7b-9a10-6c2d4e8f1b35> .
+
+<urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> a rec:ReferenceSeries ;
+    rdfs:label "Example vaccine names" ;
+    rec:tableKind rec:CodeNames ;
+    dct:source <urn:uuid:3b1e5c64-8d2a-4f7b-9a10-6c2d4e8f1b35> .
+
+<urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> a rec:ReferenceSeries ;
+    rdfs:label "Example vaccine code status" ;
+    rec:tableKind rec:CodeStatus ;
+    dct:source <urn:uuid:3b1e5c64-8d2a-4f7b-9a10-6c2d4e8f1b35> .

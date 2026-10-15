@@ -1,0 +1,193 @@
+<urn:uuid:8caff025-8214-4910-81d7-16dfac334dae> {
+  <http://loinc.org/rdf/1009-0> <http://purl.org/dc/terms/isReplacedBy> <http://loinc.org/rdf/1007-4> .
+  <http://loinc.org/rdf/1009-0> <http://www.w3.org/2002/07/owl#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  <http://loinc.org/rdf/11491-6> <http://purl.org/dc/terms/isReplacedBy> <http://loinc.org/rdf/15507-7> .
+  <http://loinc.org/rdf/11491-6> <http://www.w3.org/2002/07/owl#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  <http://loinc.org/rdf/5895-7> <http://purl.org/dc/terms/isReplacedBy> <http://loinc.org/rdf/6301-6> .
+  <http://loinc.org/rdf/5895-7> <http://www.w3.org/2002/07/owl#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+}
+
+<urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943> {
+  <http://loinc.org/rdf/1007-4> <http://www.w3.org/2004/02/skos/core#notation> "1007-4" .
+  <http://loinc.org/rdf/1007-4> <http://www.w3.org/2004/02/skos/core#prefLabel> "Direct antiglobulin test.polyspecific reagent [Presence] on Red Blood Cells" .
+  <http://loinc.org/rdf/100854-9> <http://www.w3.org/2004/02/skos/core#notation> "100854-9" .
+  <http://loinc.org/rdf/100854-9> <http://www.w3.org/2004/02/skos/core#prefLabel> "Lymphocytes/cells in Blood mononuclear cells by Immunoassay" .
+  <http://loinc.org/rdf/1009-0> <http://www.w3.org/2004/02/skos/core#notation> "1009-0" .
+  <http://loinc.org/rdf/1009-0> <http://www.w3.org/2004/02/skos/core#prefLabel> "Deprecated Direct antiglobulin test.poly specific reagent [Presence] on Red Blood Cells" .
+  <http://loinc.org/rdf/10875-3> <http://www.w3.org/2004/02/skos/core#notation> "10875-3" .
+  <http://loinc.org/rdf/10875-3> <http://www.w3.org/2004/02/skos/core#prefLabel> "Carnitine esters [Mass/volume] in Urine" .
+  <http://loinc.org/rdf/11491-6> <http://www.w3.org/2004/02/skos/core#notation> "11491-6" .
+  <http://loinc.org/rdf/11491-6> <http://www.w3.org/2004/02/skos/core#prefLabel> "Deprecated Provider-unspecified ED visit note" .
+  <http://loinc.org/rdf/2160-0> <http://www.w3.org/2004/02/skos/core#notation> "2160-0" .
+  <http://loinc.org/rdf/2160-0> <http://www.w3.org/2004/02/skos/core#prefLabel> "Creatinine [Mass/volume] in Serum or Plasma" .
+  <http://loinc.org/rdf/2345-7> <http://www.w3.org/2004/02/skos/core#notation> "2345-7" .
+  <http://loinc.org/rdf/2345-7> <http://www.w3.org/2004/02/skos/core#prefLabel> "Glucose [Mass/volume] in Serum or Plasma" .
+  <http://loinc.org/rdf/24318-8> <http://www.w3.org/2004/02/skos/core#notation> "24318-8" .
+  <http://loinc.org/rdf/24318-8> <http://www.w3.org/2004/02/skos/core#prefLabel> "Manual Differential panel - Blood" .
+  <http://loinc.org/rdf/24320-4> <http://www.w3.org/2004/02/skos/core#notation> "24320-4" .
+  <http://loinc.org/rdf/24320-4> <http://www.w3.org/2004/02/skos/core#prefLabel> "Basic metabolic 1998 panel - Serum or Plasma" .
+  <http://loinc.org/rdf/24326-1> <http://www.w3.org/2004/02/skos/core#notation> "24326-1" .
+  <http://loinc.org/rdf/24326-1> <http://www.w3.org/2004/02/skos/core#prefLabel> "Electrolytes 1998 panel - Serum or Plasma" .
+  <http://loinc.org/rdf/26464-8> <http://www.w3.org/2004/02/skos/core#notation> "26464-8" .
+  <http://loinc.org/rdf/26464-8> <http://www.w3.org/2004/02/skos/core#prefLabel> "Leukocytes [#/volume] in Blood" .
+  <http://loinc.org/rdf/30394-1> <http://www.w3.org/2004/02/skos/core#notation> "30394-1" .
+  <http://loinc.org/rdf/30394-1> <http://www.w3.org/2004/02/skos/core#prefLabel> "Granulocytes [#/volume] in Blood" .
+  <http://loinc.org/rdf/30395-8> <http://www.w3.org/2004/02/skos/core#notation> "30395-8" .
+  <http://loinc.org/rdf/30395-8> <http://www.w3.org/2004/02/skos/core#prefLabel> "Granulocytes/Leukocytes in Blood" .
+  <http://loinc.org/rdf/3094-0> <http://www.w3.org/2004/02/skos/core#notation> "3094-0" .
+  <http://loinc.org/rdf/3094-0> <http://www.w3.org/2004/02/skos/core#prefLabel> "Urea nitrogen [Mass/volume] in Serum or Plasma" .
+  <http://loinc.org/rdf/3097-3> <http://www.w3.org/2004/02/skos/core#notation> "3097-3" .
+  <http://loinc.org/rdf/3097-3> <http://www.w3.org/2004/02/skos/core#prefLabel> "Urea nitrogen/Creatinine [Mass Ratio] in Serum or Plasma" .
+  <http://loinc.org/rdf/45398-5> <http://www.w3.org/2004/02/skos/core#notation> "45398-5" .
+  <http://loinc.org/rdf/45398-5> <http://www.w3.org/2004/02/skos/core#prefLabel> "State provider number for Facility" .
+  <http://loinc.org/rdf/45399-3> <http://www.w3.org/2004/02/skos/core#notation> "45399-3" .
+  <http://loinc.org/rdf/45399-3> <http://www.w3.org/2004/02/skos/core#prefLabel> "Federal provider number Facility" .
+  <http://loinc.org/rdf/55175-4> <http://www.w3.org/2004/02/skos/core#notation> "55175-4" .
+  <http://loinc.org/rdf/55175-4> <http://www.w3.org/2004/02/skos/core#prefLabel> "Facility and Practitioner identification data Set DEEDS" .
+  <http://loinc.org/rdf/5895-7> <http://www.w3.org/2004/02/skos/core#notation> "5895-7" .
+  <http://loinc.org/rdf/5895-7> <http://www.w3.org/2004/02/skos/core#prefLabel> "Deprecated INR in Platelet poor plasma by Coagulation assay" .
+  <http://loinc.org/rdf/6301-6> <http://www.w3.org/2004/02/skos/core#notation> "6301-6" .
+  <http://loinc.org/rdf/6301-6> <http://www.w3.org/2004/02/skos/core#prefLabel> "INR in Platelet poor plasma by Coagulation assay" .
+  <http://loinc.org/rdf/8357-6> <http://www.w3.org/2004/02/skos/core#notation> "8357-6" .
+  <http://loinc.org/rdf/8357-6> <http://www.w3.org/2004/02/skos/core#prefLabel> "Blood pressure method" .
+  <http://loinc.org/rdf/8462-4> <http://www.w3.org/2004/02/skos/core#notation> "8462-4" .
+  <http://loinc.org/rdf/8462-4> <http://www.w3.org/2004/02/skos/core#prefLabel> "Diastolic blood pressure" .
+  <http://loinc.org/rdf/8478-0> <http://www.w3.org/2004/02/skos/core#notation> "8478-0" .
+  <http://loinc.org/rdf/8478-0> <http://www.w3.org/2004/02/skos/core#prefLabel> "Mean blood pressure" .
+  <http://loinc.org/rdf/8480-6> <http://www.w3.org/2004/02/skos/core#notation> "8480-6" .
+  <http://loinc.org/rdf/8480-6> <http://www.w3.org/2004/02/skos/core#prefLabel> "Systolic blood pressure" .
+  <http://loinc.org/rdf/85353-1> <http://www.w3.org/2004/02/skos/core#notation> "85353-1" .
+  <http://loinc.org/rdf/85353-1> <http://www.w3.org/2004/02/skos/core#prefLabel> "Vital signs, weight, height, head circumference, oxygen saturation and BMI panel" .
+  <http://loinc.org/rdf/85354-9> <http://www.w3.org/2004/02/skos/core#notation> "85354-9" .
+  <http://loinc.org/rdf/85354-9> <http://www.w3.org/2004/02/skos/core#prefLabel> "Blood pressure panel with all children optional" .
+  <http://loinc.org/rdf/87624-3> <http://www.w3.org/2004/02/skos/core#notation> "87624-3" .
+  <http://loinc.org/rdf/87624-3> <http://www.w3.org/2004/02/skos/core#prefLabel> "HEDIS 2018 Alcohol Screening" .
+  <http://loinc.org/rdf/9279-1> <http://www.w3.org/2004/02/skos/core#notation> "9279-1" .
+  <http://loinc.org/rdf/9279-1> <http://www.w3.org/2004/02/skos/core#prefLabel> "Respiratory rate" .
+}
+
+<urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c> {
+  <urn:uuid:15b4a7a7-6f11-8793-a0e1-87a7fde43caf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:15b4a7a7-6f11-8793-a0e1-87a7fde43caf> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:15b4a7a7-6f11-8793-a0e1-87a7fde43caf> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/55175-4> .
+  <urn:uuid:15b4a7a7-6f11-8793-a0e1-87a7fde43caf> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/45399-3> .
+  <urn:uuid:15b4a7a7-6f11-8793-a0e1-87a7fde43caf> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:15b4a7a7-6f11-8793-a0e1-87a7fde43caf> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:276af8e7-a83c-8404-bd4d-ae1c9cc4741f> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:276af8e7-a83c-8404-bd4d-ae1c9cc4741f> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:276af8e7-a83c-8404-bd4d-ae1c9cc4741f> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24318-8> .
+  <urn:uuid:276af8e7-a83c-8404-bd4d-ae1c9cc4741f> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/30394-1> .
+  <urn:uuid:276af8e7-a83c-8404-bd4d-ae1c9cc4741f> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:276af8e7-a83c-8404-bd4d-ae1c9cc4741f> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "63"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:276af8e7-a83c-8404-bd4d-ae1c9cc4741f> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:3d73600c-09d1-8e4e-b154-cf351a7cda8d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:3d73600c-09d1-8e4e-b154-cf351a7cda8d> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:3d73600c-09d1-8e4e-b154-cf351a7cda8d> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24318-8> .
+  <urn:uuid:3d73600c-09d1-8e4e-b154-cf351a7cda8d> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/30394-1> .
+  <urn:uuid:3d73600c-09d1-8e4e-b154-cf351a7cda8d> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:3d73600c-09d1-8e4e-b154-cf351a7cda8d> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "13"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:3d73600c-09d1-8e4e-b154-cf351a7cda8d> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:3f23646d-8dca-8c09-a8fc-2b8e0015cc38> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:3f23646d-8dca-8c09-a8fc-2b8e0015cc38> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:3f23646d-8dca-8c09-a8fc-2b8e0015cc38> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/85353-1> .
+  <urn:uuid:3f23646d-8dca-8c09-a8fc-2b8e0015cc38> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/85354-9> .
+  <urn:uuid:3f23646d-8dca-8c09-a8fc-2b8e0015cc38> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:3f23646d-8dca-8c09-a8fc-2b8e0015cc38> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "16"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:3f23646d-8dca-8c09-a8fc-2b8e0015cc38> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:5a506d1e-40d1-8374-af9a-a16a94c44fad> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:5a506d1e-40d1-8374-af9a-a16a94c44fad> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:5a506d1e-40d1-8374-af9a-a16a94c44fad> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24320-4> .
+  <urn:uuid:5a506d1e-40d1-8374-af9a-a16a94c44fad> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/2345-7> .
+  <urn:uuid:5a506d1e-40d1-8374-af9a-a16a94c44fad> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "R" .
+  <urn:uuid:5a506d1e-40d1-8374-af9a-a16a94c44fad> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:5a506d1e-40d1-8374-af9a-a16a94c44fad> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:65b83670-98ff-82d3-891d-114755adac2b> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:65b83670-98ff-82d3-891d-114755adac2b> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:65b83670-98ff-82d3-891d-114755adac2b> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24320-4> .
+  <urn:uuid:65b83670-98ff-82d3-891d-114755adac2b> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/24326-1> .
+  <urn:uuid:65b83670-98ff-82d3-891d-114755adac2b> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "5"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:65b83670-98ff-82d3-891d-114755adac2b> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:67891d75-3696-86fb-8790-5d2d5cf6109d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:67891d75-3696-86fb-8790-5d2d5cf6109d> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:67891d75-3696-86fb-8790-5d2d5cf6109d> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/85354-9> .
+  <urn:uuid:67891d75-3696-86fb-8790-5d2d5cf6109d> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/8462-4> .
+  <urn:uuid:67891d75-3696-86fb-8790-5d2d5cf6109d> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:67891d75-3696-86fb-8790-5d2d5cf6109d> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:67891d75-3696-86fb-8790-5d2d5cf6109d> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:794f8f35-8fd8-8255-99c8-6ab1f6656060> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:794f8f35-8fd8-8255-99c8-6ab1f6656060> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:794f8f35-8fd8-8255-99c8-6ab1f6656060> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/85354-9> .
+  <urn:uuid:794f8f35-8fd8-8255-99c8-6ab1f6656060> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/8478-0> .
+  <urn:uuid:794f8f35-8fd8-8255-99c8-6ab1f6656060> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:794f8f35-8fd8-8255-99c8-6ab1f6656060> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:794f8f35-8fd8-8255-99c8-6ab1f6656060> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:7f697ab6-214b-85ba-aeb2-fd3205bba076> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:7f697ab6-214b-85ba-aeb2-fd3205bba076> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:7f697ab6-214b-85ba-aeb2-fd3205bba076> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24318-8> .
+  <urn:uuid:7f697ab6-214b-85ba-aeb2-fd3205bba076> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/30395-8> .
+  <urn:uuid:7f697ab6-214b-85ba-aeb2-fd3205bba076> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "C" .
+  <urn:uuid:7f697ab6-214b-85ba-aeb2-fd3205bba076> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "12"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:7f697ab6-214b-85ba-aeb2-fd3205bba076> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:82b7a3c2-0b6d-8ed9-ab28-8f5ab84a59ff> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:82b7a3c2-0b6d-8ed9-ab28-8f5ab84a59ff> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:82b7a3c2-0b6d-8ed9-ab28-8f5ab84a59ff> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24320-4> .
+  <urn:uuid:82b7a3c2-0b6d-8ed9-ab28-8f5ab84a59ff> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/3094-0> .
+  <urn:uuid:82b7a3c2-0b6d-8ed9-ab28-8f5ab84a59ff> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "R" .
+  <urn:uuid:82b7a3c2-0b6d-8ed9-ab28-8f5ab84a59ff> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:82b7a3c2-0b6d-8ed9-ab28-8f5ab84a59ff> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:8db94ec9-749e-89ab-9a2c-76eb3d70ecf7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:8db94ec9-749e-89ab-9a2c-76eb3d70ecf7> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:8db94ec9-749e-89ab-9a2c-76eb3d70ecf7> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/85354-9> .
+  <urn:uuid:8db94ec9-749e-89ab-9a2c-76eb3d70ecf7> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/8480-6> .
+  <urn:uuid:8db94ec9-749e-89ab-9a2c-76eb3d70ecf7> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:8db94ec9-749e-89ab-9a2c-76eb3d70ecf7> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:8db94ec9-749e-89ab-9a2c-76eb3d70ecf7> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:9c18c065-65e6-8500-bd18-f22677401f85> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:9c18c065-65e6-8500-bd18-f22677401f85> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:9c18c065-65e6-8500-bd18-f22677401f85> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24318-8> .
+  <urn:uuid:9c18c065-65e6-8500-bd18-f22677401f85> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/26464-8> .
+  <urn:uuid:9c18c065-65e6-8500-bd18-f22677401f85> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:9c18c065-65e6-8500-bd18-f22677401f85> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:9c18c065-65e6-8500-bd18-f22677401f85> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:afed95f0-a285-8ee7-abca-d9baab7fbcdb> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:afed95f0-a285-8ee7-abca-d9baab7fbcdb> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:afed95f0-a285-8ee7-abca-d9baab7fbcdb> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24320-4> .
+  <urn:uuid:afed95f0-a285-8ee7-abca-d9baab7fbcdb> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/2160-0> .
+  <urn:uuid:afed95f0-a285-8ee7-abca-d9baab7fbcdb> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "R" .
+  <urn:uuid:afed95f0-a285-8ee7-abca-d9baab7fbcdb> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:afed95f0-a285-8ee7-abca-d9baab7fbcdb> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:b98a7ad3-469a-842c-ad08-e8345287d75a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:b98a7ad3-469a-842c-ad08-e8345287d75a> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:b98a7ad3-469a-842c-ad08-e8345287d75a> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/85354-9> .
+  <urn:uuid:b98a7ad3-469a-842c-ad08-e8345287d75a> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/8357-6> .
+  <urn:uuid:b98a7ad3-469a-842c-ad08-e8345287d75a> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:b98a7ad3-469a-842c-ad08-e8345287d75a> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:b98a7ad3-469a-842c-ad08-e8345287d75a> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:c2b11bf2-1cc1-8da3-96b7-67f1d7d2cced> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:c2b11bf2-1cc1-8da3-96b7-67f1d7d2cced> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:c2b11bf2-1cc1-8da3-96b7-67f1d7d2cced> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24318-8> .
+  <urn:uuid:c2b11bf2-1cc1-8da3-96b7-67f1d7d2cced> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/30395-8> .
+  <urn:uuid:c2b11bf2-1cc1-8da3-96b7-67f1d7d2cced> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:c2b11bf2-1cc1-8da3-96b7-67f1d7d2cced> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "62"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:c2b11bf2-1cc1-8da3-96b7-67f1d7d2cced> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:eb61b101-7a72-8421-89c8-2790a3f149a6> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:eb61b101-7a72-8421-89c8-2790a3f149a6> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:eb61b101-7a72-8421-89c8-2790a3f149a6> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/24320-4> .
+  <urn:uuid:eb61b101-7a72-8421-89c8-2790a3f149a6> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/3097-3> .
+  <urn:uuid:eb61b101-7a72-8421-89c8-2790a3f149a6> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:eb61b101-7a72-8421-89c8-2790a3f149a6> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:eb61b101-7a72-8421-89c8-2790a3f149a6> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:fb521d02-07ea-8b48-ac64-21134f4ac2eb> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:fb521d02-07ea-8b48-ac64-21134f4ac2eb> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:fb521d02-07ea-8b48-ac64-21134f4ac2eb> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/55175-4> .
+  <urn:uuid:fb521d02-07ea-8b48-ac64-21134f4ac2eb> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/45398-5> .
+  <urn:uuid:fb521d02-07ea-8b48-ac64-21134f4ac2eb> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:fb521d02-07ea-8b48-ac64-21134f4ac2eb> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:ff3610e5-db9f-881c-93f0-12f4ec8879c9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:ff3610e5-db9f-881c-93f0-12f4ec8879c9> <http://www.w3.org/2002/07/owl#annotatedProperty> <http://purl.obolibrary.org/obo/RO_0002351> .
+  <urn:uuid:ff3610e5-db9f-881c-93f0-12f4ec8879c9> <http://www.w3.org/2002/07/owl#annotatedSource> <http://loinc.org/rdf/85353-1> .
+  <urn:uuid:ff3610e5-db9f-881c-93f0-12f4ec8879c9> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://loinc.org/rdf/9279-1> .
+  <urn:uuid:ff3610e5-db9f-881c-93f0-12f4ec8879c9> <https://ns.cascadeprotocol.org/records/v1-draft#observationRequiredInPanel> "O" .
+  <urn:uuid:ff3610e5-db9f-881c-93f0-12f4ec8879c9> <https://ns.cascadeprotocol.org/records/v1-draft#panelSequence> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <urn:uuid:ff3610e5-db9f-881c-93f0-12f4ec8879c9> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+}

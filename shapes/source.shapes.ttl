@@ -36,7 +36,7 @@ tables:SourceShape a sh:NodeShape ;
         sh:message "A source states the credit its publisher asks for."@en
     ] , [
         sh:path tables:detectedBy ;
-        sh:in ( tables:ConditionalGet tables:ReleaseApi tables:FolderListing tables:DatedUrl ) ;
+        sh:in ( tables:ConditionalGet tables:ReleaseApi tables:FolderListing tables:DatedUrl tables:Announcement ) ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:message "A source is detected by one of the host's methods."@en
@@ -96,8 +96,45 @@ tables:SourceFilesShape a sh:NodeShape ;
                     sh:qualifiedMinCount 1
                 ]
         ]
+        [
+            sh:property [ sh:path tables:detectedBy ; sh:hasValue tables:Announcement ] ,
+                [
+                    sh:path tables:announcementPage ;
+                    sh:nodeKind sh:IRI ;
+                    sh:pattern "^https://[^/]+/" ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1
+                ] ,
+                [
+                    sh:path tables:namePattern ;
+                    sh:datatype xsd:string ;
+                    sh:pattern "^[^()]*\\((?!\\?)[^()]*\\)[^()]*$" ;
+                    sh:minCount 1 ;
+                    sh:maxCount 1
+                ] ,
+                [ sh:path tables:releaseApi ; sh:maxCount 0 ] ,
+                [ sh:path tables:folderListing ; sh:maxCount 0 ] ,
+                [ sh:path dcat:distribution ; sh:node tables:UnarchivedFileShape ]
+        ]
     ) ;
-    sh:message "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; one detected by a dated address names at least one file by its name and its address with {month}, and its other files by their download URL; any other source names each file's one download URL."@en .
+    sh:message "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; one detected by a dated address names at least one file by its name and its address with {month}, and its other files by their download URL; one detected by its announcement names the public page and a name pattern with one group, the version, and each file by its path in the release's folder, none archived; any other source names each file's one download URL."@en .
+
+tables:AnnouncementPageShape a sh:NodeShape ;
+    sh:targetSubjectsOf tables:announcementPage ;
+    sh:property [
+        sh:path tables:detectedBy ;
+        sh:hasValue tables:Announcement ;
+        sh:message "Only a source detected by its announcement names an announcement page."@en
+    ] .
+
+tables:UnarchivedFileShape a sh:NodeShape ;
+    sh:node tables:ArchivedFileShape ;
+    sh:property [
+        sh:path tables:archived ;
+        sh:hasValue false ;
+        sh:minCount 1 ;
+        sh:message "A file of a source detected by its announcement is never archived: its release is not public."@en
+    ] .
 
 tables:DatedFileShape a sh:NodeShape ;
     sh:property [

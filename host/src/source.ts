@@ -31,6 +31,8 @@ export interface ListedFile {
   readonly archivePattern?: string;
 }
 
+export const BY_ANNOUNCEMENT = `${TABLES}Announcement`;
+
 export const matches = (pattern: string, name: string): boolean =>
   new RegExp(pattern, "i").test(name);
 
@@ -66,6 +68,13 @@ export interface Source {
   readonly releaseApi?: string;
   /** The publisher's folder of release folders, for a source detected by its folder listing. */
   readonly listing?: Listing;
+  /**
+   * The public page that announces a release, and the pattern whose one group is a version, for a source detected by
+   * its announcement. Each file is named by its path in the release's folder.
+   */
+  readonly announcement?: { readonly page: string; readonly pattern: string };
+  /** The credit its publisher asks for. */
+  readonly credit: string;
   /**
    * Each file of a release by its name, the last segment of where it is: its download URL, or, for a source detected
    * by its release API, its path in the release's zip.
@@ -127,6 +136,7 @@ export async function readSource(folder: string): Promise<Source> {
   const gzipped = new Set<string>();
   const unarchived = new Set<string>();
   const dated = new Map<string, string>();
+  const announced = value(iri, `${TABLES}detectedBy`) === BY_ANNOUNCEMENT;
   for (const distribution of graph.objects(iri, `${DCAT}distribution`)) {
     const template = graph.value(distribution, `${TABLES}urlTemplate`);
     const where =
@@ -135,9 +145,11 @@ export async function readSource(folder: string): Promise<Source> {
       graph.value(distribution, `${DCT}title`) ??
       "";
     const name =
-      template === undefined
-        ? decodeURIComponent(where.split("/").pop() ?? "")
-        : value(distribution, `${DCT}title`);
+      template !== undefined
+        ? value(distribution, `${DCT}title`)
+        : announced
+          ? where
+          : decodeURIComponent(where.split("/").pop() ?? "");
     files.set(name, where);
     if (template !== undefined) dated.set(name, template);
     if (graph.value(distribution, `${DCAT}compressFormat`) === GZIP)
@@ -154,6 +166,7 @@ export async function readSource(folder: string): Promise<Source> {
           urlTemplate: value(lookup, `${TABLES}urlTemplate`),
         };
   const releaseApi = graph.value(iri, `${TABLES}releaseApi`);
+  const announcementPage = graph.value(iri, `${TABLES}announcementPage`);
   const listingUrl = graph.value(iri, `${TABLES}folderListing`);
   const listing =
     listingUrl === undefined
@@ -190,6 +203,15 @@ export async function readSource(folder: string): Promise<Source> {
     detectedBy: value(iri, `${TABLES}detectedBy`),
     ...(releaseApi === undefined ? {} : { releaseApi }),
     ...(listing === undefined ? {} : { listing }),
+    ...(announcementPage === undefined
+      ? {}
+      : {
+          announcement: {
+            page: announcementPage,
+            pattern: value(iri, `${TABLES}namePattern`),
+          },
+        }),
+    credit: value(iri, `${DCT}bibliographicCitation`),
     ...(historyLookup === undefined ? {} : { historyLookup }),
     files,
     gzipped,

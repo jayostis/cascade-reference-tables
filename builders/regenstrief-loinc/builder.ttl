@@ -1,0 +1,7 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:c5a78758-ff08-4f42-88cb-5fb4e9065e64> a tables:Builder ;
+    rdfs:label "regenstrief-loinc" ;
+    tables:builderVersion "1" ;
+    tables:builds <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> .

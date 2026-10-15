@@ -7,12 +7,47 @@ import { gzipSync } from "node:zlib";
 import { Refusal } from "../src/builder.js";
 import { texts } from "../src/archive.js";
 import {
+  csv,
   delimited,
   fixedWidth,
   jsonLines,
   xlsx,
   xmlElements,
 } from "../src/readers.js";
+
+test("a CSV file is read by RFC 4180: a quoted field holds commas, line breaks and quotes, however the read cuts it, and a field left open is refused", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "readers-"));
+  try {
+    const record = '"a,b","line one\r\nline ""two""",,plain\r\n';
+    const path = join(dir, "many.csv");
+    await writeFile(
+      path,
+      `\u{FEFF}x,y,z,w\n\n${record.repeat(60000)}"end",1,2,3`,
+    );
+    const found: { number: number; fields: readonly string[] }[] = [];
+    for await (const line of csv(path)) found.push(line);
+    assert.equal(found.length, 60002);
+    assert.deepEqual(found[0], { number: 1, fields: ["x", "y", "z", "w"] });
+    for (const line of [found[1]!, found[30000]!, found[60000]!])
+      assert.deepEqual(line.fields, [
+        "a,b",
+        'line one\r\nline "two"',
+        "",
+        "plain",
+      ]);
+    assert.deepEqual(found[1]!.number, 3);
+    assert.deepEqual(found.at(-1)!.fields, ["end", "1", "2", "3"]);
+    await writeFile(join(dir, "open.csv"), 'a,"never closed\n');
+    await assert.rejects(
+      (async () => {
+        for await (const line of csv(join(dir, "open.csv"))) void line;
+      })(),
+      Refusal,
+    );
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
 
 test("a release file is read line by line, as each reader cuts it", async () => {
   const dir = await mkdtemp(join(tmpdir(), "readers-"));

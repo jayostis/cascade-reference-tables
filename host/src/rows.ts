@@ -27,10 +27,19 @@ export interface RdfRow {
   readonly triples: readonly Quad[];
 }
 
-/** The row's triples, a mapping row named by the record rule over its subject, predicate and object (N11). */
+/**
+ * The row's triples, a mapping row named by the record rule over its subject, predicate and object, and a panel member
+ * row also over its sequence (N11).
+ */
 export function toRdf(row: Row): RdfRow {
   if ("subject_id" in row) {
-    const key = recordName([row.subject_id, row.predicate_id, row.object_id]);
+    const member = "sequence" in row;
+    const key = recordName([
+      row.subject_id,
+      row.predicate_id,
+      row.object_id,
+      ...(member ? [String(row.sequence)] : []),
+    ]);
     return {
       form: "mapping",
       key,
@@ -40,15 +49,34 @@ export function toRdf(row: Row): RdfRow {
         triple(key, `${OWL}annotatedProperty`, row.predicate_id),
         triple(key, `${OWL}annotatedTarget`, row.object_id),
         triple(key, `${SSSOM}mapping_justification`, row.mapping_justification),
-        ...(row.mapping_cardinality === undefined
-          ? []
-          : [
+        ...("mapping_cardinality" in row &&
+        row.mapping_cardinality !== undefined
+          ? [
               triple(
                 key,
                 `${SSSOM}mapping_cardinality`,
                 literal(row.mapping_cardinality),
               ),
-            ]),
+            ]
+          : []),
+        ...(member
+          ? [
+              triple(
+                key,
+                `${REC}panelSequence`,
+                literal(String(row.sequence), `${XSD}integer`),
+              ),
+              ...(row.required === undefined
+                ? []
+                : [
+                    triple(
+                      key,
+                      `${REC}observationRequiredInPanel`,
+                      literal(row.required),
+                    ),
+                  ]),
+            ]
+          : []),
       ],
     };
   }

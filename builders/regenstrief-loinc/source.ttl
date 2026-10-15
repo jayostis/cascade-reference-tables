@@ -1,0 +1,35 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> a tables:Source, dcat:Dataset ;
+    rdfs:label "Regenstrief LOINC" ;
+    dct:publisher <https://ror.org/05f2ywb48> ;
+    dct:license <https://loinc.org/license/> ;
+    dct:bibliographicCitation "This material contains content from LOINC (http://loinc.org). LOINC is copyright © Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc." ;
+    tables:detectedBy tables:Announcement ;
+    tables:announcementPage <https://loinc.org/downloads/> ;
+    tables:namePattern "Loinc_([0-9]+\\.[0-9]+)\\.zip" ;
+    dcat:distribution
+        [ dct:title "LoincTable/Loinc.csv" ; tables:archived false ] ,
+        [ dct:title "LoincTable/MapTo.csv" ; tables:archived false ] ,
+        [ dct:title "AccessoryFiles/PanelsAndForms/PanelsAndForms.csv" ; tables:archived false ] .
+
+<https://ror.org/05f2ywb48> rdfs:label "Regenstrief Institute" .
+
+<urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943> a rec:ReferenceSeries ;
+    rdfs:label "Regenstrief LOINC names" ;
+    rec:tableKind rec:CodeNames ;
+    dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> .
+
+<urn:uuid:8caff025-8214-4910-81d7-16dfac334dae> a rec:ReferenceSeries ;
+    rdfs:label "Regenstrief LOINC code status" ;
+    rec:tableKind rec:CodeStatus ;
+    dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> .
+
+<urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c> a rec:ReferenceSeries ;
+    rdfs:label "Regenstrief LOINC panel members" ;
+    rec:tableKind rec:PanelMembers ;
+    dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> .

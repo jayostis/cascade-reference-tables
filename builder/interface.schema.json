@@ -4,6 +4,7 @@
   "title": "A row a builder yields",
   "oneOf": [
     { "$ref": "#/$defs/mapping" },
+    { "$ref": "#/$defs/member" },
     { "$ref": "#/$defs/names" },
     { "$ref": "#/$defs/status" },
     { "$ref": "#/$defs/termType" },
@@ -32,6 +33,27 @@
         "object_id": { "$ref": "#/$defs/iri" },
         "mapping_justification": { "$ref": "#/$defs/iri" },
         "mapping_cardinality": { "enum": ["1:1", "1:n", "n:1", "n:n"] }
+      }
+    },
+    "member": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "series",
+        "subject_id",
+        "predicate_id",
+        "object_id",
+        "mapping_justification",
+        "sequence"
+      ],
+      "properties": {
+        "series": { "$ref": "#/$defs/iri" },
+        "subject_id": { "$ref": "#/$defs/iri" },
+        "predicate_id": { "$ref": "#/$defs/iri" },
+        "object_id": { "$ref": "#/$defs/iri" },
+        "mapping_justification": { "$ref": "#/$defs/iri" },
+        "sequence": { "type": "integer" },
+        "required": { "$ref": "#/$defs/text" }
       }
     },
     "names": {
