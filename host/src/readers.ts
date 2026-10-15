@@ -7,15 +7,14 @@ import { SaxesParser } from "saxes";
 import { entryStream, texts } from "./archive.js";
 import { Refusal } from "./builder.js";
 
-/** Calls `open` and `close` with each element's local name and attributes, and `text` with the text inside one. */
-function parseXml(
-  xml: string,
-  handlers: {
-    open?: (name: string, attributes: Record<string, string>) => void;
-    close?: (name: string) => void;
-    text?: (text: string) => void;
-  },
-): void {
+interface XmlHandlers {
+  open?: (name: string, attributes: Record<string, string>) => void;
+  close?: (name: string) => void;
+  text?: (text: string) => void;
+}
+
+/** A parser that calls `open` and `close` with each element's local name, and `text` with the text inside one. */
+function xmlParser(handlers: XmlHandlers): SaxesParser {
   const parser = new SaxesParser({ xmlns: false });
   const local = (name: string) => name.slice(name.indexOf(":") + 1);
   parser.on("opentag", (tag) =>
@@ -24,7 +23,11 @@ function parseXml(
   parser.on("closetag", (tag) => handlers.close?.(local(tag.name)));
   parser.on("text", (text) => handlers.text?.(text));
   parser.on("cdata", (text) => handlers.text?.(text));
-  parser.write(xml).close();
+  return parser;
+}
+
+function parseXml(xml: string, handlers: XmlHandlers): void {
+  xmlParser(handlers).write(xml).close();
 }
 
 /** The column's number from 0, from a cell reference such as `C12`. */
@@ -164,35 +167,32 @@ export async function* xmlElements(
       )
     : createReadStream(path, { highWaterMark: 1 << 20 });
   input.setEncoding("utf8");
-  const parser = new SaxesParser({ xmlns: false });
   const open: OpenElement[] = [];
   let done: XmlElement[] = [];
-  const local = (name: string) => name.slice(name.indexOf(":") + 1);
-  parser.on("opentag", (tag) => {
-    const name = local(tag.name);
-    if (open.length > 0 || name === element)
-      open.push({
-        name,
-        attributes: { ...(tag.attributes as Record<string, string>) },
-        parts: [],
-        children: [],
-      });
-  });
-  const addText = (text: string) => open.at(-1)?.parts.push(text);
-  parser.on("text", addText);
-  parser.on("cdata", addText);
-  parser.on("closetag", () => {
-    const closed = open.pop();
-    if (closed === undefined) return;
-    const finished: XmlElement = {
-      name: closed.name,
-      attributes: closed.attributes,
-      text: closed.parts.join("").trim(),
-      children: closed.children,
-    };
-    const parent = open.at(-1);
-    if (parent === undefined) done.push(finished);
-    else parent.children.push(finished);
+  const parser = xmlParser({
+    open: (name, attributes) => {
+      if (open.length > 0 || name === element)
+        open.push({
+          name,
+          attributes: { ...attributes },
+          parts: [],
+          children: [],
+        });
+    },
+    text: (text) => open.at(-1)?.parts.push(text),
+    close: () => {
+      const closed = open.pop();
+      if (closed === undefined) return;
+      const finished: XmlElement = {
+        name: closed.name,
+        attributes: closed.attributes,
+        text: closed.parts.join("").trim(),
+        children: closed.children,
+      };
+      const parent = open.at(-1);
+      if (parent === undefined) done.push(finished);
+      else parent.children.push(finished);
+    },
   });
   try {
     for await (const chunk of input) {

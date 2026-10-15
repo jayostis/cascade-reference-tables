@@ -75,6 +75,21 @@ test("MED-RT's file is refused, naming why, when an FDA association is not one t
       "association 1 (has_PE, 29046 to M1) of Authority FDASPL goes to a MeSH code",
     ],
     [
+      "a has_MoA to a class that is no MoA",
+      association("has_MoA", RX, ["MED-RT", "Lower BP [PE]", "N4"]),
+      "association 1 (has_MoA, 29046 to N4) of Authority FDASPL goes to a class that is not a [MoA] class",
+    ],
+    [
+      "a has_PE to a class that is no PE",
+      association("has_PE", RX, MOA),
+      "association 1 (has_PE, 29046 to N2) of Authority FDASPL goes to a class that is not a [PE] class",
+    ],
+    [
+      "a has_SC to a MED-RT class that is no EXT",
+      association("has_SC", RX, MOA),
+      "association 1 (has_SC, 29046 to N2) of Authority FDASPL goes to a class that is not a [EXT] class",
+    ],
+    [
       "a MeSH code given two names",
       association("has_SC", RX, MESH) +
         association("has_SC", ["RxNorm", "x", "1"], ["MeSH", "Other", "M1"]),

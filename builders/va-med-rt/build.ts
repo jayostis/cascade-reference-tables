@@ -12,9 +12,9 @@ const FDA = "FDASPL";
 
 const EPC = `${REC}establishedPharmacologicClass`;
 const RELATIONS = new Map([
-  ["has_MoA", `${REC}mechanismOfAction`],
-  ["has_PE", `${REC}physiologicEffect`],
-  ["has_SC", `${REC}chemicalStructure`],
+  ["has_MoA", { predicate: `${REC}mechanismOfAction`, kind: "[MoA]" }],
+  ["has_PE", { predicate: `${REC}physiologicEffect`, kind: "[PE]" }],
+  ["has_SC", { predicate: `${REC}chemicalStructure`, kind: "[EXT]" }],
 ]);
 
 const field = (element: XmlElement, name: string): string =>
@@ -67,12 +67,18 @@ const build: Build = async function* (release) {
       };
       continue;
     }
-    const predicate = RELATIONS.get(relation);
-    if (predicate === undefined) continue;
+    const rule = RELATIONS.get(relation);
+    if (rule === undefined) continue;
+    const { predicate, kind } = rule;
     if (from !== "RxNorm" || fromCode === "" || toCode === "")
       throw refuse("of Authority FDASPL is not from an RxNorm code to a class");
-    if (to === "MED-RT") classes.add(toCode);
-    else if (to === "MeSH" && relation === "has_SC") {
+    if (to === "MED-RT") {
+      if (!field(association, "to_name").endsWith(kind))
+        throw refuse(
+          `of Authority FDASPL goes to a class that is not a ${kind} class`,
+        );
+      classes.add(toCode);
+    } else if (to === "MeSH" && relation === "has_SC") {
       const name = field(association, "to_name");
       if (name === "") throw refuse("names no MeSH name");
       const known = meshNames.get(toCode);

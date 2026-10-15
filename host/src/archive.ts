@@ -6,6 +6,17 @@ import { pipeline } from "node:stream/promises";
 import yauzl from "yauzl";
 import { Refusal } from "./builder.js";
 
+/** The zip opened entry by entry; one that is not a zip is refused. */
+function openZip(zip: string, autoClose: boolean): Promise<yauzl.ZipFile> {
+  return new Promise((resolve, reject) =>
+    yauzl.open(zip, { lazyEntries: true, autoClose }, (error, archive) => {
+      if (error !== null)
+        reject(new Refusal(`${zip} is not a zip: ${error.message}`));
+      else resolve(archive);
+    }),
+  );
+}
+
 /**
  * Hands `take` each entry of the zip that `pick` names, one at a time, with the name `pick` gives it; gives the paths
  * of the entries taken. A zip or an entry that cannot be read is refused.
@@ -15,44 +26,41 @@ function eachEntry(
   pick: (path: string) => string | undefined,
   take: (stream: Readable, name: string) => Promise<unknown>,
 ): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const notZip = (cause: Error) =>
-      reject(new Refusal(`${zip} is not a zip: ${cause.message}`));
-    yauzl.open(zip, { lazyEntries: true }, (error, archive) => {
-      if (error !== null) {
-        notZip(error);
-        return;
-      }
-      const unreadable = (path: string, cause: Error) =>
-        reject(
-          new Refusal(`${zip}'s ${path} cannot be read: ${cause.message}`),
-        );
-      const found: string[] = [];
-      archive.on("error", notZip);
-      archive.on("entry", (entry: yauzl.Entry) => {
-        const name = pick(entry.fileName);
-        if (name === undefined) {
-          archive.readEntry();
-          return;
-        }
-        archive.openReadStream(entry, (failed, stream) => {
-          if (failed !== null) {
-            unreadable(entry.fileName, failed);
+  return openZip(zip, true).then(
+    (archive) =>
+      new Promise((resolve, reject) => {
+        const notZip = (cause: Error) =>
+          reject(new Refusal(`${zip} is not a zip: ${cause.message}`));
+        const unreadable = (path: string, cause: Error) =>
+          reject(
+            new Refusal(`${zip}'s ${path} cannot be read: ${cause.message}`),
+          );
+        const found: string[] = [];
+        archive.on("error", notZip);
+        archive.on("entry", (entry: yauzl.Entry) => {
+          const name = pick(entry.fileName);
+          if (name === undefined) {
+            archive.readEntry();
             return;
           }
-          stream.on("error", (cause: Error) =>
-            unreadable(entry.fileName, cause),
-          );
-          take(stream, name).then(() => {
-            found.push(entry.fileName);
-            archive.readEntry();
-          }, reject);
+          archive.openReadStream(entry, (failed, stream) => {
+            if (failed !== null) {
+              unreadable(entry.fileName, failed);
+              return;
+            }
+            stream.on("error", (cause: Error) =>
+              unreadable(entry.fileName, cause),
+            );
+            take(stream, name).then(() => {
+              found.push(entry.fileName);
+              archive.readEntry();
+            }, reject);
+          });
         });
-      });
-      archive.on("end", () => resolve(found));
-      archive.readEntry();
-    });
-  });
+        archive.on("end", () => resolve(found));
+        archive.readEntry();
+      }),
+  );
 }
 
 /** The one entry of the zip whose path `wanted` accepts, as a stream; none or several is refused. */
@@ -60,44 +68,41 @@ export function entryStream(
   zip: string,
   wanted: (path: string) => boolean,
 ): Promise<Readable> {
-  return new Promise((resolve, reject) => {
-    yauzl.open(zip, { lazyEntries: true, autoClose: false }, (error, file) => {
-      if (error !== null) {
-        reject(new Refusal(`${zip} is not a zip: ${error.message}`));
-        return;
-      }
-      const found: yauzl.Entry[] = [];
-      const fail = (cause: Error) => {
-        file.close();
-        reject(new Refusal(`${zip} cannot be read: ${cause.message}`));
-      };
-      file.on("error", fail);
-      file.on("entry", (entry: yauzl.Entry) => {
-        if (wanted(entry.fileName)) found.push(entry);
-        file.readEntry();
-      });
-      file.on("end", () => {
-        if (found.length !== 1) {
+  return openZip(zip, false).then(
+    (file) =>
+      new Promise((resolve, reject) => {
+        const found: yauzl.Entry[] = [];
+        const fail = (cause: Error) => {
           file.close();
-          reject(
-            new Refusal(
-              `${zip} holds ${found.length} matching entries, not one`,
-            ),
-          );
-          return;
-        }
-        file.openReadStream(found[0]!, (failed, stream) => {
-          if (failed !== null) {
-            fail(failed);
+          reject(new Refusal(`${zip} cannot be read: ${cause.message}`));
+        };
+        file.on("error", fail);
+        file.on("entry", (entry: yauzl.Entry) => {
+          if (wanted(entry.fileName)) found.push(entry);
+          file.readEntry();
+        });
+        file.on("end", () => {
+          if (found.length !== 1) {
+            file.close();
+            reject(
+              new Refusal(
+                `${zip} holds ${found.length} matching entries, not one`,
+              ),
+            );
             return;
           }
-          stream.on("close", () => file.close());
-          resolve(stream);
+          file.openReadStream(found[0]!, (failed, stream) => {
+            if (failed !== null) {
+              fail(failed);
+              return;
+            }
+            stream.on("close", () => file.close());
+            resolve(stream);
+          });
         });
-      });
-      file.readEntry();
-    });
-  });
+        file.readEntry();
+      }),
+  );
 }
 
 /**
