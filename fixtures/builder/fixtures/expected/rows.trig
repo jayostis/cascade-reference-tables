@@ -1,32 +1,33 @@
 @prefix cvx: <http://hl7.org/fhir/sid/cvx/> .
 @prefix dct: <http://purl.org/dc/terms/> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix semapv: <https://w3id.org/semapv/vocab/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix sssom: <https://w3id.org/sssom/> .
 
 <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> {
-    <urn:uuid:682b4f66-ad68-80e4-a154-8952fb415368> a owl:Axiom ;
+    <urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18> a owl:Axiom ;
         owl:annotatedSource cvx:141 ;
-        owl:annotatedProperty skos:broadMatch ;
+        owl:annotatedProperty obo:RO_0002350 ;
         owl:annotatedTarget cvx:88 ;
         sssom:mapping_justification semapv:ManualMappingCuration .
 
-    <urn:uuid:6f01bf63-3d03-8b5b-abda-630660d5045d> a owl:Axiom ;
+    <urn:uuid:5300f61d-d3ad-8c21-9294-3befb5e1671f> a owl:Axiom ;
         owl:annotatedSource cvx:150 ;
-        owl:annotatedProperty skos:broadMatch ;
+        owl:annotatedProperty obo:RO_0002350 ;
         owl:annotatedTarget cvx:88 ;
         sssom:mapping_justification semapv:ManualMappingCuration .
 
-    <urn:uuid:5947096a-81cf-892f-8a82-c68ebfb55b83> a owl:Axiom ;
+    <urn:uuid:fe826896-62fd-846b-b824-086116c289f5> a owl:Axiom ;
         owl:annotatedSource cvx:88 ;
-        owl:annotatedProperty skos:broadMatch ;
+        owl:annotatedProperty obo:RO_0002350 ;
         owl:annotatedTarget cvx:88 ;
         sssom:mapping_justification semapv:ManualMappingCuration .
 
-    <urn:uuid:771d7cee-44ad-804e-8d17-e0e02260a6b2> a owl:Axiom ;
+    <urn:uuid:3ded4abe-b079-8ca4-b08b-d8381d14c2b7> a owl:Axiom ;
         owl:annotatedSource cvx:03 ;
-        owl:annotatedProperty skos:broadMatch ;
+        owl:annotatedProperty obo:RO_0002350 ;
         owl:annotatedTarget cvx:03 ;
         sssom:mapping_justification semapv:ManualMappingCuration .
 }

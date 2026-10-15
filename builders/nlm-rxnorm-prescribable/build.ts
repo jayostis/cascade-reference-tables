@@ -8,6 +8,7 @@ const NAMES = "urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba";
 const STATUS = "urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88";
 const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
 const BROAD_MATCH = "http://www.w3.org/2004/02/skos/core#broadMatch";
+const HAS_ACTIVE_INGREDIENT = "http://purl.obolibrary.org/obo/RO_0002248";
 const CURATED = "https://w3id.org/semapv/vocab/ManualMappingCuration";
 const CHAINED = "https://w3id.org/semapv/vocab/MappingChaining";
 
@@ -95,7 +96,7 @@ const build: Build = async function* (release) {
   ): Row => ({
     series,
     subject_id: from,
-    predicate_id: BROAD_MATCH,
+    predicate_id: series === INGREDIENTS ? HAS_ACTIVE_INGREDIENT : BROAD_MATCH,
     object_id: to,
     mapping_justification: chained ? CHAINED : CURATED,
   });

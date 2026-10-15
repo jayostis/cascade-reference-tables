@@ -4,7 +4,8 @@ import { join } from "node:path";
 import { type Build, Refusal } from "./builder.js";
 import type { Fetch } from "./detection.js";
 import type { Contract } from "./pipeline.js";
-import { OWL, type Quad, REC, SKOS } from "./rdf.js";
+import { recordName } from "./names.js";
+import { iri, OWL, type Quad, quad, REC, SKOS } from "./rdf.js";
 import { releaseOf } from "./release.js";
 import { type Form, type RdfRow, type SeriesRows, toRdf } from "./rows.js";
 import type { Source } from "./source.js";
@@ -30,7 +31,7 @@ export interface CarryInput {
   readonly fetch?: Fetch | undefined;
 }
 
-interface Group {
+export interface Group {
   readonly key: string;
   readonly triples: Quad[];
 }
@@ -62,6 +63,35 @@ function subjectOf(group: Group): string {
     group.triples.find((t) => t.predicate.value === `${OWL}annotatedSource`)
       ?.object.value ?? group.key
   );
+}
+
+/** A carried mapping row with the property its kind now fixes, named anew by the record rule (N11) over all of its kind's name inputs, a panel row's sequence among them. */
+export function withProperty(group: Group, property: string): Group {
+  const get = (predicate: string): string =>
+    group.triples.find((t) => t.predicate.value === `${OWL}${predicate}`)!
+      .object.value;
+  if (get("annotatedProperty") === property) return group;
+  const sequence = group.triples.find(
+    (t) => t.predicate.value === `${REC}panelSequence`,
+  )?.object.value;
+  const key = recordName([
+    get("annotatedSource"),
+    property,
+    get("annotatedTarget"),
+    ...(sequence === undefined ? [] : [String(BigInt(sequence))]),
+  ]);
+  return {
+    key,
+    triples: group.triples.map((t) =>
+      quad(
+        iri(key),
+        t.predicate,
+        t.predicate.value === `${OWL}annotatedProperty`
+          ? iri(property)
+          : t.object,
+      ),
+    ),
+  };
 }
 
 /** Every code the builder's rows name: mapping rows' sources and targets, the other forms' subjects. */
@@ -135,21 +165,25 @@ export async function carry(input: CarryInput): Promise<Carried> {
     if (!rows.has(series)) rows.set(series, []);
     rows.get(series)!.push(row);
   };
-  const keep = (series: string, group: Group): boolean => {
+  const keep = (series: string, group: Group, property?: string): boolean => {
     if (contract.vocabulary.systemOf(subjectOf(group)) === undefined)
       return false;
-    add(series, {
-      form: formOf(group),
-      key: group.key,
-      triples: group.triples,
-    });
+    const form = formOf(group);
+    const kept =
+      form === "mapping" && property !== undefined
+        ? withProperty(group, property)
+        : group;
+    add(series, { form, key: kept.key, triples: kept.triples });
     return true;
   };
-  for (const { iri } of carrying)
-    for (const group of groups(await current(iri))) {
+  for (const { iri: series, kind } of carrying) {
+    const property = contract.vocabulary.fixedProperty(kind);
+    for (const group of groups(await current(series))) {
       const subject = subjectOf(group);
-      if (!taken.has(subject) && keep(iri, group)) carried.push(subject);
+      if (!taken.has(subject) && keep(series, group, property))
+        carried.push(subject);
     }
+  }
   if (status === undefined || source.historyLookup === undefined)
     return { rows };
   const { system, urlTemplate } = source.historyLookup;

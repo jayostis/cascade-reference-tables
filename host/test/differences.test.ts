@@ -6,7 +6,7 @@ import { differences, markdown, type Outcome } from "../src/pipeline.js";
 import { keyed, toRdf } from "../src/rows.js";
 
 const CVX = "http://hl7.org/fhir/sid/cvx/";
-const SKOS = "http://www.w3.org/2004/02/skos/core#";
+const MEMBER_OF = "http://purl.obolibrary.org/obo/RO_0002350";
 const SERIES = "urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0";
 
 function quadsOf(rows: readonly Row[]) {
@@ -37,7 +37,7 @@ const mapping = (
 ): Row => ({
   series: SERIES,
   subject_id: `${CVX}${from}`,
-  predicate_id: `${SKOS}broadMatch`,
+  predicate_id: MEMBER_OF,
   object_id: `${CVX}${to}`,
   mapping_justification: `https://w3id.org/semapv/vocab/${justification}`,
 });
@@ -69,8 +69,8 @@ test("a version's differences read by their codes, sorted by code, whatever the 
       [mapping("77", "222")],
       [mapping("88", "88"), mapping("8", "88")],
       {
-        added: ["`8` → `88` (broadMatch)", "`88` → `88` (broadMatch)"],
-        removed: ["`77` → `222` (broadMatch)"],
+        added: ["`8` → `88` (RO_0002350)", "`88` → `88` (RO_0002350)"],
+        removed: ["`77` → `222` (RO_0002350)"],
       },
     ],
     [
@@ -85,7 +85,7 @@ test("a version's differences read by their codes, sorted by code, whatever the 
       ],
       {
         changed: [
-          "`1` → `2` (broadMatch, justified by LexicalMatching) (was `1` → `2` (broadMatch, justified by ManualMappingCuration))",
+          "`1` → `2` (RO_0002350, justified by LexicalMatching) (was `1` → `2` (RO_0002350, justified by ManualMappingCuration))",
           "`45`: Hep B, also called hepatitis B vaccine (was `45`: Hep B, also called hepatitis B)",
         ],
       },

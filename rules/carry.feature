@@ -69,3 +69,25 @@ Feature: Carrying rows forward
       When the carrying example's release "release" is built as "1"
       And the carrying example's release "release-carry" is built as "2"
       Then the build is refused, saying "gives 141 the status \"Unknown\""
+
+  Rule: H27. A carried mapping row is written with the property its kind's row shape now fixes, and named anew (N11)
+
+    Example: a vaccine group carried from before the move to member of
+      Given the history answers:
+        | code | status  | replaced by |
+        | 141  | Retired | 150         |
+        | 03   | Active  |             |
+      When the carrying example's release "release" is built as "1" under the vocabulary before vaccine groups moved to member of
+      And the carrying example's release "release-carry" is built as "2"
+      Then the last build made these versions:
+        | series                      | revises | notes                         |
+        | Example vaccine groups      | 1       | 3 added, 4 removed, 0 changed |
+        | Example vaccine code status | 1       | 1 added, 0 removed, 0 changed |
+      And "Example vaccine groups" holds the row "urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18":
+        """
+        <urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18> a owl:Axiom ;
+          owl:annotatedSource <http://hl7.org/fhir/sid/cvx/141> ;
+          owl:annotatedProperty <http://purl.obolibrary.org/obo/RO_0002350> ;
+          owl:annotatedTarget <http://hl7.org/fhir/sid/cvx/88> ;
+          sssom:mapping_justification semapv:ManualMappingCuration .
+        """

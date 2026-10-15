@@ -102,6 +102,19 @@ let example: Source;
 let byReleaseApi: Source;
 let byFolderListing: Source;
 let carrying: Source;
+
+/** A copy of the vocabulary's records folder in the world's scratch folder, for a step to change. */
+async function recordsCopy(
+  world: World,
+  name: string,
+): Promise<{ folder: string; records: string }> {
+  const folder = join(world.dir, name);
+  const records = join("ontologies", "records", "v1-draft");
+  await cp(join(contract.vocabulary.folder, records), join(folder, records), {
+    recursive: true,
+  });
+  return { folder, records };
+}
 const RELEASES = "https://publisher.example/releases";
 const FOLDERS = "https://publisher.example/releases/";
 
@@ -347,13 +360,7 @@ const steps = new Steps<World>()
   .define(
     "the vocabulary moves CVX's space to {string}",
     async (world, [space]) => {
-      const folder = join(world.dir, "moved-vocabulary");
-      const records = join("ontologies", "records", "v1-draft");
-      await cp(
-        join(contract.vocabulary.folder, records),
-        join(folder, records),
-        { recursive: true },
-      );
+      const { folder, records } = await recordsCopy(world, "moved-vocabulary");
       const old = contract.vocabulary.codeIri(`${REC}CVX`, "");
       const turtle = (stem: string): string => stem.replaceAll(".", "\\\\.");
       for (const [file, from, to] of [
@@ -391,6 +398,37 @@ const steps = new Steps<World>()
       } catch (error) {
         if (!(error instanceof Refusal)) throw error;
         world.refusal = error;
+      }
+    },
+  )
+  .define(
+    "the carrying example's release {string} is built as {string} under the vocabulary before vaccine groups moved to member of",
+    async (world, [release, label]) => {
+      const { folder, records } = await recordsCopy(world, "before-member-of");
+      const path = join(folder, records, "records.shapes.ttl");
+      const text = await readFile(path, "utf8");
+      const fixed = "sh:hasValue obo:RO_0002350";
+      assert.equal(text.split(fixed).length, 2, `${fixed} is not once`);
+      await writeFile(path, text.replace(fixed, "sh:hasValue skos:broadMatch"));
+      const inner = await loadBuild(ROOT, EXAMPLE);
+      const old: Build = async function* (opened) {
+        for await (const row of inner(opened))
+          yield "predicate_id" in row
+            ? {
+                ...row,
+                predicate_id: "http://www.w3.org/2004/02/skos/core#broadMatch",
+              }
+            : row;
+      };
+      world.moved = await readContract(ROOT, folder);
+      try {
+        await runBuild(world, release as string, label as string, old, {
+          source: carrying,
+          history: await loadHistory(ROOT, EXAMPLE),
+          fetch: historyOf(world),
+        });
+      } finally {
+        world.moved = undefined;
       }
     },
   )
