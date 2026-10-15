@@ -384,6 +384,18 @@ test("no LOINC field is edited: each label and each panel row's fields are the r
   );
 });
 
+test("the source's announcement pattern finds each version in the answer of the page it reads", async () => {
+  const { announcement } = await readSource(FOLDER);
+  const answer =
+    '{"resourceType":"Bundle","entry":[{"resource":{"resourceType":"CodeSystem","url":"http://loinc.org","version":"2.77","name":"LOINC"}},{"resource":{"resourceType":"CodeSystem","url":"http://loinc.org","version":"2.82","name":"LOINC"}}]}';
+  assert.deepEqual(
+    [...answer.matchAll(new RegExp(announcement!.pattern, "gi"))].map(
+      (found) => found[1],
+    ),
+    ["2.77", "2.82"],
+  );
+});
+
 test("a panel member row is named as the vocabulary names it, by its panel, its member and its sequence", async () => {
   const contract = await readContract(ROOT);
   const vector = keyed(

@@ -10,8 +10,8 @@
     dct:license <https://loinc.org/license/> ;
     dct:bibliographicCitation "This material contains content from LOINC (http://loinc.org). LOINC is copyright © Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc." ;
     tables:detectedBy tables:Announcement ;
-    tables:announcementPage <https://loinc.org/downloads/> ;
-    tables:namePattern "Loinc_([0-9]+\\.[0-9]+)\\.zip" ;
+    tables:announcementPage <https://tx.fhir.org/r4/CodeSystem?url=http://loinc.org&_summary=true> ;
+    tables:namePattern "\"version\"\\s*:\\s*\"([0-9]+\\.[0-9]+)\"" ;
     dcat:distribution
         [ dct:title "LoincTable/Loinc.csv" ; tables:archived false ] ,
         [ dct:title "LoincTable/MapTo.csv" ; tables:archived false ] ,

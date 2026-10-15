@@ -44,6 +44,12 @@ Feature: Versions
       Then each version of the last build records "codes_2026-08.txt" among its inputs
       And the release keeps no input
 
+  Rule: H32. A version's notes begin with the credit its publisher asks for
+
+    Example: the notes of a build begin with the source's credit, before any series
+      When the example builder's release "release" is built as "1"
+      Then the build's differences.md begins with the credit "Source: an example publisher"
+
   Rule: H24. A finding of the build is shown with the differences, and the build goes on
 
     Example: a finding is listed under Findings and the version is built

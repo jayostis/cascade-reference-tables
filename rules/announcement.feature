@@ -8,7 +8,7 @@ Feature: Detection by announcement
   The examples' source is `fixtures/announcement/`: the example builder's series, announced on
   `https://publisher.example/downloads/`, whose files are named `codes_<version>.zip`.
 
-  Rule: H27. A version newer than every version of the series is announced, and nothing is downloaded or built
+  Rule: H30. A version newer than every version of the series is announced, and nothing is downloaded or built
 
     Example: a version no series has is announced, the newest of those the page names, and compared as numbers
       Given the publisher's downloads page names "codes_2.9.zip, codes_2.10.zip"
@@ -40,7 +40,7 @@ Feature: Detection by announcement
       Then the build announced the version "2.83", building it with "build announcement --release <folder> --label 2.83"
       And nothing was written
 
-  Rule: H28. A page that cannot be read, or names no version, is a failed check, never nothing new
+  Rule: H31. A page that cannot be read, or names no version, is a failed check, never nothing new
 
     Scenario Outline: the check fails: <case>
       Given the publisher's downloads page <page>

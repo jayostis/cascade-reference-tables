@@ -82,9 +82,11 @@ jobs:
             if [ -f "build/$name/release.json" ]; then built="$built $name"; fi
             if [ -f "build/$name/announced.json" ]; then announced="$announced $name"; fi
           done
-          echo "built=${built# }" >> "$GITHUB_OUTPUT"
-          echo "announced=${announced# }" >> "$GITHUB_OUTPUT"
-          echo "failed=${failed# }" >> "$GITHUB_OUTPUT"
+          {
+            echo "built=${built# }"
+            echo "announced=${announced# }"
+            echo "failed=${failed# }"
+          } >> "$GITHUB_OUTPUT"
       - name: The checks, on each new feed
         if: ${{ steps.build.outputs.built != '' }}
         env:

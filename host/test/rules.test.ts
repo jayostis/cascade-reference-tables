@@ -1179,6 +1179,13 @@ const steps = new Steps<World>()
       assert.ok(text.includes(`## Findings\n\n- ${finding as string}\n`), text);
     },
   )
+  .define(
+    "the build's differences.md begins with the credit {string}",
+    async ({ out }, [credit]) => {
+      const text = await readFile(join(out, "differences.md"), "utf8");
+      assert.ok(text.startsWith(`${credit as string}\n\n## `), text);
+    },
+  )
   .define("the last build made a version of each series", (world) => {
     assert.deepEqual(
       lastBuild(world)
