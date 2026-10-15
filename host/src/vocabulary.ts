@@ -3,7 +3,17 @@ import { existsSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rename, rm } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { promisify } from "node:util";
-import { Graph, parseTurtle, type Quad, RDF, REC, SKOS, VOID } from "./rdf.js";
+import {
+  Graph,
+  OWL,
+  parseTurtle,
+  type Quad,
+  RDF,
+  REC,
+  SH,
+  SKOS,
+  VOID,
+} from "./rdf.js";
 
 const run = promisify(execFile);
 const RECORDS = "ontologies/records/v1-draft/";
@@ -85,6 +95,7 @@ export interface Kind {
 /** What the host reads from the vocabulary: the table kinds, their row shapes and the code systems. */
 export class Vocabulary {
   #spaces: { system: string; space: string }[] | undefined;
+  #shapes: Graph | undefined;
 
   private constructor(
     readonly folder: string,
@@ -109,6 +120,17 @@ export class Vocabulary {
     const rowShape = this.terms.value(iri, `${REC}rowShape`);
     if (rowShape === undefined) throw new Error(`${iri} is not a table kind`);
     return { iri, rowShape };
+  }
+
+  /** The one predicate a kind's row shape fixes on `owl:annotatedProperty` with `sh:hasValue`; `undefined` for none or several. */
+  fixedProperty(kind: string): string | undefined {
+    this.#shapes ??= new Graph(this.shapes);
+    const shapes = this.#shapes;
+    const fixed = shapes
+      .objects(this.kind(kind).rowShape, `${SH}property`)
+      .filter((p) => shapes.value(p, `${SH}path`) === `${OWL}annotatedProperty`)
+      .flatMap((p) => shapes.objects(p, `${SH}hasValue`));
+    return fixed.length === 1 ? fixed[0]!.value : undefined;
   }
 
   /** A code of a system, from its IRI; `undefined` outside the system's `void:uriSpace`. */

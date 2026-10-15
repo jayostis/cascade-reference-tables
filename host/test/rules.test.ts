@@ -394,6 +394,48 @@ const steps = new Steps<World>()
       }
     },
   )
+  .define(
+    "the carrying example's release {string} is built as {string} under the vocabulary before vaccine groups moved to member of",
+    async (world, [release, label]) => {
+      const folder = join(world.dir, "before-member-of");
+      const records = join("ontologies", "records", "v1-draft");
+      await cp(
+        join(contract.vocabulary.folder, records),
+        join(folder, records),
+        { recursive: true },
+      );
+      const path = join(folder, records, "records.shapes.ttl");
+      const text = await readFile(path, "utf8");
+      const shape = /rec:VaccineGroupRowShape [\s\S]*?\n\n/.exec(text)?.[0];
+      assert.ok(shape, "no rec:VaccineGroupRowShape");
+      const before = shape.replace(
+        /sh:hasValue\s+\S+/,
+        "sh:hasValue skos:broadMatch",
+      );
+      assert.notEqual(before, shape, "the shape fixes no property");
+      await writeFile(path, text.replace(shape, before));
+      const inner = await loadBuild(ROOT, EXAMPLE);
+      const old: Build = async function* (opened) {
+        for await (const row of inner(opened))
+          yield "predicate_id" in row
+            ? {
+                ...row,
+                predicate_id: "http://www.w3.org/2004/02/skos/core#broadMatch",
+              }
+            : row;
+      };
+      world.moved = await readContract(ROOT, folder);
+      try {
+        await runBuild(world, release as string, label as string, old, {
+          source: carrying,
+          history: await loadHistory(ROOT, EXAMPLE),
+          fetch: historyOf(world),
+        });
+      } finally {
+        world.moved = undefined;
+      }
+    },
+  )
   .define("the last build asked the history for {string}", (world, [codes]) => {
     assert.deepEqual(
       [...world.askedHistory].sort(),

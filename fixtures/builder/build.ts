@@ -29,7 +29,7 @@ const build: Build = async function* (release) {
       yield {
         series: GROUPS,
         subject_id: subject,
-        predicate_id: "http://www.w3.org/2004/02/skos/core#broadMatch",
+        predicate_id: "http://purl.obolibrary.org/obo/RO_0002350",
         object_id: release.codeIri(CVX, group!),
         mapping_justification:
           "https://w3id.org/semapv/vocab/ManualMappingCuration",
