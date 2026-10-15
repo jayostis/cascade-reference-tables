@@ -22,12 +22,14 @@
         <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>,
         <urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88>,
         <urn:uuid:84a9f86a-f5e4-45b1-9e92-cd4ba027a389>,
+        <urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f>,
         <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>,
+        <urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a>,
         <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>,
         <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4>,
         <urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540>,
         <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> ;
-    dct:modified "2026-10-15T21:20:01Z"^^xsd:dateTime ;
+    dct:modified "2026-10-15T21:37:54Z"^^xsd:dateTime ;
     dct:title "Cascade reference tables (DRAFT)" .
 
 <ni:///sha-256;1HVYVDYA4Qj1ivM5wrzvPHwgJ4DOHZauw9wp7o3dl44>
@@ -92,6 +94,12 @@
     dct:modified "2026-09-17T22:04:21Z"^^xsd:dateTime ;
     dct:title "CVX.txt" ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "efd2a6770f0f648ce76e10ac2889602b2ea8fa8ca4b63deb33ca883e7d0d7413" ] .
+
+<ni:///sha-256;APVPXRe01ilHrkl6HxYo1zJPSYAbD3TmT2VfbveQQK8>
+    a prov:Entity ;
+    dct:modified "2026-10-05T18:40:48Z"^^xsd:dateTime ;
+    dct:title "Core_MEDRT_XML.zip" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "00f54f5d17b4d62947ae497a1f1628d7324f49801b0f74e64f655f6ef79040af" ] .
 
 <ni:///sha-256;ARd__QN4ztoDE7SCxo2P3zU2QypNowEdTz6R8-_rbxw>
     a dcat:Dataset,
@@ -206,6 +214,19 @@
     sssom:subject_source_version "2026-10-05" ;
     tables:builderVersion "1" .
 
+<ni:///sha-256;Gj7zBk74Fz9kFgH4syRIztyd3gs3L57K_0JZTQPpMDo>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "1437 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/e9a53ba223c3e045d4d2f91da9ee1fc1587a1531498ff3925d64b545d4e7541e.nq.gz> ;
+    dcat:version "2026-10-05" ;
+    dct:issued "2026-10-15T21:37:54Z"^^xsd:dateTime ;
+    pav:version "2026-10-05" ;
+    prov:specializationOf <urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f> ;
+    prov:wasAttributedTo <urn:uuid:8ff42a00-01df-410b-b079-79da75a576c4> ;
+    prov:wasDerivedFrom <ni:///sha-256;APVPXRe01ilHrkl6HxYo1zJPSYAbD3TmT2VfbveQQK8> ;
+    tables:builderVersion "1" .
+
 <ni:///sha-256;GtXGNa2VLBkvTgNDAmpFUsBtn6IZZoUmhlIsiKdoC1M>
     a dcat:Dataset,
         prov:Entity,
@@ -287,6 +308,25 @@
     prov:wasAttributedTo <urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a> ;
     prov:wasDerivedFrom <ni:///sha-256;5MYYudJvAXrPiy1ORMhmajJ91rszxOwMfgnXlgeR8gg>,
         <ni:///sha-256;pqWN9NkEnJGHp5qPtOcPHztVUOFwjGx0t74LJo9QMto> ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;Yhyi0u35KLH3XvDxcSx7-GZ1GvEttqv1dAKNsFwqca0>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "9079 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/f31e2b8869c4c28b182e444e085f215d6aab421cd2462c5bc3fdf8d10e655780.nq.gz> ;
+    dcat:version "2026-10-05" ;
+    dct:issued "2026-10-15T21:37:54Z"^^xsd:dateTime ;
+    pav:version "2026-10-05" ;
+    prov:specializationOf <urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a> ;
+    prov:wasAttributedTo <urn:uuid:8ff42a00-01df-410b-b079-79da75a576c4> ;
+    prov:wasDerivedFrom <ni:///sha-256;APVPXRe01ilHrkl6HxYo1zJPSYAbD3TmT2VfbveQQK8> ;
+    sssom:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    sssom:mapping_set_version "2026-10-05" ;
+    sssom:mapping_tool "va-med-rt" ;
+    sssom:mapping_tool_version "1" ;
+    sssom:subject_source_version "2026-10-05" ;
     tables:builderVersion "1" .
 
 <ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE>
@@ -551,6 +591,20 @@
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "e3238bf09753e3f8c5f220c4b549bbd4df755fda301986858600d004ca7e18e9" ] .
 
+<rows/e9a53ba223c3e045d4d2f91da9ee1fc1587a1531498ff3925d64b545d4e7541e.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/e9a53ba223c3e045d4d2f91da9ee1fc1587a1531498ff3925d64b545d4e7541e.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "e9a53ba223c3e045d4d2f91da9ee1fc1587a1531498ff3925d64b545d4e7541e" ] .
+
+<rows/f31e2b8869c4c28b182e444e085f215d6aab421cd2462c5bc3fdf8d10e655780.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/f31e2b8869c4c28b182e444e085f215d6aab421cd2462c5bc3fdf8d10e655780.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "f31e2b8869c4c28b182e444e085f215d6aab421cd2462c5bc3fdf8d10e655780" ] .
+
 <rows/f62225727688fef87b3b002bc1235f055c5d8836ffc038be2c8cdfdc15bbd9e3.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
@@ -688,6 +742,22 @@
     rdfs:label "ClinVar variant classifications, Lynch syndrome genes" ;
     rec:tableKind rec:VariantClassifications .
 
+<urn:uuid:8ff42a00-01df-410b-b079-79da75a576c4>
+    a tables:Builder ;
+    rdfs:label "va-med-rt" .
+
+<urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;Gj7zBk74Fz9kFgH4syRIztyd3gs3L57K_0JZTQPpMDo> ;
+    dcat:hasVersion <ni:///sha-256;Gj7zBk74Fz9kFgH4syRIztyd3gs3L57K_0JZTQPpMDo> ;
+    dct:bibliographicCitation "Source: Medication Reference Terminology (MED-RT), U.S. Department of Veterans Affairs, distributed by the National Cancer Institute's Enterprise Vocabulary Services." ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/05rsv9s98> ;
+    dct:source <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> ;
+    rdfs:label "VA MED-RT names" ;
+    rec:tableKind rec:CodeNames .
+
 <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>
     a dcat:Dataset,
         rec:ReferenceSeries ;
@@ -699,6 +769,18 @@
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
     rdfs:label "NLM RxNorm Prescribable names" ;
     rec:tableKind rec:CodeNames .
+
+<urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a>
+    a dcat:Dataset,
+        rec:ReferenceSeries ;
+    dcat:hasCurrentVersion <ni:///sha-256;Yhyi0u35KLH3XvDxcSx7-GZ1GvEttqv1dAKNsFwqca0> ;
+    dcat:hasVersion <ni:///sha-256;Yhyi0u35KLH3XvDxcSx7-GZ1GvEttqv1dAKNsFwqca0> ;
+    dct:bibliographicCitation "Source: Medication Reference Terminology (MED-RT), U.S. Department of Veterans Affairs, distributed by the National Cancer Institute's Enterprise Vocabulary Services." ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:publisher <https://ror.org/05rsv9s98> ;
+    dct:source <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> ;
+    rdfs:label "VA MED-RT drug classes" ;
+    rec:tableKind rec:DrugClasses .
 
 <urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a>
     a tables:Builder ;
