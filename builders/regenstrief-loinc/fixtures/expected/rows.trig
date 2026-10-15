@@ -3,6 +3,7 @@
   <http://loinc.org/rdf/1009-0> <http://www.w3.org/2002/07/owl#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
   <http://loinc.org/rdf/11491-6> <http://purl.org/dc/terms/isReplacedBy> <http://loinc.org/rdf/15507-7> .
   <http://loinc.org/rdf/11491-6> <http://www.w3.org/2002/07/owl#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+  <http://loinc.org/rdf/33727-9> <http://www.w3.org/2002/07/owl#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
   <http://loinc.org/rdf/5895-7> <http://purl.org/dc/terms/isReplacedBy> <http://loinc.org/rdf/6301-6> .
   <http://loinc.org/rdf/5895-7> <http://www.w3.org/2002/07/owl#deprecated> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 }
@@ -18,6 +19,8 @@
   <http://loinc.org/rdf/10875-3> <http://www.w3.org/2004/02/skos/core#prefLabel> "Carnitine esters [Mass/volume] in Urine" .
   <http://loinc.org/rdf/11491-6> <http://www.w3.org/2004/02/skos/core#notation> "11491-6" .
   <http://loinc.org/rdf/11491-6> <http://www.w3.org/2004/02/skos/core#prefLabel> "Deprecated Provider-unspecified ED visit note" .
+  <http://loinc.org/rdf/15507-7> <http://www.w3.org/2004/02/skos/core#notation> "15507-7" .
+  <http://loinc.org/rdf/15507-7> <http://www.w3.org/2004/02/skos/core#prefLabel> "Provider-unspecified ED visit note" .
   <http://loinc.org/rdf/2160-0> <http://www.w3.org/2004/02/skos/core#notation> "2160-0" .
   <http://loinc.org/rdf/2160-0> <http://www.w3.org/2004/02/skos/core#prefLabel> "Creatinine [Mass/volume] in Serum or Plasma" .
   <http://loinc.org/rdf/2345-7> <http://www.w3.org/2004/02/skos/core#notation> "2345-7" .
@@ -38,6 +41,8 @@
   <http://loinc.org/rdf/3094-0> <http://www.w3.org/2004/02/skos/core#prefLabel> "Urea nitrogen [Mass/volume] in Serum or Plasma" .
   <http://loinc.org/rdf/3097-3> <http://www.w3.org/2004/02/skos/core#notation> "3097-3" .
   <http://loinc.org/rdf/3097-3> <http://www.w3.org/2004/02/skos/core#prefLabel> "Urea nitrogen/Creatinine [Mass Ratio] in Serum or Plasma" .
+  <http://loinc.org/rdf/33727-9> <http://www.w3.org/2004/02/skos/core#notation> "33727-9" .
+  <http://loinc.org/rdf/33727-9> <http://www.w3.org/2004/02/skos/core#prefLabel> "Deprecated Macroscopic observation [Identifier] in Specimen" .
   <http://loinc.org/rdf/45398-5> <http://www.w3.org/2004/02/skos/core#notation> "45398-5" .
   <http://loinc.org/rdf/45398-5> <http://www.w3.org/2004/02/skos/core#prefLabel> "State provider number for Facility" .
   <http://loinc.org/rdf/45399-3> <http://www.w3.org/2004/02/skos/core#notation> "45399-3" .

@@ -1,4 +1,4 @@
-import type { JsonLine, Line, XmlElement } from "./readers.js";
+import type { CsvRow, JsonLine, Line, XmlElement } from "./readers.js";
 
 /** Input the contract refuses: the build writes nothing, and says why. */
 export class Refusal extends Error {
@@ -11,8 +11,11 @@ export interface ReleaseFile {
   /** Each non-empty line as text, for a builder that cuts only the fields it needs of a very large file. */
   lines(): AsyncIterable<{ readonly number: number; readonly text: string }>;
   delimited(delimiter: string): AsyncIterable<Line>;
-  /** Each record of an RFC 4180 file, the header first; a quoted field may hold line breaks. */
-  csv(): AsyncIterable<Line>;
+  /**
+   * Each record of an RFC 4180 file under its header, read by name; a quoted field may hold line breaks. The file is
+   * refused when it lacks a column in `required` or holds a record of another width.
+   */
+  csv(required: readonly string[]): AsyncIterable<CsvRow>;
   fixedWidth(
     columns: readonly (readonly [number, number])[],
   ): AsyncIterable<Line>;

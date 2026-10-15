@@ -1,3 +1,4 @@
+import { CsvError, parse } from "csv-parse";
 import { createReadStream } from "node:fs";
 import { basename, posix } from "node:path";
 import { pipeline, type Readable } from "node:stream";
@@ -289,106 +290,52 @@ export async function* delimited(
     yield { number, fields: text.split(delimiter) };
 }
 
-/**
- * The records the text holds, each a line's fields as RFC 4180 writes them: a quoted field may hold commas, line breaks
- * and doubled quotes. `used` is where the last whole record ends; a record cut short by the end of the text is left for
- * the next call unless `last`, where an unterminated quote is refused.
- */
-function csvRecords(
-  text: string,
-  last: boolean,
-): { records: string[][]; used: number } {
-  const records: string[][] = [];
-  const ends = /[,\r\n]/g;
-  let at = 0;
-  let used = 0;
-  while (at < text.length) {
-    const fields: string[] = [];
-    let i = at;
-    let whole = false;
-    while (!whole) {
-      if (text.charCodeAt(i) === 34) {
-        let value = "";
-        let from = i + 1;
-        for (;;) {
-          const quote = text.indexOf('"', from);
-          if (quote < 0) {
-            if (last) throw new Refusal("a quoted field is never closed");
-            return { records, used };
-          }
-          value += text.slice(from, quote);
-          if (quote + 1 >= text.length && !last) return { records, used };
-          if (text.charCodeAt(quote + 1) !== 34) {
-            i = quote + 1;
-            break;
-          }
-          value += '"';
-          from = quote + 2;
-        }
-        fields.push(value);
-      } else {
-        ends.lastIndex = i;
-        const found = ends.exec(text);
-        if (found === null && !last) return { records, used };
-        const stop = found === null ? text.length : found.index;
-        fields.push(text.slice(i, stop));
-        i = stop;
-      }
-      if (i >= text.length) {
-        if (!last) return { records, used };
-        whole = true;
-      } else if (text[i] === ",") i += 1;
-      else {
-        if (text[i] === "\r") {
-          if (i + 1 >= text.length && !last) return { records, used };
-          if (text[i + 1] === "\n") i += 1;
-          else if (i + 1 < text.length)
-            throw new Refusal("a field is followed by a bare carriage return");
-        } else if (text[i] !== "\n")
-          throw new Refusal("a quoted field is followed by more text");
-        i += 1;
-        whole = true;
-      }
-    }
-    at = i;
-    used = i;
-    records.push(fields);
-  }
-  return { records, used };
+/** One record of a CSV file under its header: the line it ends on, and its fields by column name. */
+export interface CsvRow {
+  readonly number: number;
+  get(column: string): string;
 }
 
 /**
- * Each record of an RFC 4180 file, numbered from 1 with the header first, its byte order mark dropped. A line break
- * inside a quoted field belongs to the field, and a blank line is no record.
+ * The records of an RFC 4180 file under its header, numbered by the line they end on. The file is refused when it is
+ * empty, lacks a column in `required`, holds a record of another width, or leaves a quote open.
  */
-export async function* csv(path: string, gzip = false): AsyncIterable<Line> {
+export async function* csv(
+  path: string,
+  name: string,
+  required: readonly string[],
+  gzip = false,
+): AsyncIterable<CsvRow> {
   const file = createReadStream(path, { highWaterMark: 1 << 20 });
+  const parser = parse({
+    bom: true,
+    columns: (header: string[]) => {
+      for (const column of required)
+        if (!header.includes(column))
+          throw new Refusal(`${name} has no column ${column}`);
+      return header;
+    },
+    skip_empty_lines: true,
+    info: true,
+  });
   const source = gzip
-    ? pipeline(file, createGunzip({ chunkSize: 1 << 20 }), () => undefined)
-    : file;
-  const decoder = new StringDecoder("utf8");
-  let rest = "";
-  let number = 0;
-  let started = false;
-  const emit = function* (last: boolean): Iterable<Line> {
-    const { records, used } = csvRecords(rest, last);
-    rest = rest.slice(used);
-    for (const fields of records) {
-      number += 1;
-      if (fields.length === 1 && fields[0] === "") continue;
-      yield { number, fields };
+    ? pipeline(file, createGunzip({ chunkSize: 1 << 20 }), parser, () => {})
+    : pipeline(file, parser, () => {});
+  let any = false;
+  try {
+    for await (const { record, info } of source as AsyncIterable<{
+      record: Record<string, string>;
+      info: { lines: number };
+    }>) {
+      any = true;
+      yield { number: info.lines, get: (column) => record[column]! };
     }
-  };
-  for await (const chunk of source) {
-    rest += decoder.write(chunk as Buffer);
-    if (!started && rest.length > 0) {
-      rest = rest.replace(/^\u{FEFF}/u, "");
-      started = true;
-    }
-    yield* emit(false);
+  } catch (error) {
+    if (error instanceof CsvError)
+      throw new Refusal(`${name} line ${error.lines}: ${error.message}`);
+    throw error;
   }
-  rest += decoder.end();
-  yield* emit(true);
+  if (!any) throw new Refusal(`${name} is empty`);
 }
 
 /** Each line cut into the columns, each `[start, end)` counted in characters from 0. */

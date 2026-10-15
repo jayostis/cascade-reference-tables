@@ -40,7 +40,7 @@ export function releaseOf(
         name,
         lines: () => lines(path, gzip),
         delimited: (delimiter) => delimited(path, delimiter, gzip),
-        csv: () => csv(path, gzip),
+        csv: (required) => csv(path, name, required, gzip),
         fixedWidth: (columns) => fixedWidth(path, columns, gzip),
         json: () => jsonLines(path, gzip),
         xlsx: () => xlsx(path),

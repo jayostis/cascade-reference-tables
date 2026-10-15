@@ -1,4 +1,4 @@
-import { type Build, Refusal, type Release } from "../../host/src/builder.js";
+import { type Build, Refusal } from "../../host/src/builder.js";
 
 const NAMES = "urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943";
 const STATUS = "urn:uuid:8caff025-8214-4910-81d7-16dfac334dae";
@@ -22,36 +22,6 @@ const RETIRED = new Map([
 ]);
 
 const CODE = /^[0-9]+-[0-9]$/;
-
-interface Entry {
-  readonly number: number;
-  get(column: string): string;
-}
-
-/** The records of a CSV file under its header; a missing column or a record of another width is refused. */
-async function* table(
-  release: Release,
-  name: string,
-  columns: readonly string[],
-): AsyncGenerator<Entry> {
-  let at: Map<string, number> | undefined;
-  for await (const { number, fields } of release.file(name).csv()) {
-    if (at === undefined) {
-      at = new Map(fields.map((column, i) => [column, i]));
-      for (const column of columns)
-        if (!at.has(column))
-          throw new Refusal(`${name} has no column ${column}`);
-      continue;
-    }
-    if (fields.length !== at.size)
-      throw new Refusal(
-        `${name} line ${number} has ${fields.length} fields, not ${at.size}`,
-      );
-    const columnAt = at;
-    yield { number, get: (column) => fields[columnAt.get(column)!]! };
-  }
-  if (at === undefined) throw new Refusal(`${name} is empty`);
-}
 
 function loincCode(code: string, where: string): string {
   if (!CODE.test(code))
@@ -84,20 +54,23 @@ interface Copy {
 /**
  * `Loinc.csv` gives the names and statuses of the codes, `MapTo.csv` what retires them, and `PanelsAndForms.csv` the
  * panels. LOINC's own fields are written as they are, and what carries a third party's copyright notice is left out:
- * a code with a notice, and a panel that has, or whose rows or members have, one.
+ * a code with a notice, and a panel that has, or whose rows (in any copy of it) or members have, one. A retired code's
+ * replacement is written only when this build names the replacement, so no relation points at an unnamed code.
  *
  * `PanelsAndForms.csv` lists a panel again under each panel that holds it, so a panel's members are read from its own
  * copy, the one whose `ID` is its `ParentId`, else from the copy with the lowest `ParentId`.
  */
 const build: Build = async function* (release) {
   const terms = new Map<string, Term>();
-  for await (const line of table(release, TERMS, [
-    "LOINC_NUM",
-    "CLASSTYPE",
-    "STATUS",
-    "EXTERNAL_COPYRIGHT_NOTICE",
-    "LONG_COMMON_NAME",
-  ])) {
+  for await (const line of release
+    .file(TERMS)
+    .csv([
+      "LOINC_NUM",
+      "CLASSTYPE",
+      "STATUS",
+      "EXTERNAL_COPYRIGHT_NOTICE",
+      "LONG_COMMON_NAME",
+    ])) {
     const code = line.get("LOINC_NUM");
     if (terms.has(code))
       throw new Refusal(`${TERMS} line ${line.number} repeats ${code}`);
@@ -111,16 +84,18 @@ const build: Build = async function* (release) {
   }
 
   const copies = new Map<string, Map<string, Copy>>();
-  for await (const line of table(release, PANELS, [
-    "ParentId",
-    "ParentLoinc",
-    "ID",
-    "SEQUENCE",
-    "Loinc",
-    "ObservationRequiredInPanel",
-    "EXTERNAL_COPYRIGHT_NOTICE",
-    "AdditionalCopyright",
-  ])) {
+  for await (const line of release
+    .file(PANELS)
+    .csv([
+      "ParentId",
+      "ParentLoinc",
+      "ID",
+      "SEQUENCE",
+      "Loinc",
+      "ObservationRequiredInPanel",
+      "EXTERNAL_COPYRIGHT_NOTICE",
+      "AdditionalCopyright",
+    ])) {
     const panel = line.get("ParentLoinc");
     const parent = terms.get(panel);
     if (parent === undefined)
@@ -179,7 +154,7 @@ const build: Build = async function* (release) {
         );
     if (
       terms.get(panel)!.noticed ||
-      copy!.members.some((m) => m.noticed) ||
+      [...ofPanel.values()].some((c) => c.members.some((m) => m.noticed)) ||
       members.some((m) => terms.get(m.code)!.noticed)
     )
       continue;
@@ -213,13 +188,18 @@ const build: Build = async function* (release) {
   }
 
   const replacedBy = new Map<string, Set<string>>();
-  for await (const line of table(release, MAP_TO, ["LOINC", "MAP_TO"])) {
+  for await (const line of release.file(MAP_TO).csv(["LOINC", "MAP_TO"])) {
     const code = line.get("LOINC");
     if (!retired.has(code)) continue;
     const target = loincCode(
       line.get("MAP_TO"),
       `${MAP_TO} line ${line.number}`,
     );
+    if (!terms.has(target))
+      throw new Refusal(
+        `${MAP_TO} line ${line.number} replaces ${code} with ${target}, which ${TERMS} lacks`,
+      );
+    if (!named.has(target)) continue;
     (replacedBy.get(code) ?? replacedBy.set(code, new Set()).get(code)!).add(
       target,
     );

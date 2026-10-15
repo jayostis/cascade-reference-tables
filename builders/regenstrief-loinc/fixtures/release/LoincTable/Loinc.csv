@@ -30,3 +30,5 @@
 "45398-5","2","ACTIVE","","State provider number for Facility"
 "11491-6","2","DEPRECATED","","Deprecated Provider-unspecified ED visit note"
 "10875-3","1","DISCOURAGED","","Carnitine esters [Mass/volume] in Urine"
+"15507-7","2","ACTIVE","","Provider-unspecified ED visit note"
+"33727-9","1","DEPRECATED","","Deprecated Macroscopic observation [Identifier] in Specimen"

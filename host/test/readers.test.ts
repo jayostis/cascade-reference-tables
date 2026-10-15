@@ -15,35 +15,38 @@ import {
   xmlElements,
 } from "../src/readers.js";
 
-test("a CSV file is read by RFC 4180: a quoted field holds commas, line breaks and quotes, however the read cuts it, and a field left open is refused", async () => {
+test("a CSV file is read by its header's names, and one that cannot be read so is refused, naming the file", async () => {
   const dir = await mkdtemp(join(tmpdir(), "readers-"));
+  const read = async (text: string, required = ["x"]) => {
+    const path = join(dir, "in.csv");
+    await writeFile(path, text);
+    const found: { number: number; y: string }[] = [];
+    for await (const row of csv(path, "in.csv", required))
+      found.push({ number: row.number, y: row.get("y") });
+    return found;
+  };
   try {
-    const record = '"a,b","line one\r\nline ""two""",,plain\r\n';
-    const path = join(dir, "many.csv");
-    await writeFile(
-      path,
-      `\u{FEFF}x,y,z,w\n\n${record.repeat(60000)}"end",1,2,3`,
+    assert.deepEqual(
+      await read(
+        '\u{FEFF}x,y\r\n\r\n"a,b","line one\nline ""two"""\r\nend,\r\n',
+      ),
+      [
+        { number: 4, y: 'line one\nline "two"' },
+        { number: 5, y: "" },
+      ],
     );
-    const found: { number: number; fields: readonly string[] }[] = [];
-    for await (const line of csv(path)) found.push(line);
-    assert.equal(found.length, 60002);
-    assert.deepEqual(found[0], { number: 1, fields: ["x", "y", "z", "w"] });
-    for (const line of [found[1]!, found[30000]!, found[60000]!])
-      assert.deepEqual(line.fields, [
-        "a,b",
-        'line one\r\nline "two"',
-        "",
-        "plain",
-      ]);
-    assert.deepEqual(found[1]!.number, 3);
-    assert.deepEqual(found.at(-1)!.fields, ["end", "1", "2", "3"]);
-    await writeFile(join(dir, "open.csv"), 'a,"never closed\n');
-    await assert.rejects(
-      (async () => {
-        for await (const line of csv(join(dir, "open.csv"))) void line;
-      })(),
-      Refusal,
-    );
+    const refused: [string, string[], RegExp][] = [
+      ["", ["x"], /^in\.csv is empty$/],
+      ['x,y\na,"never closed\n', ["x"], /^in\.csv line \d+: /],
+      ["x,y\na,b,c\n", ["x"], /^in\.csv line 2: /],
+      ["x,y\na,b\n", ["z"], /^in\.csv has no column z$/],
+    ];
+    for (const [text, required, reason] of refused)
+      await assert.rejects(
+        read(text, required),
+        (error) => error instanceof Refusal && reason.test(error.message),
+        text,
+      );
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

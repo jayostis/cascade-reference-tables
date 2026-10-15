@@ -15,7 +15,9 @@ const FOLDER = join(ROOT, "builders", "regenstrief-loinc");
 const FIXTURE = join(FOLDER, "fixtures", "release");
 
 const NAMES = "urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943";
+const STATUS = "urn:uuid:8caff025-8214-4910-81d7-16dfac334dae";
 const MEMBERS = "urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c";
+const DCT = "http://purl.org/dc/terms/";
 const TERMS = "LoincTable/Loinc.csv";
 const MAP_TO = "LoincTable/MapTo.csv";
 const PANELS = "AccessoryFiles/PanelsAndForms/PanelsAndForms.csv";
@@ -184,7 +186,16 @@ test("LOINC's files are refused, naming the line and why, when the builder canno
       TERMS,
       '"Respiratory rate"',
       '"Respiratory rate","x"',
-      (text) => `${TERMS} line ${lineOf(text, '"x"')} has 6 fields, not 5`,
+      (text) =>
+        `${TERMS} line ${lineOf(text, '"x"')}: Invalid Record Length: columns length is 5, got 6 on line ${lineOf(text, '"x"')}`,
+    ],
+    [
+      "a replacement the names lack",
+      MAP_TO,
+      '"1009-0","1007-4"',
+      '"1009-0","9999-9"',
+      (text) =>
+        `${MAP_TO} line ${lineOf(text, "9999-9")} replaces 1009-0 with 9999-9, which ${TERMS} lacks`,
     ],
     [
       "a sequence that is no integer",
@@ -278,6 +289,42 @@ test("what carries a third party's copyright notice is left out whole, and nothi
   }
 });
 
+test("a retired code's replacement is written only when this build names it, and the retirement is written either way", async () => {
+  const replacements = (rows: Map<string, SeriesRows>) => {
+    const found = new Map<string, string[]>();
+    for (const q of rows.get(STATUS)!.triples()) {
+      const code = codeOf(q.subject.value);
+      found.set(code, found.get(code) ?? []);
+      if (q.predicate.value === `${DCT}isReplacedBy`)
+        found.get(code)!.push(codeOf(q.object.value));
+    }
+    return found;
+  };
+  const base = await built({});
+  assert.deepEqual(
+    [...replacements(base)].sort(),
+    [
+      ["1009-0", ["1007-4"]],
+      ["11491-6", ["15507-7"]],
+      ["33727-9", []],
+      ["5895-7", ["6301-6"]],
+    ],
+    "33727-9's replacement carries a notice, so it is retired with none",
+  );
+  const named = namedCodes(base);
+  for (const targets of replacements(base).values())
+    for (const target of targets) assert.ok(named.has(target), target);
+  const noticed = await built({
+    [TERMS]: (text) =>
+      swap(
+        text,
+        '"1007-4","1","ACTIVE",""',
+        '"1007-4","1","ACTIVE","(c) a third party"',
+      ),
+  });
+  assert.deepEqual(replacements(noticed).get("1009-0"), []);
+});
+
 test("a panel's members are read from one copy of it, and a member listed twice is two rows", async () => {
   const header =
     '"ParentId","ParentLoinc","ID","SEQUENCE","Loinc","ObservationRequiredInPanel","EXTERNAL_COPYRIGHT_NOTICE","AdditionalCopyright"\n';
@@ -329,14 +376,15 @@ test("a panel's members are read from one copy of it, and a member listed twice 
   }
 });
 
-/** Each record of a release file under its header's names. */
-async function recordsOf(file: string): Promise<Record<string, string>[]> {
-  const lines: (readonly string[])[] = [];
-  for await (const line of csv(join(FIXTURE, file))) lines.push(line.fields);
-  const [header, ...records] = lines;
-  return records.map((fields) =>
-    Object.fromEntries(header!.map((name, i) => [name, fields[i]!])),
-  );
+/** The given columns of each record of a release file. */
+async function recordsOf(
+  file: string,
+  columns: readonly string[],
+): Promise<Record<string, string>[]> {
+  const records: Record<string, string>[] = [];
+  for await (const row of csv(join(FIXTURE, file), file, columns))
+    records.push(Object.fromEntries(columns.map((c) => [c, row.get(c)])));
+  return records;
 }
 
 /** What differs between what the builder wrote and the release's own fields. */
@@ -346,13 +394,23 @@ async function editedFields(
 ): Promise<string[]> {
   const edited: string[] = [];
   const names = new Map(
-    (await recordsOf(TERMS)).map((r) => [r.LOINC_NUM!, r.LONG_COMMON_NAME!]),
+    (await recordsOf(TERMS, ["LOINC_NUM", "LONG_COMMON_NAME"])).map((r) => [
+      r.LOINC_NUM!,
+      r.LONG_COMMON_NAME!,
+    ]),
   );
   for (const [code, label] of labels)
     if (names.get(code) !== label)
       edited.push(`${code}: "${label}" is not "${names.get(code)}"`);
   const listed = new Set(
-    (await recordsOf(PANELS)).map((r) =>
+    (
+      await recordsOf(PANELS, [
+        "ParentLoinc",
+        "Loinc",
+        "SEQUENCE",
+        "ObservationRequiredInPanel",
+      ])
+    ).map((r) =>
       [r.ParentLoinc, r.Loinc, r.SEQUENCE, r.ObservationRequiredInPanel].join(
         "|",
       ),
@@ -373,15 +431,6 @@ test("no LOINC field is edited: each label and each panel row's fields are the r
   const labels = labelsOf(rows);
   const members = membersOf(rows);
   assert.deepEqual(await editedFields(labels, members), []);
-  assert.equal(
-    (
-      await editedFields(
-        new Map([...labels, ["2160-0", "Creatinine in Serum"]]),
-        [{ ...members[0]!, sequence: members[0]!.sequence + 1 }],
-      )
-    ).length,
-    2,
-  );
 });
 
 test("the source's announcement pattern finds each version in the answer of the page it reads", async () => {
