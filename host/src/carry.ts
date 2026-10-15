@@ -31,7 +31,7 @@ export interface CarryInput {
   readonly fetch?: Fetch | undefined;
 }
 
-interface Group {
+export interface Group {
   readonly key: string;
   readonly triples: Quad[];
 }
@@ -65,16 +65,20 @@ function subjectOf(group: Group): string {
   );
 }
 
-/** A carried mapping row with the property its kind now fixes, named anew by the record rule (N11). */
-function withProperty(group: Group, property: string): Group {
+/** A carried mapping row with the property its kind now fixes, named anew by the record rule (N11) over all of its kind's name inputs, a panel row's sequence among them. */
+export function withProperty(group: Group, property: string): Group {
   const get = (predicate: string): string =>
     group.triples.find((t) => t.predicate.value === `${OWL}${predicate}`)!
       .object.value;
   if (get("annotatedProperty") === property) return group;
+  const sequence = group.triples.find(
+    (t) => t.predicate.value === `${REC}panelSequence`,
+  )?.object.value;
   const key = recordName([
     get("annotatedSource"),
     property,
     get("annotatedTarget"),
+    ...(sequence === undefined ? [] : [String(BigInt(sequence))]),
   ]);
   return {
     key,

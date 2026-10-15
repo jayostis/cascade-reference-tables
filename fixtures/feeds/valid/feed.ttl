@@ -16,26 +16,27 @@
     dcat:dataset <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f>,
         <urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c>,
         <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> ;
-    dct:modified "2026-10-08T19:22:23Z"^^xsd:dateTime ;
+    dct:modified "2026-10-15T20:52:50Z"^^xsd:dateTime ;
     dct:title "Cascade reference tables (DRAFT)" .
 
-<ni:///sha-256;2hWsqoFnoMDeiCL2i_jQsYXgWpkwFTAHiFsXdauoIWE>
+<ni:///sha-256;18zPYUK0binaJzyHv_H37D-u74S94kfP38ubGB7wq0I>
     a dcat:Dataset,
         prov:Entity,
         sssom:MappingSet ;
-    adms:versionNotes "4 added, 0 removed, 0 changed" ;
-    dcat:distribution <rows/37c82a869bc551b8579da0bc5f52622bbd0a484171a6402deaf0ae64efb59f2c.nq.gz> ;
-    dcat:version "1" ;
-    dct:issued "2026-10-08T19:22:22Z"^^xsd:dateTime ;
-    pav:version "1" ;
+    adms:versionNotes "1 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/f3067edb66143c3f806a4060a40820d60fe9dd6d9aa4e353e023f83de8c9bff8.nq.gz> ;
+    dcat:version "2" ;
+    dct:issued "2026-10-15T20:52:50Z"^^xsd:dateTime ;
+    pav:version "2" ;
     prov:specializationOf <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> ;
     prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
-    prov:wasDerivedFrom <ni:///sha-256;5SAo6eYSP0o86W0nZZ5knjxLTh8xceP4hSR31XShqgo> ;
+    prov:wasDerivedFrom <ni:///sha-256;I1K8y236wgJ202PKxAGCMWcyG3R2PPn8UyCDa7ZUZlM> ;
+    prov:wasRevisionOf <ni:///sha-256;rPBgqPcFHEY99RRNDzxbJ7FGb41B6uJMfOLtLg1cH7I> ;
     sssom:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
-    sssom:mapping_set_version "1" ;
+    sssom:mapping_set_version "2" ;
     sssom:mapping_tool "example" ;
     sssom:mapping_tool_version "1" ;
-    sssom:subject_source_version "1" ;
+    sssom:subject_source_version "2" ;
     tables:builderVersion "1" .
 
 <ni:///sha-256;5SAo6eYSP0o86W0nZZ5knjxLTh8xceP4hSR31XShqgo>
@@ -49,7 +50,7 @@
     adms:versionNotes "5 added, 0 removed, 0 changed" ;
     dcat:distribution <rows/c3182e88ffc2f30b70fa83100f9b9aae74b263bc244f8cf933bc3bdec5e657a2.nq.gz> ;
     dcat:version "1" ;
-    dct:issued "2026-10-08T19:22:22Z"^^xsd:dateTime ;
+    dct:issued "2026-10-15T20:52:48Z"^^xsd:dateTime ;
     pav:version "1" ;
     prov:specializationOf <urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> ;
     prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
@@ -67,32 +68,12 @@
     adms:versionNotes "1 added, 1 removed, 1 changed" ;
     dcat:distribution <rows/4cce2296d366bcea6a2326c3d02e032ba59fbb332ae66ba94a0baf350526abec.nq.gz> ;
     dcat:version "2" ;
-    dct:issued "2026-10-08T19:22:23Z"^^xsd:dateTime ;
+    dct:issued "2026-10-15T20:52:50Z"^^xsd:dateTime ;
     pav:version "2" ;
     prov:specializationOf <urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> ;
     prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
     prov:wasDerivedFrom <ni:///sha-256;I1K8y236wgJ202PKxAGCMWcyG3R2PPn8UyCDa7ZUZlM> ;
     prov:wasRevisionOf <ni:///sha-256;5j7QOvdRCtsVe9MXPpFgeazELN7P7OfYeSfjyp5VSkI> ;
-    tables:builderVersion "1" .
-
-<ni:///sha-256;Z9a1OmPbt-a2U5CTJbHyTl79pMVxPt0KHOgV-60u3g0>
-    a dcat:Dataset,
-        prov:Entity,
-        sssom:MappingSet ;
-    adms:versionNotes "1 added, 0 removed, 0 changed" ;
-    dcat:distribution <rows/83f06418d836781a1c5f4e778f2d097d8766cbca30ff8181ab40213a4055b05c.nq.gz> ;
-    dcat:version "2" ;
-    dct:issued "2026-10-08T19:22:23Z"^^xsd:dateTime ;
-    pav:version "2" ;
-    prov:specializationOf <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> ;
-    prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
-    prov:wasDerivedFrom <ni:///sha-256;I1K8y236wgJ202PKxAGCMWcyG3R2PPn8UyCDa7ZUZlM> ;
-    prov:wasRevisionOf <ni:///sha-256;2hWsqoFnoMDeiCL2i_jQsYXgWpkwFTAHiFsXdauoIWE> ;
-    sssom:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
-    sssom:mapping_set_version "2" ;
-    sssom:mapping_tool "example" ;
-    sssom:mapping_tool_version "1" ;
-    sssom:subject_source_version "2" ;
     tables:builderVersion "1" .
 
 <ni:///sha-256;_PaBO6Ye-GlUmcbwIqEu72VdXPFjk5f0v2r2o7dfcMk>
@@ -101,7 +82,7 @@
     adms:versionNotes "1 added, 1 removed, 0 changed" ;
     dcat:distribution <rows/5c57134f59990679bde870a92c0b1da47cba197d382b02e38f7dfa176e3e46c1.nq.gz> ;
     dcat:version "2" ;
-    dct:issued "2026-10-08T19:22:23Z"^^xsd:dateTime ;
+    dct:issued "2026-10-15T20:52:50Z"^^xsd:dateTime ;
     pav:version "2" ;
     prov:specializationOf <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> ;
     prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
@@ -115,11 +96,30 @@
     adms:versionNotes "1 added, 0 removed, 0 changed" ;
     dcat:distribution <rows/2eecee46aa15aa3f352c786c19f1336c1782cefcaac2ffabf3194fbc87c4d9b2.nq.gz> ;
     dcat:version "1" ;
-    dct:issued "2026-10-08T19:22:22Z"^^xsd:dateTime ;
+    dct:issued "2026-10-15T20:52:48Z"^^xsd:dateTime ;
     pav:version "1" ;
     prov:specializationOf <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> ;
     prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
     prov:wasDerivedFrom <ni:///sha-256;5SAo6eYSP0o86W0nZZ5knjxLTh8xceP4hSR31XShqgo> ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;rPBgqPcFHEY99RRNDzxbJ7FGb41B6uJMfOLtLg1cH7I>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "4 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/846604d43d7e316bd2070158034b6f761b68d227d73b7c2ce9abc9da3b5b9688.nq.gz> ;
+    dcat:version "1" ;
+    dct:issued "2026-10-15T20:52:48Z"^^xsd:dateTime ;
+    pav:version "1" ;
+    prov:specializationOf <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> ;
+    prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
+    prov:wasDerivedFrom <ni:///sha-256;5SAo6eYSP0o86W0nZZ5knjxLTh8xceP4hSR31XShqgo> ;
+    sssom:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+    sssom:mapping_set_version "1" ;
+    sssom:mapping_tool "example" ;
+    sssom:mapping_tool_version "1" ;
+    sssom:subject_source_version "1" ;
     tables:builderVersion "1" .
 
 <rows/2eecee46aa15aa3f352c786c19f1336c1782cefcaac2ffabf3194fbc87c4d9b2.nq.gz>
@@ -128,13 +128,6 @@
     dcat:downloadURL <rows/2eecee46aa15aa3f352c786c19f1336c1782cefcaac2ffabf3194fbc87c4d9b2.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "2eecee46aa15aa3f352c786c19f1336c1782cefcaac2ffabf3194fbc87c4d9b2" ] .
-
-<rows/37c82a869bc551b8579da0bc5f52622bbd0a484171a6402deaf0ae64efb59f2c.nq.gz>
-    a dcat:Distribution ;
-    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
-    dcat:downloadURL <rows/37c82a869bc551b8579da0bc5f52622bbd0a484171a6402deaf0ae64efb59f2c.nq.gz> ;
-    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "37c82a869bc551b8579da0bc5f52622bbd0a484171a6402deaf0ae64efb59f2c" ] .
 
 <rows/4cce2296d366bcea6a2326c3d02e032ba59fbb332ae66ba94a0baf350526abec.nq.gz>
     a dcat:Distribution ;
@@ -150,12 +143,12 @@
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "5c57134f59990679bde870a92c0b1da47cba197d382b02e38f7dfa176e3e46c1" ] .
 
-<rows/83f06418d836781a1c5f4e778f2d097d8766cbca30ff8181ab40213a4055b05c.nq.gz>
+<rows/846604d43d7e316bd2070158034b6f761b68d227d73b7c2ce9abc9da3b5b9688.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
-    dcat:downloadURL <rows/83f06418d836781a1c5f4e778f2d097d8766cbca30ff8181ab40213a4055b05c.nq.gz> ;
+    dcat:downloadURL <rows/846604d43d7e316bd2070158034b6f761b68d227d73b7c2ce9abc9da3b5b9688.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "83f06418d836781a1c5f4e778f2d097d8766cbca30ff8181ab40213a4055b05c" ] .
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "846604d43d7e316bd2070158034b6f761b68d227d73b7c2ce9abc9da3b5b9688" ] .
 
 <rows/c3182e88ffc2f30b70fa83100f9b9aae74b263bc244f8cf933bc3bdec5e657a2.nq.gz>
     a dcat:Distribution ;
@@ -163,6 +156,13 @@
     dcat:downloadURL <rows/c3182e88ffc2f30b70fa83100f9b9aae74b263bc244f8cf933bc3bdec5e657a2.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "c3182e88ffc2f30b70fa83100f9b9aae74b263bc244f8cf933bc3bdec5e657a2" ] .
+
+<rows/f3067edb66143c3f806a4060a40820d60fe9dd6d9aa4e353e023f83de8c9bff8.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/f3067edb66143c3f806a4060a40820d60fe9dd6d9aa4e353e023f83de8c9bff8.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "f3067edb66143c3f806a4060a40820d60fe9dd6d9aa4e353e023f83de8c9bff8" ] .
 
 <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0>
     a tables:Builder ;
@@ -197,9 +197,9 @@
 <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd>
     a dcat:Dataset,
         rec:ReferenceSeries ;
-    dcat:hasCurrentVersion <ni:///sha-256;Z9a1OmPbt-a2U5CTJbHyTl79pMVxPt0KHOgV-60u3g0> ;
-    dcat:hasVersion <ni:///sha-256;2hWsqoFnoMDeiCL2i_jQsYXgWpkwFTAHiFsXdauoIWE>,
-        <ni:///sha-256;Z9a1OmPbt-a2U5CTJbHyTl79pMVxPt0KHOgV-60u3g0> ;
+    dcat:hasCurrentVersion <ni:///sha-256;18zPYUK0binaJzyHv_H37D-u74S94kfP38ubGB7wq0I> ;
+    dcat:hasVersion <ni:///sha-256;18zPYUK0binaJzyHv_H37D-u74S94kfP38ubGB7wq0I>,
+        <ni:///sha-256;rPBgqPcFHEY99RRNDzxbJ7FGb41B6uJMfOLtLg1cH7I> ;
     dct:bibliographicCitation "Source: an example publisher" ;
     dct:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
     dct:publisher <https://publisher.example/> ;
