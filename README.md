@@ -51,6 +51,7 @@ A Node program uses the host as a package, depending on a commit:
 | [`builders/cdc-icd-10-cm/`](builders/cdc-icd-10-cm/)                     | CDC's ICD-10-CM order file and conversion table                       |
 | [`builders/nlm-rxnorm-prescribable/`](builders/nlm-rxnorm-prescribable/) | NLM's prescribable RxNorm content                                     |
 | [`builders/ncbi-clinvar/`](builders/ncbi-clinvar/)                       | NCBI's monthly ClinVar `variant_summary` and current `hgvs4variation` |
+| [`builders/va-med-rt/`](builders/va-med-rt/)                             | VA's MED-RT drug classes of FDA's labelling, and the class names      |
 
 ## The feed
 

@@ -55,6 +55,51 @@ function eachEntry(
   });
 }
 
+/** The one entry of the zip whose path `wanted` accepts, as a stream; none or several is refused. */
+export function entryStream(
+  zip: string,
+  wanted: (path: string) => boolean,
+): Promise<Readable> {
+  return new Promise((resolve, reject) => {
+    yauzl.open(zip, { lazyEntries: true, autoClose: false }, (error, file) => {
+      if (error !== null) {
+        reject(new Refusal(`${zip} is not a zip: ${error.message}`));
+        return;
+      }
+      const found: yauzl.Entry[] = [];
+      const fail = (cause: Error) => {
+        file.close();
+        reject(new Refusal(`${zip} cannot be read: ${cause.message}`));
+      };
+      file.on("error", fail);
+      file.on("entry", (entry: yauzl.Entry) => {
+        if (wanted(entry.fileName)) found.push(entry);
+        file.readEntry();
+      });
+      file.on("end", () => {
+        if (found.length !== 1) {
+          file.close();
+          reject(
+            new Refusal(
+              `${zip} holds ${found.length} matching entries, not one`,
+            ),
+          );
+          return;
+        }
+        file.openReadStream(found[0]!, (failed, stream) => {
+          if (failed !== null) {
+            fail(failed);
+            return;
+          }
+          stream.on("close", () => file.close());
+          resolve(stream);
+        });
+      });
+      file.readEntry();
+    });
+  });
+}
+
 /**
  * Writes each entry of the zip that `pick` names into the folder, as the file it names; gives the paths of the entries
  * written.

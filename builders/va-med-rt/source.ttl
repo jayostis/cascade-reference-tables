@@ -1,0 +1,26 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> a tables:Source, dcat:Dataset ;
+    rdfs:label "VA MED-RT" ;
+    dct:publisher <https://ror.org/05rsv9s98> ;
+    dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    dct:bibliographicCitation "Source: Medication Reference Terminology (MED-RT), U.S. Department of Veterans Affairs, distributed by the National Cancer Institute's Enterprise Vocabulary Services." ;
+    tables:detectedBy tables:ConditionalGet ;
+    dcat:distribution
+        [ dcat:downloadURL <https://evs.nci.nih.gov/ftp1/MED-RT/Core_MEDRT_XML.zip> ] .
+
+<https://ror.org/05rsv9s98> rdfs:label "U.S. Department of Veterans Affairs" .
+
+<urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a> a rec:ReferenceSeries ;
+    rdfs:label "VA MED-RT drug classes" ;
+    rec:tableKind rec:DrugClasses ;
+    dct:source <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> .
+
+<urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f> a rec:ReferenceSeries ;
+    rdfs:label "VA MED-RT names" ;
+    rec:tableKind rec:CodeNames ;
+    dct:source <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> .

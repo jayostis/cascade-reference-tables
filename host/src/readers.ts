@@ -1,10 +1,10 @@
 import { createReadStream } from "node:fs";
 import { basename, posix } from "node:path";
-import { pipeline } from "node:stream";
+import { pipeline, type Readable } from "node:stream";
 import { StringDecoder } from "node:string_decoder";
 import { createGunzip } from "node:zlib";
 import { SaxesParser } from "saxes";
-import { texts } from "./archive.js";
+import { entryStream, texts } from "./archive.js";
 import { Refusal } from "./builder.js";
 
 /** Calls `open` and `close` with each element's local name and attributes, and `text` with the text inside one. */
@@ -131,6 +131,87 @@ export async function* xlsx(path: string): AsyncIterable<Line> {
     },
   });
   yield* rows;
+}
+
+/** An XML element: its local name, attributes, own text trimmed, and child elements. */
+export interface XmlElement {
+  readonly name: string;
+  readonly attributes: Readonly<Record<string, string>>;
+  readonly text: string;
+  readonly children: readonly XmlElement[];
+}
+
+interface OpenElement {
+  readonly name: string;
+  readonly attributes: Record<string, string>;
+  readonly parts: string[];
+  readonly children: XmlElement[];
+}
+
+/**
+ * Each element of that local name in an XML file, or in the one `.xml` entry of a zip, in document order and one at a
+ * time as the file is read, so a file of any size is held no more than one element deep. An element inside one is
+ * its child, not another. A file that is not well-formed is refused.
+ */
+export async function* xmlElements(
+  path: string,
+  element: string,
+): AsyncIterable<XmlElement> {
+  const input: Readable = /\.zip$/i.test(path)
+    ? await entryStream(
+        path,
+        (entry) => /\.xml$/i.test(entry) && !entry.startsWith("__MACOSX/"),
+      )
+    : createReadStream(path, { highWaterMark: 1 << 20 });
+  input.setEncoding("utf8");
+  const parser = new SaxesParser({ xmlns: false });
+  const open: OpenElement[] = [];
+  let done: XmlElement[] = [];
+  const local = (name: string) => name.slice(name.indexOf(":") + 1);
+  parser.on("opentag", (tag) => {
+    const name = local(tag.name);
+    if (open.length > 0 || name === element)
+      open.push({
+        name,
+        attributes: { ...(tag.attributes as Record<string, string>) },
+        parts: [],
+        children: [],
+      });
+  });
+  const addText = (text: string) => open.at(-1)?.parts.push(text);
+  parser.on("text", addText);
+  parser.on("cdata", addText);
+  parser.on("closetag", () => {
+    const closed = open.pop();
+    if (closed === undefined) return;
+    const finished: XmlElement = {
+      name: closed.name,
+      attributes: closed.attributes,
+      text: closed.parts.join("").trim(),
+      children: closed.children,
+    };
+    const parent = open.at(-1);
+    if (parent === undefined) done.push(finished);
+    else parent.children.push(finished);
+  });
+  try {
+    for await (const chunk of input) {
+      parser.write(chunk as string);
+      const ready = done;
+      done = [];
+      yield* ready;
+    }
+    parser.close();
+    yield* done;
+  } catch (error) {
+    if (/^\d+:\d+: /.test((error as Error).message))
+      throw new Refusal(
+        `${basename(path)} is not well-formed XML: ${(error as Error).message}`,
+      );
+    throw error;
+  } finally {
+    input.destroy();
+  }
 }
 
 /** One line of a release file, numbered from 1, cut into its fields. */

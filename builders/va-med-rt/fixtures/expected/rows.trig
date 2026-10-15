@@ -1,0 +1,44 @@
+<urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f> {
+  <http://id.nlm.nih.gov/mesh/M0006414> <http://www.w3.org/2004/02/skos/core#notation> "M0006414" .
+  <http://id.nlm.nih.gov/mesh/M0006414> <http://www.w3.org/2004/02/skos/core#prefLabel> "Dihydropyridines" .
+  <https://ns.cascadeprotocol.org/codes/medrt/N0000000181> <http://www.w3.org/2004/02/skos/core#notation> "N0000000181" .
+  <https://ns.cascadeprotocol.org/codes/medrt/N0000000181> <http://www.w3.org/2004/02/skos/core#prefLabel> "Angiotensin-converting Enzyme Inhibitors [MoA]" .
+  <https://ns.cascadeprotocol.org/codes/medrt/N0000007001> <http://www.w3.org/2004/02/skos/core#notation> "N0000007001" .
+  <https://ns.cascadeprotocol.org/codes/medrt/N0000007001> <http://www.w3.org/2004/02/skos/core#prefLabel> "Allergenic Extracts & Pollen [EXT]" .
+  <https://ns.cascadeprotocol.org/codes/medrt/N0000009801> <http://www.w3.org/2004/02/skos/core#notation> "N0000009801" .
+  <https://ns.cascadeprotocol.org/codes/medrt/N0000009801> <http://www.w3.org/2004/02/skos/core#prefLabel> "Decreased Blood Pressure [PE]" .
+  <https://ns.cascadeprotocol.org/codes/medrt/N0000175562> <http://www.w3.org/2004/02/skos/core#notation> "N0000175562" .
+  <https://ns.cascadeprotocol.org/codes/medrt/N0000175562> <http://www.w3.org/2004/02/skos/core#prefLabel> "Angiotensin Converting Enzyme Inhibitor [EPC]" .
+}
+<urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a> {
+  <urn:uuid:128247a8-86b0-865b-9bbd-31fda7fc95af> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:128247a8-86b0-865b-9bbd-31fda7fc95af> <http://www.w3.org/2002/07/owl#annotatedProperty> <https://ns.cascadeprotocol.org/records/v1-draft#physiologicEffect> .
+  <urn:uuid:128247a8-86b0-865b-9bbd-31fda7fc95af> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/1546022> .
+  <urn:uuid:128247a8-86b0-865b-9bbd-31fda7fc95af> <http://www.w3.org/2002/07/owl#annotatedTarget> <https://ns.cascadeprotocol.org/codes/medrt/N0000009801> .
+  <urn:uuid:128247a8-86b0-865b-9bbd-31fda7fc95af> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:998731ad-ba33-867d-bae0-881dcf025a99> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:998731ad-ba33-867d-bae0-881dcf025a99> <http://www.w3.org/2002/07/owl#annotatedProperty> <https://ns.cascadeprotocol.org/records/v1-draft#establishedPharmacologicClass> .
+  <urn:uuid:998731ad-ba33-867d-bae0-881dcf025a99> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/3827> .
+  <urn:uuid:998731ad-ba33-867d-bae0-881dcf025a99> <http://www.w3.org/2002/07/owl#annotatedTarget> <https://ns.cascadeprotocol.org/codes/medrt/N0000175562> .
+  <urn:uuid:998731ad-ba33-867d-bae0-881dcf025a99> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:b60fb716-080a-802f-a310-b6d3bd5dbb53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:b60fb716-080a-802f-a310-b6d3bd5dbb53> <http://www.w3.org/2002/07/owl#annotatedProperty> <https://ns.cascadeprotocol.org/records/v1-draft#chemicalStructure> .
+  <urn:uuid:b60fb716-080a-802f-a310-b6d3bd5dbb53> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/1723990> .
+  <urn:uuid:b60fb716-080a-802f-a310-b6d3bd5dbb53> <http://www.w3.org/2002/07/owl#annotatedTarget> <https://ns.cascadeprotocol.org/codes/medrt/N0000007001> .
+  <urn:uuid:b60fb716-080a-802f-a310-b6d3bd5dbb53> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:c8024b62-835f-8935-8cb7-5521091ca3a3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:c8024b62-835f-8935-8cb7-5521091ca3a3> <http://www.w3.org/2002/07/owl#annotatedProperty> <https://ns.cascadeprotocol.org/records/v1-draft#chemicalStructure> .
+  <urn:uuid:c8024b62-835f-8935-8cb7-5521091ca3a3> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/17767> .
+  <urn:uuid:c8024b62-835f-8935-8cb7-5521091ca3a3> <http://www.w3.org/2002/07/owl#annotatedTarget> <http://id.nlm.nih.gov/mesh/M0006414> .
+  <urn:uuid:c8024b62-835f-8935-8cb7-5521091ca3a3> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:cd1c1604-fc1d-8e8b-b393-94a6aed7f9fb> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:cd1c1604-fc1d-8e8b-b393-94a6aed7f9fb> <http://www.w3.org/2002/07/owl#annotatedProperty> <https://ns.cascadeprotocol.org/records/v1-draft#mechanismOfAction> .
+  <urn:uuid:cd1c1604-fc1d-8e8b-b393-94a6aed7f9fb> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/1546022> .
+  <urn:uuid:cd1c1604-fc1d-8e8b-b393-94a6aed7f9fb> <http://www.w3.org/2002/07/owl#annotatedTarget> <https://ns.cascadeprotocol.org/codes/medrt/N0000000181> .
+  <urn:uuid:cd1c1604-fc1d-8e8b-b393-94a6aed7f9fb> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+  <urn:uuid:dcf0a395-bc65-8bf6-a8d3-85ce0c7a231d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Axiom> .
+  <urn:uuid:dcf0a395-bc65-8bf6-a8d3-85ce0c7a231d> <http://www.w3.org/2002/07/owl#annotatedProperty> <https://ns.cascadeprotocol.org/records/v1-draft#establishedPharmacologicClass> .
+  <urn:uuid:dcf0a395-bc65-8bf6-a8d3-85ce0c7a231d> <http://www.w3.org/2002/07/owl#annotatedSource> <http://www.nlm.nih.gov/research/umls/rxnorm/1546022> .
+  <urn:uuid:dcf0a395-bc65-8bf6-a8d3-85ce0c7a231d> <http://www.w3.org/2002/07/owl#annotatedTarget> <https://ns.cascadeprotocol.org/codes/medrt/N0000175562> .
+  <urn:uuid:dcf0a395-bc65-8bf6-a8d3-85ce0c7a231d> <https://w3id.org/sssom/mapping_justification> <https://w3id.org/semapv/vocab/ManualMappingCuration> .
+}
