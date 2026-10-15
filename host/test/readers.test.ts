@@ -5,7 +5,14 @@ import { join } from "node:path";
 import { test } from "node:test";
 import { gzipSync } from "node:zlib";
 import { Refusal } from "../src/builder.js";
-import { delimited, fixedWidth, jsonLines, xlsx } from "../src/readers.js";
+import { texts } from "../src/archive.js";
+import {
+  delimited,
+  fixedWidth,
+  jsonLines,
+  xlsx,
+  xmlElements,
+} from "../src/readers.js";
 
 test("a release file is read line by line, as each reader cuts it", async () => {
   const dir = await mkdtemp(join(tmpdir(), "readers-"));
@@ -111,6 +118,62 @@ test("an xlsx whose entry does not inflate is refused", async () => {
     const path = join(dir, "corrupt.xlsx");
     await writeFile(path, bytes);
     await assert.rejects(xlsx(path)[Symbol.asyncIterator]().next(), Refusal);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+const MEDRT_ZIP = join(
+  import.meta.dirname,
+  "..",
+  "..",
+  "..",
+  "builders",
+  "va-med-rt",
+  "fixtures",
+  "release",
+  "Core_MEDRT_XML.zip",
+);
+
+test("an XML file's elements are read one at a time with their children, in a zip's one XML entry as in a plain file, and a file that is not well-formed is refused", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "readers-"));
+  const read = async (path: string, element: string) => {
+    const found: unknown[] = [];
+    for await (const e of xmlElements(path, element)) found.push(e);
+    return found;
+  };
+  try {
+    const entry = [...(await texts(MEDRT_ZIP, (n) => n.endsWith(".xml")))][0]!;
+    await writeFile(join(dir, "plain.xml"), entry[1]);
+    const concepts = await read(MEDRT_ZIP, "concept");
+    assert.equal(concepts.length, 5);
+    assert.deepEqual(concepts, await read(join(dir, "plain.xml"), "concept"));
+    assert.deepEqual(concepts[3], {
+      name: "concept",
+      attributes: {},
+      text: "",
+      children: [
+        { name: "namespace", attributes: {}, text: "MED-RT", children: [] },
+        {
+          name: "name",
+          attributes: {},
+          text: "Allergenic Extracts & Pollen [EXT]",
+          children: [],
+        },
+        { name: "code", attributes: {}, text: "N0000007001", children: [] },
+        { name: "status", attributes: {}, text: "A", children: [] },
+      ],
+    });
+    assert.equal((await read(MEDRT_ZIP, "association")).length, 10);
+
+    await writeFile(join(dir, "cut.xml"), "<a><b>1</b><b>2</c></a>");
+    await assert.rejects(
+      read(join(dir, "cut.xml"), "b"),
+      (error) =>
+        error instanceof Refusal && /not well-formed XML/.test(error.message),
+    );
+    await writeFile(join(dir, "plain.zip"), "<a/>");
+    await assert.rejects(read(join(dir, "plain.zip"), "a"), Refusal);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

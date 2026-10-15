@@ -1,21 +1,20 @@
 import { createReadStream } from "node:fs";
 import { basename, posix } from "node:path";
-import { pipeline } from "node:stream";
+import { pipeline, type Readable } from "node:stream";
 import { StringDecoder } from "node:string_decoder";
 import { createGunzip } from "node:zlib";
 import { SaxesParser } from "saxes";
-import { texts } from "./archive.js";
+import { entryStream, texts } from "./archive.js";
 import { Refusal } from "./builder.js";
 
-/** Calls `open` and `close` with each element's local name and attributes, and `text` with the text inside one. */
-function parseXml(
-  xml: string,
-  handlers: {
-    open?: (name: string, attributes: Record<string, string>) => void;
-    close?: (name: string) => void;
-    text?: (text: string) => void;
-  },
-): void {
+interface XmlHandlers {
+  open?: (name: string, attributes: Record<string, string>) => void;
+  close?: (name: string) => void;
+  text?: (text: string) => void;
+}
+
+/** A parser that calls `open` and `close` with each element's local name, and `text` with the text inside one. */
+function xmlParser(handlers: XmlHandlers): SaxesParser {
   const parser = new SaxesParser({ xmlns: false });
   const local = (name: string) => name.slice(name.indexOf(":") + 1);
   parser.on("opentag", (tag) =>
@@ -24,7 +23,11 @@ function parseXml(
   parser.on("closetag", (tag) => handlers.close?.(local(tag.name)));
   parser.on("text", (text) => handlers.text?.(text));
   parser.on("cdata", (text) => handlers.text?.(text));
-  parser.write(xml).close();
+  return parser;
+}
+
+function parseXml(xml: string, handlers: XmlHandlers): void {
+  xmlParser(handlers).write(xml).close();
 }
 
 /** The column's number from 0, from a cell reference such as `C12`. */
@@ -131,6 +134,84 @@ export async function* xlsx(path: string): AsyncIterable<Line> {
     },
   });
   yield* rows;
+}
+
+/** An XML element: its local name, attributes, own text trimmed, and child elements. */
+export interface XmlElement {
+  readonly name: string;
+  readonly attributes: Readonly<Record<string, string>>;
+  readonly text: string;
+  readonly children: readonly XmlElement[];
+}
+
+interface OpenElement {
+  readonly name: string;
+  readonly attributes: Record<string, string>;
+  readonly parts: string[];
+  readonly children: XmlElement[];
+}
+
+/**
+ * Each element of that local name in an XML file, or in the one `.xml` entry of a zip, in document order and one at a
+ * time as the file is read, so a file of any size is held no more than one element deep. An element inside one is
+ * its child, not another. A file that is not well-formed is refused.
+ */
+export async function* xmlElements(
+  path: string,
+  element: string,
+): AsyncIterable<XmlElement> {
+  const input: Readable = /\.zip$/i.test(path)
+    ? await entryStream(
+        path,
+        (entry) => /\.xml$/i.test(entry) && !entry.startsWith("__MACOSX/"),
+      )
+    : createReadStream(path, { highWaterMark: 1 << 20 });
+  input.setEncoding("utf8");
+  const open: OpenElement[] = [];
+  let done: XmlElement[] = [];
+  const parser = xmlParser({
+    open: (name, attributes) => {
+      if (open.length > 0 || name === element)
+        open.push({
+          name,
+          attributes: { ...attributes },
+          parts: [],
+          children: [],
+        });
+    },
+    text: (text) => open.at(-1)?.parts.push(text),
+    close: () => {
+      const closed = open.pop();
+      if (closed === undefined) return;
+      const finished: XmlElement = {
+        name: closed.name,
+        attributes: closed.attributes,
+        text: closed.parts.join("").trim(),
+        children: closed.children,
+      };
+      const parent = open.at(-1);
+      if (parent === undefined) done.push(finished);
+      else parent.children.push(finished);
+    },
+  });
+  try {
+    for await (const chunk of input) {
+      parser.write(chunk as string);
+      const ready = done;
+      done = [];
+      yield* ready;
+    }
+    parser.close();
+    yield* done;
+  } catch (error) {
+    if (/^\d+:\d+: /.test((error as Error).message))
+      throw new Refusal(
+        `${basename(path)} is not well-formed XML: ${(error as Error).message}`,
+      );
+    throw error;
+  } finally {
+    input.destroy();
+  }
 }
 
 /** One line of a release file, numbered from 1, cut into its fields. */

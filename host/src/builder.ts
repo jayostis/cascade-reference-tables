@@ -1,4 +1,4 @@
-import type { JsonLine, Line } from "./readers.js";
+import type { JsonLine, Line, XmlElement } from "./readers.js";
 
 /** Input the contract refuses: the build writes nothing, and says why. */
 export class Refusal extends Error {
@@ -17,6 +17,8 @@ export interface ReleaseFile {
   json(): AsyncIterable<JsonLine>;
   /** The first sheet of an xlsx workbook, each row a line of its cells' text. */
   xlsx(): AsyncIterable<Line>;
+  /** Each element of that name in an XML file, or in the one `.xml` entry of a zip, one at a time as it is read. */
+  xml(element: string): AsyncIterable<XmlElement>;
 }
 
 /** What a builder is handed: the release's files, the IRIs of codes, and what the vocabulary and its source state. */

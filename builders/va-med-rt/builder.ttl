@@ -1,0 +1,7 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<urn:uuid:8ff42a00-01df-410b-b079-79da75a576c4> a tables:Builder ;
+    rdfs:label "va-med-rt" ;
+    tables:builderVersion "1" ;
+    tables:builds <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> .

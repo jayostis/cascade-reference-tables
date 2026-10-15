@@ -1,7 +1,14 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { Refusal, type Release, type ReleaseFile } from "./builder.js";
-import { delimited, fixedWidth, jsonLines, lines, xlsx } from "./readers.js";
+import {
+  delimited,
+  fixedWidth,
+  jsonLines,
+  lines,
+  xlsx,
+  xmlElements,
+} from "./readers.js";
 import type { Vocabulary } from "./vocabulary.js";
 
 /** What a source states beyond its files' names, and where a build's findings go. */
@@ -35,6 +42,7 @@ export function releaseOf(
         fixedWidth: (columns) => fixedWidth(path, columns, gzip),
         json: () => jsonLines(path, gzip),
         xlsx: () => xlsx(path),
+        xml: (element) => xmlElements(path, element),
       };
     },
     codeIri: (system, code) => vocabulary.codeIri(system, code),
