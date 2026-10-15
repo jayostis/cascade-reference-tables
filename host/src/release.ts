@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { Refusal, type Release, type ReleaseFile } from "./builder.js";
 import {
+  csv,
   delimited,
   fixedWidth,
   jsonLines,
@@ -39,6 +40,7 @@ export function releaseOf(
         name,
         lines: () => lines(path, gzip),
         delimited: (delimiter) => delimited(path, delimiter, gzip),
+        csv: (required) => csv(path, name, required, gzip),
         fixedWidth: (columns) => fixedWidth(path, columns, gzip),
         json: () => jsonLines(path, gzip),
         xlsx: () => xlsx(path),

@@ -1,3 +1,4 @@
+import { CsvError, parse } from "csv-parse";
 import { createReadStream } from "node:fs";
 import { basename, posix } from "node:path";
 import { pipeline, type Readable } from "node:stream";
@@ -287,6 +288,54 @@ export async function* delimited(
 ): AsyncIterable<Line> {
   for await (const { number, text } of lines(path, gzip))
     yield { number, fields: text.split(delimiter) };
+}
+
+/** One record of a CSV file under its header: the line it ends on, and its fields by column name. */
+export interface CsvRow {
+  readonly number: number;
+  get(column: string): string;
+}
+
+/**
+ * The records of an RFC 4180 file under its header, numbered by the line they end on. The file is refused when it is
+ * empty, lacks a column in `required`, holds a record of another width, or leaves a quote open.
+ */
+export async function* csv(
+  path: string,
+  name: string,
+  required: readonly string[],
+  gzip = false,
+): AsyncIterable<CsvRow> {
+  const file = createReadStream(path, { highWaterMark: 1 << 20 });
+  const parser = parse({
+    bom: true,
+    columns: (header: string[]) => {
+      for (const column of required)
+        if (!header.includes(column))
+          throw new Refusal(`${name} has no column ${column}`);
+      return header;
+    },
+    skip_empty_lines: true,
+    info: true,
+  });
+  const source = gzip
+    ? pipeline(file, createGunzip({ chunkSize: 1 << 20 }), parser, () => {})
+    : pipeline(file, parser, () => {});
+  let any = false;
+  try {
+    for await (const { record, info } of source as AsyncIterable<{
+      record: Record<string, string>;
+      info: { lines: number };
+    }>) {
+      any = true;
+      yield { number: info.lines, get: (column) => record[column]! };
+    }
+  } catch (error) {
+    if (error instanceof CsvError)
+      throw new Refusal(`${name} line ${error.lines}: ${error.message}`);
+    throw error;
+  }
+  if (!any) throw new Refusal(`${name} is empty`);
 }
 
 /** Each line cut into the columns, each `[start, end)` counted in characters from 0. */

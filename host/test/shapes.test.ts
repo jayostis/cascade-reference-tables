@@ -193,7 +193,7 @@ test("the checked.json a build and a publish write conforms to its schema", asyn
 test("a source names its files as its detection method needs them, or its declarations are refused with the message", async () => {
   const contract = await readContract(ROOT);
   const message =
-    "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; one detected by a dated address names at least one file by its name and its address with {month}, and its other files by their download URL; any other source names each file's one download URL.";
+    "A source detected by its release API names that API and each file by its path in the release's zip; one detected by a folder listing names the listing, at least one kind of release folder, and each file by its name and a pattern for it; one detected by a dated address names at least one file by its name and its address with {month}, and its other files by their download URL; one detected by its announcement names the public page and a name pattern with one group, the version, and each file by its path in the release's folder, none archived; any other source names each file's one download URL.";
   const cases: [string, string][] = [
     ["nlm-rxnorm-prescribable", "DELETE WHERE { ?s tables:releaseApi ?a }"],
     [
@@ -214,6 +214,15 @@ test("a source names its files as its detection method needs them, or its declar
       'DELETE { ?f tables:namePattern ?p } WHERE { ?f dct:title "conversion-table.xlsx" ; tables:namePattern ?p }',
     ],
     ["ncbi-clinvar", "DELETE WHERE { ?f tables:urlTemplate ?t }"],
+    ["regenstrief-loinc", "DELETE WHERE { ?s tables:announcementPage ?p }"],
+    [
+      "regenstrief-loinc",
+      'DELETE { ?s tables:namePattern ?p } INSERT { ?s tables:namePattern "Loinc_(a)(b)" } WHERE { ?s tables:namePattern ?p }',
+    ],
+    [
+      "regenstrief-loinc",
+      "DELETE { ?f tables:archived false } INSERT { ?f tables:archived true } WHERE { ?f tables:archived false }",
+    ],
     [
       "ncbi-clinvar",
       'DELETE { ?f dcat:downloadURL ?u } INSERT { ?f dct:title "hgvs4variation.txt.gz" } WHERE { ?f dcat:downloadURL ?u }',
@@ -260,6 +269,10 @@ test("a source states a file's compression as gzip and whether it is archived on
     [
       "INSERT { ?f tables:archived true } WHERE { ?f tables:urlTemplate ?t }",
       "A file of a source says once, as a boolean, whether the release archives it.",
+    ],
+    [
+      "INSERT { ?s tables:announcementPage <https://publisher.example/downloads/> } WHERE { ?s a tables:Source }",
+      "Only a source detected by its announcement names an announcement page.",
     ],
     [
       "INSERT { ?s rec:coversGene 7 } WHERE { ?s rec:coversGene 'MLH1' }",

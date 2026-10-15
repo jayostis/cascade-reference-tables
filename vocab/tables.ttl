@@ -39,6 +39,15 @@ tables:archived a owl:DatatypeProperty ;
     rdfs:comment "False on a file that a version names and the release does not keep."@en ;
     rdfs:range xsd:boolean .
 
+tables:Announcement a tables:DetectionMethod ;
+    rdfs:label "announcement"@en ;
+    rdfs:comment "The publisher's release needs a signed-in person to download, so a host only reads a public page that announces it, and a person builds the release from a folder."@en .
+
+tables:announcementPage a owl:ObjectProperty ;
+    rdfs:label "announcement page"@en ;
+    rdfs:comment "The address of the public page that names the publisher's current release; the source's namePattern, whose one group is a version, is matched against the page."@en ;
+    rdfs:domain tables:Source .
+
 tables:ReleaseApi a tables:DetectionMethod ;
     rdfs:label "release API"@en ;
     rdfs:comment "The publisher's API lists its releases, each with its download URL."@en .
@@ -64,7 +73,7 @@ tables:releaseFolder a owl:ObjectProperty ;
 
 tables:namePattern a owl:DatatypeProperty ;
     rdfs:label "name pattern"@en ;
-    rdfs:comment "A regular expression, matched without regard to case against a name: a release folder's, or a file's in a folder or in a zip of it."@en ;
+    rdfs:comment "A regular expression, matched without regard to case against a name: a release folder's, or a file's in a folder or in a zip of it, or, of a source detected by its announcement, against its page, where its one group is a version."@en ;
     rdfs:range xsd:string .
 
 tables:archivePattern a owl:DatatypeProperty ;

@@ -31,8 +31,10 @@ npm run host -- publish --site <folder> [--releases <owner/repo>] [--rows <folde
 A source is a folder under `builders/`, or a path. Without `--release`, `build` checks the publisher and builds what
 it has when it is new, keeping its files in `<out>/release/`; for a source detected by a release API, a release is
 its one zip, in `--release`'s folder too, for one detected by a folder listing, every file the check took, and for one
-detected by a dated address, the file of the month after the newest version's, labelled by that month. `--checked` reads what the last check saw from a
-`checked.json`. The host reads the vocabulary from
+detected by a dated address, the file of the month after the newest version's, labelled by that month. A source
+detected by its announcement is never downloaded: `build` without `--release` writes `<out>/announced.json` when its
+public page names a newer version, and a person builds it with `--release <folder> --label <version>` from a release
+they unzipped outside every repository. `--checked` reads what the last check saw from a `checked.json`. The host reads the vocabulary from
 `$CASCADE_VOCABULARY`, else the sibling checkout `../cascade-vocabulary`, else the pinned commit, fetched into
 `.cache/`.
 
@@ -45,13 +47,17 @@ A Node program uses the host as a package, depending on a commit:
 
 ## The builders
 
-| builder                                                                  | reads                                                                 |
-| ------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| [`builders/cdc-cvx/`](builders/cdc-cvx/)                                 | CDC's CVX codes and vaccine groups                                    |
-| [`builders/cdc-icd-10-cm/`](builders/cdc-icd-10-cm/)                     | CDC's ICD-10-CM order file and conversion table                       |
-| [`builders/nlm-rxnorm-prescribable/`](builders/nlm-rxnorm-prescribable/) | NLM's prescribable RxNorm content                                     |
-| [`builders/ncbi-clinvar/`](builders/ncbi-clinvar/)                       | NCBI's monthly ClinVar `variant_summary` and current `hgvs4variation` |
-| [`builders/va-med-rt/`](builders/va-med-rt/)                             | VA's MED-RT drug classes of FDA's labelling, and the class names      |
+| builder                                                                  | reads                                                                  |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| [`builders/cdc-cvx/`](builders/cdc-cvx/)                                 | CDC's CVX codes and vaccine groups                                     |
+| [`builders/cdc-icd-10-cm/`](builders/cdc-icd-10-cm/)                     | CDC's ICD-10-CM order file and conversion table                        |
+| [`builders/nlm-rxnorm-prescribable/`](builders/nlm-rxnorm-prescribable/) | NLM's prescribable RxNorm content                                      |
+| [`builders/ncbi-clinvar/`](builders/ncbi-clinvar/)                       | NCBI's monthly ClinVar `variant_summary` and current `hgvs4variation`  |
+| [`builders/va-med-rt/`](builders/va-med-rt/)                             | VA's MED-RT drug classes of FDA's labelling, and the class names       |
+| [`builders/regenstrief-loinc/`](builders/regenstrief-loinc/)             | Regenstrief's LOINC release: code names, code status and panel members |
+
+LOINC is built by hand from a release a person downloaded, under [its licence](https://loinc.org/license/): the
+credit it asks for is each version's, and what carries a third party's copyright notice is left out.
 
 ## The feed
 

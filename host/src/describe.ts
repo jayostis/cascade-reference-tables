@@ -76,9 +76,15 @@ function line(rows: readonly Quad[], labelOf: LabelOf, whole = false): Line {
     const target = objectsOf(rows, `${OWL}annotatedTarget`)[0]!;
     const predicate = codeOf(objectsOf(rows, `${OWL}annotatedProperty`)[0]!);
     const [justification] = objectsOf(rows, `${SSSOM}mapping_justification`);
+    const [sequence] = objectsOf(rows, `${REC}panelSequence`);
+    const [required] = objectsOf(rows, `${REC}observationRequiredInPanel`);
+    const place =
+      sequence === undefined
+        ? ""
+        : `, at ${sequence}${required === undefined ? "" : `, ${required}`}`;
     return {
-      sort: [codeOf(source), predicate, codeOf(target)],
-      text: `${code(source)} → ${code(target)} (${predicate}${whole && justification !== undefined ? `, justified by ${codeOf(justification)}` : ""})`,
+      sort: [codeOf(source), predicate, codeOf(target), sequence ?? ""],
+      text: `${code(source)} → ${code(target)} (${predicate}${place}${whole && justification !== undefined ? `, justified by ${codeOf(justification)}` : ""})`,
     };
   }
   const subject = rows[0]!.subject.value;

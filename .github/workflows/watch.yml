@@ -23,6 +23,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      issues: write
     defaults:
       run:
         working-directory: cascade-reference-tables
@@ -65,6 +66,7 @@ jobs:
         run: |
           set -euo pipefail
           built=""
+          announced=""
           failed=""
           for folder in builders/*/; do
             name=$(basename "$folder")
@@ -78,9 +80,13 @@ jobs:
               continue
             fi
             if [ -f "build/$name/release.json" ]; then built="$built $name"; fi
+            if [ -f "build/$name/announced.json" ]; then announced="$announced $name"; fi
           done
-          echo "built=${built# }" >> "$GITHUB_OUTPUT"
-          echo "failed=${failed# }" >> "$GITHUB_OUTPUT"
+          {
+            echo "built=${built# }"
+            echo "announced=${announced# }"
+            echo "failed=${failed# }"
+          } >> "$GITHUB_OUTPUT"
       - name: The checks, on each new feed
         if: ${{ steps.build.outputs.built != '' }}
         env:
@@ -124,6 +130,33 @@ jobs:
               gh pr create --base "$BASE" --head "watch/$name" \
                 --title "feat($name): $(jq -r .title "$out/release.json")" --body-file "$out/differences.md"
             fi
+          done
+      - name: An issue for each version announced, once
+        if: ${{ github.ref_name == 'main' && steps.build.outputs.announced != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ANNOUNCED: ${{ steps.build.outputs.announced }}
+        run: |
+          set -euo pipefail
+          for name in $ANNOUNCED; do
+            file="build/$name/announced.json"
+            version=$(jq -r .version "$file")
+            title="$(jq -r .label "$file") $version is out: build it with --release"
+            if gh issue list --state all --search "$version in:title" --limit 100 --json title --jq '.[].title' | grep -Fxq "$title"; then
+              continue
+            fi
+            {
+              echo "The publisher's release needs a signed-in person to download, so nothing was fetched."
+              echo
+              echo "Unzip it into a folder outside every repository, never commit or upload it, then run, from this repository's root:"
+              echo
+              echo '```'
+              jq -r .command "$file"
+              echo '```'
+              echo
+              echo "then the release, branch and pull request steps of the watch workflow, by hand."
+            } > "build/$name/announced.md"
+            gh issue create --title "$title" --body-file "build/$name/announced.md"
           done
       - uses: actions/upload-artifact@v7
         if: ${{ github.ref_name != 'main' && steps.build.outputs.built != '' }}

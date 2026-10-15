@@ -358,7 +358,7 @@ export async function writeChecked(
   out: string,
   source: Source,
   at: string,
-  found: "new" | "nothing new" | { readonly notChecked: string },
+  found: "new" | "nothing new" | "announced" | { readonly notChecked: string },
   seen?: Seen,
 ): Promise<void> {
   await mkdir(out, { recursive: true });
@@ -555,7 +555,7 @@ export async function build(
   await mkdir(options.out, { recursive: true });
   await writeFile(
     join(options.out, "differences.md"),
-    markdown(outcomes, findings),
+    markdown(outcomes, findings, source.credit),
   );
   const built = outcomes.some((o) => o.version !== undefined);
   await writeChecked(
@@ -615,10 +615,11 @@ function listed(
       ];
 }
 
-/** The row differences, as a pull request's description shows them. */
+/** The row differences, as a pull request's description shows them, the source's credit first. */
 export function markdown(
   outcomes: readonly Outcome[],
   findings: readonly string[] = [],
+  credit = "",
 ): string {
   const lists = outcomes.flatMap((o) =>
     o.version === undefined
@@ -641,32 +642,34 @@ export function markdown(
     left -= share;
   }
   const share = (list: readonly string[]) => shares.get(list) ?? 0;
-  return outcomes
-    .map((o) =>
-      [
-        `## ${o.label}`,
-        "",
-        o.version === undefined
-          ? "Nothing new: its rows equal the current version's."
-          : `\`${o.version}\`${o.previous === undefined ? "" : `, revising \`${o.previous}\``}: ${notes(o.differences)}.`,
-        "",
-        ...(o.version === undefined
-          ? []
-          : [
-              ...listed("Added", o.described.added, share(o.described.added)),
-              ...listed(
-                "Removed",
-                o.described.removed,
-                share(o.described.removed),
-              ),
-              ...listed(
-                "Changed",
-                o.described.changed,
-                share(o.described.changed),
-              ),
-            ]),
-      ].join("\n"),
-    )
-    .join("\n")
-    .concat(findingsText);
+  return (credit === "" ? "" : `${credit}\n\n`).concat(
+    outcomes
+      .map((o) =>
+        [
+          `## ${o.label}`,
+          "",
+          o.version === undefined
+            ? "Nothing new: its rows equal the current version's."
+            : `\`${o.version}\`${o.previous === undefined ? "" : `, revising \`${o.previous}\``}: ${notes(o.differences)}.`,
+          "",
+          ...(o.version === undefined
+            ? []
+            : [
+                ...listed("Added", o.described.added, share(o.described.added)),
+                ...listed(
+                  "Removed",
+                  o.described.removed,
+                  share(o.described.removed),
+                ),
+                ...listed(
+                  "Changed",
+                  o.described.changed,
+                  share(o.described.changed),
+                ),
+              ]),
+        ].join("\n"),
+      )
+      .join("\n")
+      .concat(findingsText),
+  );
 }

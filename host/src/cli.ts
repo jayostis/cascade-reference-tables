@@ -63,8 +63,11 @@ async function checkCommand(root: string, args: string[]): Promise<number> {
   const folder = await mkdtemp(join(tmpdir(), "check-"));
   try {
     const seen = await seenBy(values.checked, source);
+    const checked = await check(source, feed, patientFetch(), folder, seen);
     console.log(
-      (await check(source, feed, patientFetch(), folder, seen)).found,
+      checked.found === "announced"
+        ? `announced ${checked.version}`
+        : checked.found,
     );
   } finally {
     await rm(folder, { recursive: true, force: true });
@@ -124,6 +127,10 @@ async function buildCommand(root: string, args: string[]): Promise<number> {
         });
   if (outcomes === "nothing new") {
     console.log("nothing new");
+    return 0;
+  }
+  if ("announced" in outcomes) {
+    console.log(`announced ${outcomes.announced}`);
     return 0;
   }
   for (const o of outcomes)

@@ -93,6 +93,9 @@ interface World {
   /** The months the publisher of the dated example has a file for, and each file name it was asked for. */
   months?: string[];
   datedAsked?: string[];
+  /** The files the announcement page names, and the status it answers with. */
+  page?: { status: number; names: string[] };
+  announced?: Awaited<ReturnType<typeof buildLatest>>;
 }
 
 let contract: Contract;
@@ -101,7 +104,9 @@ let dated: Source;
 let example: Source;
 let byReleaseApi: Source;
 let byFolderListing: Source;
+let byAnnouncement: Source;
 let carrying: Source;
+const DOWNLOADS = "https://publisher.example/downloads/";
 
 /** A copy of the vocabulary's records folder in the world's scratch folder, for a step to change. */
 async function recordsCopy(
@@ -115,6 +120,7 @@ async function recordsCopy(
   });
   return { folder, records };
 }
+
 const RELEASES = "https://publisher.example/releases";
 const FOLDERS = "https://publisher.example/releases/";
 
@@ -245,6 +251,20 @@ function folderListing(world: World): Fetch {
           [`${stem}/notes-${stem}.txt`, codes],
         ]),
       ),
+    );
+  };
+}
+
+/** The publisher's public page, naming the files as the world says, recording each address asked for. */
+function downloadsPage(world: World): Fetch {
+  return async (input) => {
+    const url = String(input);
+    (world.fetched ??= []).push(url);
+    const { status, names } = world.page!;
+    if (url !== DOWNLOADS || status !== 200)
+      return new Response(null, { status: url === DOWNLOADS ? status : 404 });
+    return new Response(
+      `<html><body>${names.map((name) => `<a href="/files/${name}">${name}</a>`).join("<br>")}</body></html>`,
     );
   };
 }
@@ -883,7 +903,7 @@ const steps = new Steps<World>()
           fetch: folderListing(world),
           seen: lastSeen(world),
         });
-        world.builds.push(outcomes === "nothing new" ? [] : outcomes);
+        world.builds.push(Array.isArray(outcomes) ? outcomes : []);
         world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
       } catch (error) {
         if (!(error instanceof Refusal)) throw error;
@@ -904,6 +924,69 @@ const steps = new Steps<World>()
       [],
     );
   })
+  .define("the publisher's downloads page names {string}", (world, [names]) => {
+    world.page = {
+      status: 200,
+      names: (names as string).split(", ").filter((name) => name !== ""),
+    };
+  })
+  .define("the publisher's downloads page answers {int}", (world, [status]) => {
+    world.page = { status: status as number, names: [] };
+  })
+  .define(
+    "the announcement example's release {string} is built as {string}",
+    (world, [release, label]) =>
+      runBuild(world, release as string, label as string, undefined, {
+        source: byAnnouncement,
+      }),
+  )
+  .define("the announcement example source is checked", async (world) => {
+    world.fetched = [];
+    try {
+      world.checked = await check(
+        byAnnouncement,
+        await Feed.readOrEmpty(world.feed),
+        downloadsPage(world),
+        join(world.dir, "checked"),
+      );
+    } catch (error) {
+      world.failure = error as Error;
+    }
+  })
+  .define(
+    "the announcement example source is built from the publisher",
+    async (world) => {
+      world.announced = await buildLatest(contract, {
+        source: byAnnouncement,
+        build: await loadBuild(ROOT, EXAMPLE),
+        feed: world.feed,
+        out: world.out,
+        now: "2026-10-01T00:00:00Z",
+        fetch: downloadsPage(world),
+      });
+    },
+  )
+  .define(
+    "the check finds the version {string} announced",
+    ({ checked }, [version]) => {
+      assert.deepEqual(checked, { found: "announced", version });
+    },
+  )
+  .define(
+    "the build announced the version {string}, building it with {string}",
+    async ({ announced, out }, [version, command]) => {
+      assert.deepEqual(announced, { announced: version });
+      const written = JSON.parse(
+        await readFile(join(out, "announced.json"), "utf8"),
+      ) as { version: string; command: string };
+      assert.equal(written.version, version);
+      assert.ok(written.command.includes(command as string), written.command);
+      const { checked } = JSON.parse(
+        await readFile(join(out, "checked.json"), "utf8"),
+      ) as SiteChecks;
+      assert.equal(checked[byAnnouncement.iri]?.found, "announced");
+    },
+  )
   .define("the publisher's release API marks no release current", (world) => {
     world.api = {};
   })
@@ -936,7 +1019,7 @@ const steps = new Steps<World>()
           fetch: releaseApi(world),
           seen: lastSeen(world),
         });
-        world.builds.push(outcomes === "nothing new" ? [] : outcomes);
+        world.builds.push(Array.isArray(outcomes) ? outcomes : []);
         world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
       } catch (error) {
         if (!(error instanceof Refusal)) throw error;
@@ -1094,6 +1177,13 @@ const steps = new Steps<World>()
     async ({ out }, [finding]) => {
       const text = await readFile(join(out, "differences.md"), "utf8");
       assert.ok(text.includes(`## Findings\n\n- ${finding as string}\n`), text);
+    },
+  )
+  .define(
+    "the build's differences.md begins with the credit {string}",
+    async ({ out }, [credit]) => {
+      const text = await readFile(join(out, "differences.md"), "utf8");
+      assert.ok(text.startsWith(`${credit as string}\n\n## `), text);
     },
   )
   .define("the last build made a version of each series", (world) => {
@@ -1271,7 +1361,7 @@ async function builtFromPublisher(world: World, source: Source): Promise<void> {
     fetch: publisher(world),
     seen: lastSeen(world),
   });
-  world.builds.push(outcomes === "nothing new" ? [] : outcomes);
+  world.builds.push(Array.isArray(outcomes) ? outcomes : []);
   world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
 }
 
@@ -1338,7 +1428,7 @@ async function datedBuiltFromPublisher(
     fetch: datedPublisher(world),
     seen: lastSeen(world, dated),
   });
-  world.builds.push(outcomes === "nothing new" ? [] : outcomes);
+  world.builds.push(Array.isArray(outcomes) ? outcomes : []);
   world.feeds.push(await readFile(world.feed, "utf8").catch(() => ""));
 }
 
@@ -1402,6 +1492,7 @@ before(async () => {
   classifications = await readSource(join(ROOT, "fixtures", "classifications"));
   byReleaseApi = await readSource(join(ROOT, "fixtures", "release-api"));
   byFolderListing = await readSource(join(ROOT, "fixtures", "folder-listing"));
+  byAnnouncement = await readSource(join(ROOT, "fixtures", "announcement"));
   carrying = await readSource(join(ROOT, "fixtures", "carrying"));
 });
 

@@ -89,6 +89,22 @@ and `2027` `codes-2027.zip` and `notes-2027.txt`; each zip holds the codes of `r
 | `the check took {string}`                                                                     | the files the check saved are exactly those named           |
 | `the check downloaded nothing`                                                                | the check asked for no address but a folder's listing       |
 
+## Detection by announcement
+
+The examples' source is `fixtures/announcement/`: the example builder's series, announced on the public page
+`https://publisher.example/downloads/`, which names the files a step gives. The build of its version is by hand, of a
+release folder of the example builder.
+
+| Step                                                                  | What happens, or must hold                                                      |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `the publisher's downloads page names {string}`                       | the page names those files, comma-separated                                     |
+| `the publisher's downloads page answers {int}`                        | the page answers with that status and names nothing                             |
+| `the announcement example's release {string} is built as {string}`    | that release folder of `fixtures/builder/fixtures/` is built, labelled as given |
+| `the announcement example source is checked`                          | the source is checked against the feed                                          |
+| `the announcement example source is built from the publisher`         | the source is checked, and what is new is built                                 |
+| `the check finds the version {string} announced`                      | the check found that version announced                                          |
+| `the build announced the version {string}, building it with {string}` | `announced.json` names the version and a command with that text, and no version |
+
 ## Detection by dated address
 
 The examples' source is `fixtures/dated-address/`: the example builder's series, its names series covering the gene
@@ -115,6 +131,7 @@ of `release-2`, the third's of `release-3`, and answers 404 for any other.
 | `the last build made a version of each series`                                                                     | every series of the example source has a version in the last build                                        |
 | `each version of the last build covers the genes {string}`                                                         | every version the last build made states exactly those genes with `rec:coversGene`                        |
 | `the build's differences.md lists the finding {string}`                                                            | `differences.md` has a "Findings" heading with the finding beneath it                                     |
+| `the build's differences.md begins with the credit {string}`                                                       | `differences.md` opens with the text, then the first series' heading                                      |
 | `the release keeps the input {string}`                                                                             | `release.json` lists the input of that name among the files to keep                                       |
 | `the release keeps no input`                                                                                       | `release.json` lists no input                                                                             |
 | `the classifications example builder yields {}`                                                                    | the rows of the JSON array given are checked as the rows of the one series of `fixtures/classifications/` |

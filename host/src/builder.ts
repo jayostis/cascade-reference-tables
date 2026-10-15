@@ -1,4 +1,4 @@
-import type { JsonLine, Line, XmlElement } from "./readers.js";
+import type { CsvRow, JsonLine, Line, XmlElement } from "./readers.js";
 
 /** Input the contract refuses: the build writes nothing, and says why. */
 export class Refusal extends Error {
@@ -11,6 +11,11 @@ export interface ReleaseFile {
   /** Each non-empty line as text, for a builder that cuts only the fields it needs of a very large file. */
   lines(): AsyncIterable<{ readonly number: number; readonly text: string }>;
   delimited(delimiter: string): AsyncIterable<Line>;
+  /**
+   * Each record of an RFC 4180 file under its header, read by name; a quoted field may hold line breaks. The file is
+   * refused when it lacks a column in `required` or holds a record of another width.
+   */
+  csv(required: readonly string[]): AsyncIterable<CsvRow>;
   fixedWidth(
     columns: readonly (readonly [number, number])[],
   ): AsyncIterable<Line>;
@@ -45,6 +50,12 @@ export interface MappingRow {
   readonly object_id: string;
   readonly mapping_justification: string;
   readonly mapping_cardinality?: "1:1" | "1:n" | "n:1" | "n:n";
+}
+
+/** A row of a panel members kind: a mapping row with the member's place in the panel and, if the source states it, its requirement. */
+export interface MemberRow extends Omit<MappingRow, "mapping_cardinality"> {
+  readonly sequence: number;
+  readonly required?: string;
 }
 
 /** A row of a names kind, by SKOS. */
@@ -84,7 +95,12 @@ export interface ClassificationRow {
 
 /** A row in one of `builder/interface.schema.json`'s forms. */
 export type Row =
-  MappingRow | NamesRow | StatusRow | TermTypeRow | ClassificationRow;
+  | MappingRow
+  | MemberRow
+  | NamesRow
+  | StatusRow
+  | TermTypeRow
+  | ClassificationRow;
 
 /** A builder's `build.ts` exports this as its default. */
 export type Build = (release: Release) => AsyncIterable<Row>;

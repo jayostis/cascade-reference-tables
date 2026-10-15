@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { createWriteStream } from "node:fs";
-import { mkdir, rm } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -15,14 +15,23 @@ import {
   type Seen,
   writeChecked,
 } from "./pipeline.js";
-import { TABLES } from "./rdf.js";
-import { type Listing, matches, type Source } from "./source.js";
+import { DCAT, TABLES } from "./rdf.js";
+import {
+  BY_ANNOUNCEMENT,
+  type Listing,
+  matches,
+  type Source,
+} from "./source.js";
 
 export type Fetch = typeof fetch;
 
-/** What a check found: nothing new, or a release saved into a folder with each file's `Last-Modified`. */
+/**
+ * What a check found: nothing new, a version announced that a person builds by hand, or a release saved into a folder
+ * with each file's `Last-Modified`.
+ */
 export type Checked =
   | { readonly found: "nothing new" }
+  | { readonly found: "announced"; readonly version: string }
   | {
       readonly found: "new";
       readonly folder: string;
@@ -78,6 +87,8 @@ export async function check(
   seen: Seen = { inputs: {} },
   now: string = new Date().toISOString(),
 ): Promise<Checked> {
+  if (source.detectedBy === BY_ANNOUNCEMENT)
+    return checkAnnouncement(source, feed, fetchWith);
   if (source.detectedBy === `${TABLES}ReleaseApi`)
     return checkReleaseApi(source, feed, fetchWith, folder, seen);
   if (source.detectedBy === `${TABLES}FolderListing`)
@@ -147,6 +158,57 @@ export async function check(
     await rm(folder, { recursive: true, force: true });
     throw error;
   }
+}
+
+/** A version's numbers, from the number it opens with: `2.10` is 2, 10. */
+function versionParts(text: string): number[] | undefined {
+  const found = /^\d+(\.\d+)*/.exec(text.trim());
+  return found === null ? undefined : found[0].split(".").map(Number);
+}
+
+function compareVersions(a: readonly number[], b: readonly number[]): number {
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    const order = (a[i] ?? 0) - (b[i] ?? 0);
+    if (order !== 0) return order;
+  }
+  return 0;
+}
+
+/**
+ * Reads the publisher's public page and downloads nothing. The newest version the page names by the source's pattern
+ * is announced when it is newer than every version of the source's series in the feed. A page that cannot be read, or
+ * names no version, is an error, never nothing new.
+ */
+async function checkAnnouncement(
+  source: Source,
+  feed: Feed,
+  fetchWith: Fetch,
+): Promise<Checked> {
+  const { page, pattern } = source.announcement!;
+  const response = await fetchWith(page);
+  if (!response.ok) throw new Error(`${page} answered ${response.status}`);
+  const text = await response.text();
+  const named = [...text.matchAll(new RegExp(pattern, "gi"))].flatMap(
+    (found) => {
+      const parts = versionParts(found[1] ?? "");
+      return parts === undefined ? [] : [{ version: found[1]!, parts }];
+    },
+  );
+  if (named.length === 0)
+    throw new Error(`${page} names no version by the pattern ${pattern}`);
+  const newest = named.reduce((a, b) =>
+    compareVersions(b.parts, a.parts) > 0 ? b : a,
+  );
+  const held = source.series.flatMap((series) =>
+    feed.graph.objects(series.iri, `${DCAT}hasVersion`).flatMap((version) => {
+      const parts = versionParts(feed.labelOf(version.value) ?? "");
+      return parts === undefined ? [] : [parts];
+    }),
+  );
+  return held.length > 0 &&
+    held.every((parts) => compareVersions(newest.parts, parts) <= 0)
+    ? { found: "nothing new" }
+    : { found: "announced", version: newest.version };
 }
 
 /** A response's body written to the path as it arrives; its SHA-256 in hex. */
@@ -492,7 +554,7 @@ export async function buildLatest(
     readonly fetch: Fetch;
     readonly seen?: Seen;
   },
-): Promise<Outcome[] | "nothing new"> {
+): Promise<Outcome[] | "nothing new" | { readonly announced: string }> {
   const feed = await Feed.readOrEmpty(options.feed);
   const checked = await check(
     options.source,
@@ -525,6 +587,30 @@ export async function buildLatest(
       },
     );
     return "nothing new";
+  }
+  if (checked.found === "announced") {
+    await mkdir(options.out, { recursive: true });
+    await writeFile(
+      join(options.out, "announced.json"),
+      `${JSON.stringify(
+        {
+          source: basename(options.source.folder),
+          label: options.source.label,
+          version: checked.version,
+          command: `npm run host -- build ${basename(options.source.folder)} --release <folder> --label ${checked.version} --out build/${basename(options.source.folder)} --feed feed/feed.ttl`,
+        },
+        null,
+        2,
+      )}\n`,
+    );
+    await writeChecked(
+      options.out,
+      options.source,
+      options.now,
+      "announced",
+      options.seen,
+    );
+    return { announced: checked.version };
   }
   return build(contract, {
     ...options,

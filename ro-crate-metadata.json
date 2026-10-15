@@ -28,6 +28,7 @@
         { "@id": "rules/detection.feature" },
         { "@id": "rules/folder-listing.feature" },
         { "@id": "rules/dated-address.feature" },
+        { "@id": "rules/announcement.feature" },
         { "@id": "rules/publish.feature" },
         { "@id": "rules/steps.md" },
         { "@id": "builder/interface.schema.json" },
@@ -35,6 +36,7 @@
         { "@id": "fixtures/builder/" },
         { "@id": "fixtures/folder-listing/" },
         { "@id": "fixtures/dated-address/" },
+        { "@id": "fixtures/announcement/" },
         { "@id": "fixtures/classifications/" },
         { "@id": "fixtures/feeds/valid/" },
         { "@id": "feed/feed.ttl" }

@@ -7,12 +7,50 @@ import { gzipSync } from "node:zlib";
 import { Refusal } from "../src/builder.js";
 import { texts } from "../src/archive.js";
 import {
+  csv,
   delimited,
   fixedWidth,
   jsonLines,
   xlsx,
   xmlElements,
 } from "../src/readers.js";
+
+test("a CSV file is read by its header's names, and one that cannot be read so is refused, naming the file", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "readers-"));
+  const read = async (text: string, required = ["x"]) => {
+    const path = join(dir, "in.csv");
+    await writeFile(path, text);
+    const found: { number: number; y: string }[] = [];
+    for await (const row of csv(path, "in.csv", required))
+      found.push({ number: row.number, y: row.get("y") });
+    return found;
+  };
+  try {
+    assert.deepEqual(
+      await read(
+        '\u{FEFF}x,y\r\n\r\n"a,b","line one\nline ""two"""\r\nend,\r\n',
+      ),
+      [
+        { number: 4, y: 'line one\nline "two"' },
+        { number: 5, y: "" },
+      ],
+    );
+    const refused: [string, string[], RegExp][] = [
+      ["", ["x"], /^in\.csv is empty$/],
+      ['x,y\na,"never closed\n', ["x"], /^in\.csv line \d+: /],
+      ["x,y\na,b,c\n", ["x"], /^in\.csv line 2: /],
+      ["x,y\na,b\n", ["z"], /^in\.csv has no column z$/],
+    ];
+    for (const [text, required, reason] of refused)
+      await assert.rejects(
+        read(text, required),
+        (error) => error instanceof Refusal && reason.test(error.message),
+        text,
+      );
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
 
 test("a release file is read line by line, as each reader cuts it", async () => {
   const dir = await mkdtemp(join(tmpdir(), "readers-"));
