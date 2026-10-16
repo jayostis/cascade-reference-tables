@@ -32,7 +32,7 @@
         <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4>,
         <urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540>,
         <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0> ;
-    dct:modified "2026-10-15T21:46:25Z"^^xsd:dateTime ;
+    dct:modified "2026-10-16T03:54:18Z"^^xsd:dateTime ;
     dct:title "Cascade reference tables (DRAFT)" .
 
 <ni:///sha-256;1HVYVDYA4Qj1ivM5wrzvPHwgJ4DOHZauw9wp7o3dl44>
@@ -407,6 +407,26 @@
         <ni:///sha-256;79Kmdw8PZIznbhCsKIlgKy6o-oyktj3rM8qIPn0NdBM> ;
     tables:builderVersion "1" .
 
+<ni:///sha-256;ZB0Knn3eLEuMXZO2UAxQ1Fz16o7IC1aFCgE6BGyIdWE>
+    a dcat:Dataset,
+        prov:Entity,
+        sssom:MappingSet ;
+    adms:versionNotes "28494 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/94ab6fae11893202e2c89a182a7f497dd6f575ebc8f6b4a2e175335911f8a50b.nq.gz> ;
+    dcat:version "2026-10-05 (builder 7)" ;
+    dct:issued "2026-10-16T03:54:18Z"^^xsd:dateTime ;
+    pav:version "2026-10-05 (builder 7)" ;
+    prov:specializationOf <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    prov:wasRevisionOf <ni:///sha-256;golhEaB3F5j-Jnd91L4ThPmKnc5zb8LKCCfvWYL-IIQ> ;
+    sssom:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    sssom:mapping_set_version "2026-10-05 (builder 7)" ;
+    sssom:mapping_tool "nlm-rxnorm-prescribable" ;
+    sssom:mapping_tool_version "7" ;
+    sssom:subject_source_version "2026-10-05 (builder 7)" ;
+    tables:builderVersion "7" .
+
 <ni:///sha-256;d1urREycYX7cfmz05fd1pQDwORlWVS9AsmNe9yCc7rA>
     a prov:Entity ;
     dct:title "LoincTable/MapTo.csv" ;
@@ -617,6 +637,13 @@
     dcat:downloadURL <rows/93d5a200279668eb333cdd021b752f3fbb3248496c76f0fcfa3e5f2b54cf5134.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "93d5a200279668eb333cdd021b752f3fbb3248496c76f0fcfa3e5f2b54cf5134" ] .
+
+<rows/94ab6fae11893202e2c89a182a7f497dd6f575ebc8f6b4a2e175335911f8a50b.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/94ab6fae11893202e2c89a182a7f497dd6f575ebc8f6b4a2e175335911f8a50b.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "94ab6fae11893202e2c89a182a7f497dd6f575ebc8f6b4a2e175335911f8a50b" ] .
 
 <rows/9a43e56efd682723321755f7e23ea5d1a505c92f6d48140edc0c04f1a4290753.nq.gz>
     a dcat:Distribution ;
@@ -919,8 +946,9 @@
 <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>
     a dcat:Dataset,
         rec:ReferenceSeries ;
-    dcat:hasCurrentVersion <ni:///sha-256;golhEaB3F5j-Jnd91L4ThPmKnc5zb8LKCCfvWYL-IIQ> ;
+    dcat:hasCurrentVersion <ni:///sha-256;ZB0Knn3eLEuMXZO2UAxQ1Fz16o7IC1aFCgE6BGyIdWE> ;
     dcat:hasVersion <ni:///sha-256;EStDF-p0nfL0iLcKqTwc3uXf4-tmgQbvWAneo9Hg_CI>,
+        <ni:///sha-256;ZB0Knn3eLEuMXZO2UAxQ1Fz16o7IC1aFCgE6BGyIdWE>,
         <ni:///sha-256;golhEaB3F5j-Jnd91L4ThPmKnc5zb8LKCCfvWYL-IIQ> ;
     dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
     dct:license <http://creativecommons.org/publicdomain/mark/1.0/> ;
