@@ -2,7 +2,6 @@ import { type Build, Refusal, type Row } from "../../host/src/builder.js";
 
 const INGREDIENTS = "urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6";
 const GENERICS = "urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4";
-const NDCS = "urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf";
 const PRODUCTS = "urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12";
 const NAMES = "urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba";
 const STATUS = "urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88";
@@ -26,7 +25,7 @@ const GENERIC = new Map([
 
 /**
  * `RXNCONSO.RRF`: RXCUI 0, SAB 11, TTY 12, STR 14, SUPPRESS 16. `RXNREL.RRF`: RXCUI1 0, STYPE1 2, RXCUI2 4, RELA 7,
- * SAB 10, read as RXCUI2 RELA RXCUI1. `RXNSAT.RRF`: RXCUI 0, ATN 8, SAB 9, ATV 10, SUPPRESS 11. All `|`-separated.
+ * SAB 10, read as RXCUI2 RELA RXCUI1. All `|`-separated.
  */
 const build: Build = async function* (release) {
   const rxnorm = (code: string): string =>
@@ -120,17 +119,6 @@ const build: Build = async function* (release) {
       found.length > 1 ? multiple.get(found.sort().join(" ")) : undefined;
     if (combined !== undefined)
       yield mapping(INGREDIENTS, rxnorm(code), rxnorm(combined), true);
-  }
-  for await (const { fields } of release.file("RXNSAT.RRF").delimited("|")) {
-    if (fields[9] !== "RXNORM" || fields[8] !== "NDC" || fields[11] !== "N")
-      continue;
-    if (!termType.has(fields[0]!)) continue;
-    yield mapping(
-      NDCS,
-      release.codeIri(`${REC}NDC`, fields[10]!),
-      rxnorm(fields[0]!),
-      false,
-    );
   }
   for (const [code, name] of preferred) {
     const also = [...(others.get(code) ?? [])]

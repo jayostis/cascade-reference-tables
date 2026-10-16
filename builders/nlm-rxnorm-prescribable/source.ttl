@@ -34,12 +34,6 @@
     tables:carriesForward true ;
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> .
 
-<urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf> a rec:ReferenceSeries ;
-    rdfs:label "NLM RxNorm Prescribable NDC drugs" ;
-    rec:tableKind rec:NdcDrugs ;
-    tables:carriesForward true ;
-    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> .
-
 <urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12> a rec:ReferenceSeries ;
     rdfs:label "NLM RxNorm Prescribable drug products" ;
     rec:tableKind rec:DrugProducts ;
