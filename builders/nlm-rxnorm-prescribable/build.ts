@@ -8,6 +8,7 @@ const STATUS = "urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88";
 const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
 const BROAD_MATCH = "http://www.w3.org/2004/02/skos/core#broadMatch";
 const HAS_ACTIVE_INGREDIENT = "http://purl.obolibrary.org/obo/RO_0002248";
+const HAS_PRECISE_INGREDIENT = `${REC}hasPreciseIngredient`;
 const CURATED = "https://w3id.org/semapv/vocab/ManualMappingCuration";
 const CHAINED = "https://w3id.org/semapv/vocab/MappingChaining";
 
@@ -83,6 +84,49 @@ const build: Build = async function* (release) {
       true,
     ],
   };
+  /** The targets of `has_precise_ingredient`, each of which must be a PIN. */
+  const preciseOf = (code: string): string[] => {
+    const targets = [
+      ...(related.get("has_precise_ingredient")?.get(code) ?? []),
+    ];
+    for (const to of targets) {
+      const type = termType.get(to);
+      if (type !== undefined && type !== "PIN")
+        throw new Refusal(
+          `RXNREL.RRF gives ${code} the precise ingredient ${to}, whose term type is ${type}, not PIN`,
+        );
+    }
+    return targets.filter((to) => termType.get(to) === "PIN");
+  };
+  const componentsOf = (code: string, relation: string): string[] => [
+    ...new Set(
+      via(relation, code, "SCDC").flatMap((component) => preciseOf(component)),
+    ),
+  ];
+  const bossOf = (codes: readonly string[]): string[] => [
+    ...new Set(codes.flatMap((code) => via("has_boss", code, "PIN"))),
+  ];
+  const ofBrands = (code: string): string[] => [
+    ...new Set(
+      via("has_ingredient", code, "BN").flatMap((brand) => preciseOf(brand)),
+    ),
+  ];
+  /**
+   * A concept's precise ingredients, and whether more than one relationship joins them. Every concept RxNorm ties to
+   * one has a row, because the class query reads a concept with none as holding its ingredient itself.
+   */
+  const preciseChains: Record<string, (code: string) => [string[], boolean]> = {
+    SCDC: (code) => [preciseOf(code), false],
+    BN: (code) => [preciseOf(code), false],
+    SCDFP: (code) => [bossOf([code]), false],
+    SCD: (code) => [componentsOf(code, "consists_of"), true],
+    SBD: (code) => [componentsOf(code, "consists_of"), true],
+    SBDC: (code) => [componentsOf(code, "tradename_of"), true],
+    SCDGP: (code) => [bossOf(via("inverse_isa", code, "SCDFP")), true],
+    SBDFP: (code) => [bossOf(via("tradename_of", code, "SCDFP")), true],
+    SBDF: (code) => [ofBrands(code), true],
+    SBDG: (code) => [ofBrands(code), true],
+  };
   const multiple = new Map<string, string>();
   for (const [code, type] of termType)
     if (type === "MIN")
@@ -92,10 +136,13 @@ const build: Build = async function* (release) {
     from: string,
     to: string,
     chained: boolean,
+    predicate?: string,
   ): Row => ({
     series,
     subject_id: from,
-    predicate_id: series === INGREDIENTS ? HAS_ACTIVE_INGREDIENT : BROAD_MATCH,
+    predicate_id:
+      predicate ??
+      (series === INGREDIENTS ? HAS_ACTIVE_INGREDIENT : BROAD_MATCH),
     object_id: to,
     mapping_justification: chained ? CHAINED : CURATED,
   });
@@ -119,6 +166,17 @@ const build: Build = async function* (release) {
       found.length > 1 ? multiple.get(found.sort().join(" ")) : undefined;
     if (combined !== undefined)
       yield mapping(INGREDIENTS, rxnorm(code), rxnorm(combined), true);
+    const precise = preciseChains[type];
+    if (precise === undefined) continue;
+    const [pins, preciseChained] = precise(code);
+    for (const pin of pins.sort())
+      yield mapping(
+        INGREDIENTS,
+        rxnorm(code),
+        rxnorm(pin),
+        preciseChained,
+        HAS_PRECISE_INGREDIENT,
+      );
   }
   for (const [code, name] of preferred) {
     const also = [...(others.get(code) ?? [])]

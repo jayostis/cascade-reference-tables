@@ -10,7 +10,7 @@ import { readContract, rowsOf } from "../src/pipeline.js";
 import { parseTrig } from "../src/rdf.js";
 import { releaseOf } from "../src/release.js";
 import { keyed, SeriesRows, toRdf } from "../src/rows.js";
-import { loadHistory, readSource } from "../src/source.js";
+import { loadBuild, loadHistory, readSource } from "../src/source.js";
 
 const ROOT = join(import.meta.dirname, "..", "..", "..");
 const FOLDER = join(ROOT, "builders", "nlm-rxnorm-prescribable");
@@ -77,6 +77,65 @@ test("a history answer the builder does not map is refused, naming the line and 
     );
 });
 
+const conso = (code: string, type: string) =>
+  `${code}|ENG||||||A${code}||||RXNORM|${type}|${code}|name ${code}||N|4096|\n`;
+const rel = (to: string, relation: string, from: string) =>
+  `${to}||CUI|RO|${from}||CUI|${relation}|R||RXNORM||||N||\n`;
+
+/** Every row the builder yields for a release of these concepts (RXNCONSO lines) and relationships (RXNREL lines). */
+async function builtFrom(concepts: string, relations: string) {
+  const contract = await readContract(ROOT);
+  const build = await loadBuild(ROOT, FOLDER);
+  const dir = await mkdtemp(join(tmpdir(), "rxnorm-precise-"));
+  try {
+    await writeFile(join(dir, "RXNCONSO.RRF"), concepts);
+    await writeFile(join(dir, "RXNREL.RRF"), relations);
+    await writeFile(join(dir, "RXNSAT.RRF"), "");
+    const release = releaseOf(
+      contract.vocabulary,
+      "the release",
+      new Set(["RXNCONSO.RRF", "RXNREL.RRF", "RXNSAT.RRF"]),
+      dir,
+    );
+    const rows = [];
+    for await (const row of build(release)) rows.push(row);
+    return rows;
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
+test("a precise ingredient that is no PIN is refused, naming the concept and its term type", async () => {
+  const cases: [string, string, string][] = [
+    [
+      "an ingredient",
+      rel("1", "has_precise_ingredient", "10"),
+      "RXNREL.RRF gives 10 the precise ingredient 1, whose term type is IN, not PIN",
+    ],
+  ];
+  for (const [, relations, reason] of cases)
+    await assert.rejects(
+      builtFrom(conso("1", "IN") + conso("10", "SCDC"), relations),
+      (error) => error instanceof Refusal && error.message === reason,
+      reason,
+    );
+});
+
+test("a precise ingredient RXNCONSO does not hold gives no row and no refusal", async () => {
+  const rows = await builtFrom(
+    conso("10", "SCDC"),
+    rel("1", "has_precise_ingredient", "10"),
+  );
+  assert.equal(
+    rows.filter(
+      (row) =>
+        "predicate_id" in row &&
+        row.predicate_id.endsWith("hasPreciseIngredient"),
+    ).length,
+    0,
+  );
+});
+
 test("a drug products row for a code that is no product is refused with the shape's message", async () => {
   const contract = await readContract(ROOT);
   const source = await readSource(FOLDER);
@@ -102,6 +161,7 @@ test("a product that leaves the release is carried as a term type row", async ()
   const stays = new SeriesRows(PRODUCTS);
   for (const [code, termType] of [
     ["13", "SBD"],
+    ["32", "SCD"],
     ["19", "GPCK"],
     ["20", "BPCK"],
   ] as const)
