@@ -103,12 +103,29 @@ const build: Build = async function* (release) {
       via(relation, code, "SCDC").flatMap((component) => preciseOf(component)),
     ),
   ];
-  /** A concept's precise ingredients, and whether more than one relationship joins them. */
+  const bossOf = (codes: readonly string[]): string[] => [
+    ...new Set(codes.flatMap((code) => via("has_boss", code, "PIN"))),
+  ];
+  const ofBrands = (code: string): string[] => [
+    ...new Set(
+      via("has_ingredient", code, "BN").flatMap((brand) => preciseOf(brand)),
+    ),
+  ];
+  /**
+   * A concept's precise ingredients, and whether more than one relationship joins them. Every concept RxNorm ties to
+   * one has a row, because the class query reads a concept with none as holding its ingredient itself.
+   */
   const preciseChains: Record<string, (code: string) => [string[], boolean]> = {
     SCDC: (code) => [preciseOf(code), false],
+    BN: (code) => [preciseOf(code), false],
+    SCDFP: (code) => [bossOf([code]), false],
     SCD: (code) => [componentsOf(code, "consists_of"), true],
     SBD: (code) => [componentsOf(code, "consists_of"), true],
     SBDC: (code) => [componentsOf(code, "tradename_of"), true],
+    SCDGP: (code) => [bossOf(via("inverse_isa", code, "SCDFP")), true],
+    SBDFP: (code) => [bossOf(via("tradename_of", code, "SCDFP")), true],
+    SBDF: (code) => [ofBrands(code), true],
+    SBDG: (code) => [ofBrands(code), true],
   };
   const multiple = new Map<string, string>();
   for (const [code, type] of termType)
