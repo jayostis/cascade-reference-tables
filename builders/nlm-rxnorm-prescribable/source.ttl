@@ -17,8 +17,7 @@
     ] ;
     dcat:distribution
         [ dct:title "rrf/RXNCONSO.RRF" ] ,
-        [ dct:title "rrf/RXNREL.RRF" ] ,
-        [ dct:title "rrf/RXNSAT.RRF" ] .
+        [ dct:title "rrf/RXNREL.RRF" ] .
 
 <https://ror.org/0060t0j89> rdfs:label "National Library of Medicine" .
 
