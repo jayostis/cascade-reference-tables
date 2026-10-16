@@ -17,8 +17,7 @@
     ] ;
     dcat:distribution
         [ dct:title "rrf/RXNCONSO.RRF" ] ,
-        [ dct:title "rrf/RXNREL.RRF" ] ,
-        [ dct:title "rrf/RXNSAT.RRF" ] .
+        [ dct:title "rrf/RXNREL.RRF" ] .
 
 <https://ror.org/0060t0j89> rdfs:label "National Library of Medicine" .
 
@@ -31,12 +30,6 @@
 <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4> a rec:ReferenceSeries ;
     rdfs:label "NLM RxNorm Prescribable brand generics" ;
     rec:tableKind rec:BrandGenerics ;
-    tables:carriesForward true ;
-    dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> .
-
-<urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf> a rec:ReferenceSeries ;
-    rdfs:label "NLM RxNorm Prescribable NDC drugs" ;
-    rec:tableKind rec:NdcDrugs ;
     tables:carriesForward true ;
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> .
 
