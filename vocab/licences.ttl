@@ -1,5 +1,6 @@
 @prefix cc: <http://creativecommons.org/ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
 
 <http://creativecommons.org/publicdomain/mark/1.0/> a cc:License ;
     rdfs:label "Public Domain Mark 1.0" ;
@@ -15,14 +16,49 @@
 
 <https://loinc.org/license/> a cc:License ;
     rdfs:label "LOINC licence" ;
-    cc:permits cc:DerivativeWorks .
+    cc:permits cc:Reproduction, cc:Distribution, cc:DerivativeWorks ;
+    cc:requires cc:Notice, cc:Attribution .
 
 <http://creativecommons.org/licenses/by-nd/4.0/> a cc:License ;
     rdfs:label "CC BY-ND 4.0" ;
-    cc:permits cc:Reproduction, cc:Distribution .
-
-<https://www.snomed.org/get-snomed> a cc:License ;
-    rdfs:label "SNOMED CT Affiliate Licence" .
+    cc:permits cc:Reproduction, cc:Distribution ;
+    cc:requires cc:Attribution, cc:Notice .
 
 <https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/license_agreement.html> a cc:License ;
     rdfs:label "UMLS Metathesaurus License" .
+
+tables:PublicDomainMarkPolicy a tables:LicencePolicy ;
+    tables:licencePolicyOf <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    tables:publishesRows true ;
+    tables:archivesPublisherFiles true ;
+    rdfs:comment "The work is in the public domain: its rows and its publisher's files may be shared."@en .
+
+tables:Cc0Policy a tables:LicencePolicy ;
+    tables:licencePolicyOf <http://creativecommons.org/publicdomain/zero/1.0/> ;
+    tables:publishesRows true ;
+    tables:archivesPublisherFiles true ;
+    rdfs:comment "CC0 waives every right: its rows and its publisher's files may be shared."@en .
+
+tables:NcbiPoliciesPolicy a tables:LicencePolicy ;
+    tables:licencePolicyOf <https://www.ncbi.nlm.nih.gov/home/about/policies/> ;
+    tables:publishesRows true ;
+    tables:archivesPublisherFiles true ;
+    rdfs:comment "NCBI places no restriction on using or distributing its molecular data: its rows and its files may be shared."@en .
+
+tables:LoincPolicy a tables:LicencePolicy ;
+    tables:licencePolicyOf <https://loinc.org/license/> ;
+    tables:publishesRows true ;
+    tables:archivesPublisherFiles false ;
+    rdfs:comment "The licence permits copying and distributing the LOINC table, so its rows are published, leaving out every code and panel carrying a third-party notice. A LOINC release also carries third-party content under that content's own terms (its Notice of Third-Party Content), so its files are not archived."@en .
+
+tables:CcByNd4Policy a tables:LicencePolicy ;
+    tables:licencePolicyOf <http://creativecommons.org/licenses/by-nd/4.0/> ;
+    tables:publishesRows false ;
+    tables:archivesPublisherFiles true ;
+    rdfs:comment "Provisional, until the licensing note (https://github.com/jayostis/cascade-vocabulary/issues/222) rules: the rows are not published. That is a cautious reading, not the licence's: BY-ND 4.0 section 2(a)(1)(A) permits sharing the Licensed Material in whole or in part, and section 2(a)(4) says a change of format alone makes no Adapted Material. The publisher's files may be shared unchanged."@en .
+
+tables:UmlsMetathesaurusPolicy a tables:LicencePolicy ;
+    tables:licencePolicyOf <https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/license_agreement.html> ;
+    tables:publishesRows false ;
+    tables:archivesPublisherFiles false ;
+    rdfs:comment "The licence permits use by its licensees only: neither its rows nor its files may be shared."@en .
