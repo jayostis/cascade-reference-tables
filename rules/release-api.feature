@@ -1,7 +1,7 @@
 Feature: Detection by release API
   A source detected by `tables:ReleaseApi` names the publisher's list of releases (`tables:releaseApi`) and each file
   it reads by its path in a release's zip. The list is a JSON array; the one release marked `current` gives its
-  `fileName`, its `releaseVersion` and its `downloadUrl`. The zip is the release's one input, archived and checksummed;
+  `fileName`, its `releaseVersion` and its `downloadUrl`. The zip is the release's one input, checksummed, and archived where the source's licence's policy archives its publisher's files;
   the host opens the files the source names from it.
 
   The examples' source is the example builder's, detected by a release API, its one file `release/codes.txt` in a zip

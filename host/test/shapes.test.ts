@@ -296,6 +296,95 @@ test("a source states a file's compression as gzip and whether it is archived on
   }
 });
 
+const UMLS =
+  "https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/license_agreement.html";
+
+const licensed = (licence: string): string =>
+  `DELETE { ?s dct:license ?l } INSERT { ?s dct:license <${licence}> } WHERE { ?s dct:license ?l }`;
+
+test("a source names a licence the tables list, under whose policy they publish its rows, and marks no file archived where that policy archives none, or its declarations are refused with the message", async () => {
+  const contract = await readContract(ROOT);
+  const cases: [string, string][] = [
+    [
+      licensed("https://publisher.example/licence"),
+      "A source names its one licence, one the tables list.",
+    ],
+    [
+      licensed(UMLS),
+      "A source's licence's policy publishes the rows made from it.",
+    ],
+    [
+      `${licensed("https://loinc.org/license/")} ;\nINSERT { ?f tables:archived true } WHERE { ?s dcat:distribution ?f }`,
+      "A source whose licence's policy archives none of its publisher's files marks none archived.",
+    ],
+  ];
+  for (const [update, message] of cases) {
+    const found = await violationsAfter(contract, "cdc-cvx", update);
+    assert.ok(
+      found.some((violation) => violation.endsWith(`: ${message}`)),
+      `${update}\ngave:\n${found.join("\n")}`,
+    );
+  }
+  assert.deepEqual(
+    await violationsAfter(
+      contract,
+      "cdc-cvx",
+      licensed("https://loinc.org/license/"),
+    ),
+    [],
+  );
+});
+
+test("a source saying anything of a licence or a licence's policy is refused with the message", async () => {
+  const contract = await readContract(ROOT);
+  for (const grant of [
+    `INSERT DATA { <${UMLS}> <http://creativecommons.org/ns#permits> <http://creativecommons.org/ns#DerivativeWorks> }`,
+    `INSERT DATA { [] tables:licencePolicyOf <${UMLS}> ; tables:publishesRows true ; tables:archivesPublisherFiles true }`,
+  ]) {
+    const found = await violationsAfter(
+      contract,
+      "cdc-cvx",
+      `${licensed(UMLS)} ;\n${grant}`,
+    );
+    assert.ok(
+      found.some((violation) =>
+        violation.endsWith(
+          ": A source says nothing of a licence or a licence's policy.",
+        ),
+      ),
+      `${grant}\ngave:\n${found.join("\n")}`,
+    );
+  }
+});
+
+test("the source shape lists exactly the licences of vocab/licences.ttl, each with one policy saying whether rows are published and files archived", async () => {
+  const store = new oxigraph.Store();
+  for (const file of ["shapes/source.shapes.ttl", "vocab/licences.ttl"])
+    store.load(await readFile(join(ROOT, file), "utf8"), {
+      format: "text/turtle",
+      base_iri: "urn:x:",
+    });
+  const values = (query: string): string[] =>
+    (
+      store.query(
+        `${prefixes}\nPREFIX cc: <http://creativecommons.org/ns#>\nPREFIX sh: <http://www.w3.org/ns/shacl#>\n${query}`,
+      ) as Map<string, oxigraph.Term>[]
+    )
+      .map((row) => row.get("l")!.value)
+      .sort();
+  const listed = values(
+    "SELECT ?l WHERE { ?p sh:path dct:license ; sh:in/rdf:rest*/rdf:first ?l }",
+  );
+  assert.deepEqual(listed, values("SELECT ?l WHERE { ?l a cc:License }"));
+  assert.deepEqual(
+    listed,
+    values(
+      `SELECT ?l WHERE { ?p tables:licencePolicyOf ?l ; tables:publishesRows ?r ; tables:archivesPublisherFiles ?a
+        FILTER NOT EXISTS { ?q tables:licencePolicyOf ?l FILTER (?q != ?p) } }`,
+    ),
+  );
+});
+
 test("a source carrying rows forward and looking up their history declares what that needs, or its declarations are refused with the message", async () => {
   const contract = await readContract(ROOT);
   const source = await readSource(join(ROOT, "fixtures", "carrying"));

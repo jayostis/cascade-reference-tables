@@ -1,3 +1,4 @@
+@prefix cc: <http://creativecommons.org/ns#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -37,6 +38,27 @@ tables:DatedUrl a tables:DetectionMethod ;
 tables:archived a owl:DatatypeProperty ;
     rdfs:label "archived"@en ;
     rdfs:comment "False on a file that a version names and the release does not keep."@en ;
+    rdfs:range xsd:boolean .
+
+tables:LicencePolicy a owl:Class ;
+    rdfs:label "licence policy"@en ;
+    rdfs:comment "What the tables do with a source under one licence of vocab/licences.ttl."@en .
+
+tables:licencePolicyOf a owl:ObjectProperty ;
+    rdfs:label "licence policy of"@en ;
+    rdfs:domain tables:LicencePolicy ;
+    rdfs:range cc:License .
+
+tables:publishesRows a owl:DatatypeProperty ;
+    rdfs:label "publishes rows"@en ;
+    rdfs:comment "Whether the tables publish the rows built from a source under the policy's licence."@en ;
+    rdfs:domain tables:LicencePolicy ;
+    rdfs:range xsd:boolean .
+
+tables:archivesPublisherFiles a owl:DatatypeProperty ;
+    rdfs:label "archives publisher files"@en ;
+    rdfs:comment "Whether the tables keep, in a version's release, the publisher's files of a source under the policy's licence."@en ;
+    rdfs:domain tables:LicencePolicy ;
     rdfs:range xsd:boolean .
 
 tables:Announcement a tables:DetectionMethod ;

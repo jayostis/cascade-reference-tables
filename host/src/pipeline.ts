@@ -4,6 +4,7 @@ import {
   mkdir,
   mkdtemp,
   readdir,
+  readFile,
   rm,
   writeFile,
 } from "node:fs/promises";
@@ -14,7 +15,16 @@ import { carry } from "./carry.js";
 import type { Fetch } from "./detection.js";
 import { extract, unzip } from "./archive.js";
 import { type Described, describe } from "./describe.js";
-import { type Quad, REC, TABLES } from "./rdf.js";
+import {
+  DCT,
+  Graph,
+  parseTurtle,
+  type Quad,
+  RDF,
+  RDFS,
+  REC,
+  TABLES,
+} from "./rdf.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
 import { Feed, type Input } from "./feed.js";
 import {
@@ -43,6 +53,8 @@ export interface Contract {
   readonly vocabulary: Vocabulary;
   readonly rowShapes: Shapes;
   readonly declarationShapes: Shapes;
+  /** The licences a source may name, what each permits, and the tables' policy for each. */
+  readonly licences: readonly Quad[];
   readonly feedShapes: Shapes;
   readonly schema: RowSchema;
   /** Where the vocabulary was read from. */
@@ -69,6 +81,10 @@ export async function readContract(
     declarationShapes: await Shapes.read(
       shapes("source.shapes.ttl"),
       shapes("builder.shapes.ttl"),
+    ),
+    licences: parseTurtle(
+      await readFile(join(root, "vocab", "licences.ttl"), "utf8"),
+      "urn:licences:",
     ),
     feedShapes: (await Shapes.read(shapes("feed.shapes.ttl"))).and(
       vocabulary.shapes,
@@ -135,15 +151,51 @@ async function openListed(
       );
 }
 
-/** What the shapes say of a source's `source.ttl` and `builder.ttl`, read with the vocabulary's terms. */
-export function declarationViolations(
+/**
+ * What the shapes say of a source's `source.ttl` and `builder.ttl`, read with the vocabulary's terms and the licences,
+ * and each subject of what the declarations state about a licence or a policy, which only the licences state.
+ */
+export async function declarationViolations(
   contract: Contract,
   source: Source,
 ): Promise<string[]> {
-  return contract.declarationShapes.violations([
-    ...source.declarations,
-    ...contract.vocabulary.terms.quads,
-  ]);
+  const licenceTerms = new Set(
+    contract.licences
+      .map((q) => q.predicate.value)
+      .filter((p) => p !== `${RDF}type` && !p.startsWith(RDFS)),
+  );
+  const claims = source.declarations
+    .filter((q) => licenceTerms.has(q.predicate.value))
+    .map(
+      (q) =>
+        `${q.subject.value}: A source says nothing of a licence or a licence's policy.`,
+    );
+  return [
+    ...new Set(claims),
+    ...(await contract.declarationShapes.violations([
+      ...source.declarations,
+      ...contract.vocabulary.terms.quads,
+      ...contract.licences,
+    ])),
+  ];
+}
+
+/** Whether the policy of the source's licence keeps its publisher's files in a version's release. */
+function archivesPublisherFiles(contract: Contract, source: Source): boolean {
+  const licence = new Graph(source.declarations).value(
+    source.iri,
+    `${DCT}license`,
+  );
+  const licences = new Graph(contract.licences);
+  return (
+    licence !== undefined &&
+    licences
+      .subjects(`${TABLES}licencePolicyOf`, licence)
+      .some(
+        (policy) =>
+          licences.value(policy, `${TABLES}archivesPublisherFiles`) === "true",
+      )
+  );
 }
 
 /**
@@ -430,6 +482,7 @@ export async function build(
         await checkShapes(contract, description, series.get(description.iri)!);
   const inputs: Input[] = [];
   const inputFiles: Kept[] = [];
+  const archives = archivesPublisherFiles(contract, source);
   for (const name of await inputsOf(source, options.release)) {
     const path = join(options.release, name);
     if (!existsSync(path)) throw new Refusal(`the release has no ${name}`);
@@ -438,7 +491,7 @@ export async function build(
     const checksum = digest.toString("hex");
     const address = datedAddress(source, name, options.label);
     const title = address === undefined ? name : basename(address);
-    if (!source.unarchived.has(name))
+    if (archives && !source.unarchived.has(name))
       inputFiles.push({ file: `inputs/${checksum}-${title}`, path });
     inputs.push({
       name: documentNameOf(digest),

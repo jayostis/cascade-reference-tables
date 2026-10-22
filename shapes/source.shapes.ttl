@@ -24,10 +24,21 @@ tables:SourceShape a sh:NodeShape ;
         sh:message "A source names its one publisher."@en
     ] , [
         sh:path dct:license ;
-        sh:nodeKind sh:IRI ;
+        sh:in (
+            <http://creativecommons.org/publicdomain/mark/1.0/>
+            <http://creativecommons.org/publicdomain/zero/1.0/>
+            <https://www.ncbi.nlm.nih.gov/home/about/policies/>
+            <https://loinc.org/license/>
+            <http://creativecommons.org/licenses/by-nd/4.0/>
+            <https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/license_agreement.html>
+        ) ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:message "A source names its one licence."@en
+        sh:message "A source names its one licence, one the tables list."@en
+    ] , [
+        sh:path ( dct:license [ sh:inversePath tables:licencePolicyOf ] tables:publishesRows ) ;
+        sh:hasValue true ;
+        sh:message "A source's licence's policy publishes the rows made from it."@en
     ] , [
         sh:path dct:bibliographicCitation ;
         sh:datatype xsd:string ;
@@ -50,6 +61,19 @@ tables:SourceShape a sh:NodeShape ;
         sh:node tables:SeriesDeclarationShape ;
         sh:message "A source fills at least one series, each a urn:uuid: with one name and one table kind."@en
     ] .
+
+tables:ArchivedFilesShape a sh:NodeShape ;
+    sh:targetClass tables:Source ;
+    sh:or (
+        [
+            sh:property [
+                sh:path ( dct:license [ sh:inversePath tables:licencePolicyOf ] tables:archivesPublisherFiles ) ;
+                sh:hasValue true
+            ]
+        ]
+        [ sh:property [ sh:path ( dcat:distribution tables:archived ) ; sh:in ( false ) ] ]
+    ) ;
+    sh:message "A source whose licence's policy archives none of its publisher's files marks none archived."@en .
 
 tables:SourceFilesShape a sh:NodeShape ;
     sh:targetClass tables:Source ;

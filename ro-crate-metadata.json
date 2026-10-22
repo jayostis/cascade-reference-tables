@@ -17,6 +17,7 @@
       "hasPart": [
         { "@id": "vocabulary.json" },
         { "@id": "vocab/tables.ttl" },
+        { "@id": "vocab/licences.ttl" },
         { "@id": "shapes/source.shapes.ttl" },
         { "@id": "shapes/builder.shapes.ttl" },
         { "@id": "shapes/feed.shapes.ttl" },

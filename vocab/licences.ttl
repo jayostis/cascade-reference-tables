@@ -1,0 +1,58 @@
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+
+<http://creativecommons.org/publicdomain/mark/1.0/> a cc:License ;
+    rdfs:label "Public Domain Mark 1.0" ;
+    cc:permits cc:Reproduction, cc:Distribution, cc:DerivativeWorks .
+
+<http://creativecommons.org/publicdomain/zero/1.0/> a cc:License ;
+    rdfs:label "CC0 1.0 Universal" ;
+    cc:permits cc:Reproduction, cc:Distribution, cc:DerivativeWorks .
+
+<https://www.ncbi.nlm.nih.gov/home/about/policies/> a cc:License ;
+    rdfs:label "NCBI website and data usage policies" ;
+    cc:permits cc:Reproduction, cc:Distribution, cc:DerivativeWorks .
+
+<https://loinc.org/license/> a cc:License ;
+    rdfs:label "LOINC licence" ;
+    cc:permits cc:Reproduction, cc:Distribution ;
+    cc:requires cc:Notice, cc:Attribution .
+
+<http://creativecommons.org/licenses/by-nd/4.0/> a cc:License ;
+    rdfs:label "CC BY-ND 4.0" ;
+    cc:permits cc:Reproduction, cc:Distribution ;
+    cc:requires cc:Attribution, cc:Notice .
+
+<https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/license_agreement.html> a cc:License ;
+    rdfs:label "UMLS Metathesaurus License" .
+
+tables:PublicDomainMarkPolicy a tables:LicencePolicy ;
+    tables:licencePolicyOf <http://creativecommons.org/publicdomain/mark/1.0/> ;
+    tables:publishesRows true ;
+    tables:archivesPublisherFiles true .
+
+tables:Cc0Policy a tables:LicencePolicy ;
+    tables:licencePolicyOf <http://creativecommons.org/publicdomain/zero/1.0/> ;
+    tables:publishesRows true ;
+    tables:archivesPublisherFiles true .
+
+tables:NcbiPoliciesPolicy a tables:LicencePolicy ;
+    tables:licencePolicyOf <https://www.ncbi.nlm.nih.gov/home/about/policies/> ;
+    tables:publishesRows true ;
+    tables:archivesPublisherFiles true .
+
+tables:LoincPolicy a tables:LicencePolicy ;
+    tables:licencePolicyOf <https://loinc.org/license/> ;
+    tables:publishesRows true ;
+    tables:archivesPublisherFiles false .
+
+tables:CcByNd4Policy a tables:LicencePolicy ;
+    tables:licencePolicyOf <http://creativecommons.org/licenses/by-nd/4.0/> ;
+    tables:publishesRows false ;
+    tables:archivesPublisherFiles true .
+
+tables:UmlsMetathesaurusPolicy a tables:LicencePolicy ;
+    tables:licencePolicyOf <https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/license_agreement.html> ;
+    tables:publishesRows false ;
+    tables:archivesPublisherFiles false .
