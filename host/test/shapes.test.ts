@@ -296,6 +296,43 @@ test("a source states a file's compression as gzip and whether it is archived on
   }
 });
 
+test("a source names a licence the tables list, which permits publishing its rows and archiving each file it does not mark unarchived, or its declarations are refused with the message", async () => {
+  const contract = await readContract(ROOT);
+  const licensed = (licence: string): string =>
+    `DELETE { ?s dct:license ?l } INSERT { ?s dct:license <${licence}> } WHERE { ?s dct:license ?l }`;
+  const cases: [string, string][] = [
+    [
+      licensed("https://publisher.example/licence"),
+      "A source names its one licence, one the tables list.",
+    ],
+    [
+      licensed(
+        "https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/license_agreement.html",
+      ),
+      "A source's licence permits publishing the rows made from it.",
+    ],
+    [
+      `${licensed("https://loinc.org/license/")} ;\nINSERT { ?f tables:archived true } WHERE { ?s dcat:distribution ?f }`,
+      "A source whose licence does not permit distributing its publisher's files marks each one not archived.",
+    ],
+  ];
+  for (const [update, message] of cases) {
+    const found = await violationsAfter(contract, "cdc-cvx", update);
+    assert.ok(
+      found.some((violation) => violation.endsWith(`: ${message}`)),
+      `${update}\ngave:\n${found.join("\n")}`,
+    );
+  }
+  assert.deepEqual(
+    await violationsAfter(
+      contract,
+      "cdc-cvx",
+      `${licensed("https://loinc.org/license/")} ;\nINSERT { ?f tables:archived false } WHERE { ?s dcat:distribution ?f }`,
+    ),
+    [],
+  );
+});
+
 test("a source carrying rows forward and looking up their history declares what that needs, or its declarations are refused with the message", async () => {
   const contract = await readContract(ROOT);
   const source = await readSource(join(ROOT, "fixtures", "carrying"));
