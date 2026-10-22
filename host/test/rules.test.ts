@@ -35,6 +35,7 @@ import {
 import {
   DCAT,
   DCT,
+  iri,
   ntLine,
   parseNQuads,
   parseTrig,
@@ -96,6 +97,8 @@ interface World {
   /** The files the announcement page names, and the status it answers with. */
   page?: { status: number; names: string[] };
   announced?: Awaited<ReturnType<typeof buildLatest>>;
+  /** The licence the example source names in place of its own. */
+  licence?: string;
 }
 
 let contract: Contract;
@@ -861,6 +864,12 @@ const steps = new Steps<World>()
     },
   )
   .define(
+    "the example source names the licence {string}",
+    (world, [licence]) => {
+      world.licence = licence as string;
+    },
+  )
+  .define(
     "the publisher's folders list each file at {string}",
     (world, [at]) => {
       world.listed = { at: at as string, lacking: false };
@@ -895,7 +904,7 @@ const steps = new Steps<World>()
     async (world, [day]) => {
       try {
         const outcomes = await buildLatest(contract, {
-          source: byFolderListing,
+          source: licensed(byFolderListing, world),
           build: await loadBuild(ROOT, EXAMPLE),
           feed: world.feed,
           out: world.out,
@@ -1011,7 +1020,7 @@ const steps = new Steps<World>()
     async (world) => {
       try {
         const outcomes = await buildLatest(contract, {
-          source: byReleaseApi,
+          source: licensed(byReleaseApi, world),
           build: await loadBuild(ROOT, EXAMPLE),
           feed: world.feed,
           out: world.out,
@@ -1478,6 +1487,19 @@ function publisher(world: World): Fetch {
       await readFile(join(EXAMPLE, "fixtures", release, name)),
       { status: 200, headers: { "Last-Modified": modified } },
     );
+  };
+}
+
+/** The source, naming the world's licence if it names one. */
+function licensed(source: Source, { licence }: World): Source {
+  if (licence === undefined) return source;
+  return {
+    ...source,
+    declarations: source.declarations.map((q) =>
+      q.predicate.value === `${DCT}license`
+        ? quad(q.subject, q.predicate, iri(licence))
+        : q,
+    ),
   };
 }
 

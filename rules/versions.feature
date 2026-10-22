@@ -44,6 +44,20 @@ Feature: Versions
       Then each version of the last build records "codes_2026-08.txt" among its inputs
       And the release keeps no input
 
+  Rule: H33. A source under a licence whose policy archives none of its publisher's files keeps no input, however it is detected
+
+    Example: a source whose licence's policy archives no publisher file keeps no input, by release API
+      Given the publisher's release API marks "release" current as "2026-09-17"
+      And the example source names the licence "https://loinc.org/license/"
+      When the example source, detected by its release API, is built from the publisher
+      Then the release keeps no input
+
+    Example: a source whose licence's policy archives no publisher file keeps no input, by folder listing
+      Given the publisher's folders list each file at "1/15/2026  9:25 AM"
+      And the example source names the licence "https://loinc.org/license/"
+      When the example source, detected by its folder listing, is built from the publisher on "2026-07-01"
+      Then the release keeps no input
+
   Rule: H32. A version's notes begin with the credit its publisher asks for
 
     Example: the notes of a build begin with the source's credit, before any series
