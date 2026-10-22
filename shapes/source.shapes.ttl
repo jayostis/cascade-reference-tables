@@ -1,3 +1,4 @@
+@prefix cc: <http://creativecommons.org/ns#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -24,10 +25,22 @@ tables:SourceShape a sh:NodeShape ;
         sh:message "A source names its one publisher."@en
     ] , [
         sh:path dct:license ;
-        sh:nodeKind sh:IRI ;
+        sh:in (
+            <http://creativecommons.org/publicdomain/mark/1.0/>
+            <http://creativecommons.org/publicdomain/zero/1.0/>
+            <https://www.ncbi.nlm.nih.gov/home/about/policies/>
+            <https://loinc.org/license/>
+            <http://creativecommons.org/licenses/by-nd/4.0/>
+            <https://www.snomed.org/get-snomed>
+            <https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/license_agreement.html>
+        ) ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:message "A source names its one licence."@en
+        sh:message "A source names its one licence, one the tables list."@en
+    ] , [
+        sh:path dct:license ;
+        sh:node [ sh:property [ sh:path cc:permits ; sh:hasValue cc:DerivativeWorks ] ] ;
+        sh:message "A source's licence permits publishing the rows made from it."@en
     ] , [
         sh:path dct:bibliographicCitation ;
         sh:datatype xsd:string ;
@@ -50,6 +63,22 @@ tables:SourceShape a sh:NodeShape ;
         sh:node tables:SeriesDeclarationShape ;
         sh:message "A source fills at least one series, each a urn:uuid: with one name and one table kind."@en
     ] .
+
+tables:ArchivingLicenceShape a sh:NodeShape ;
+    sh:targetClass tables:Source ;
+    sh:or (
+        [
+            sh:property [
+                sh:path dct:license ;
+                sh:node [ sh:property [ sh:path cc:permits ; sh:hasValue cc:Distribution ] ]
+            ]
+        ]
+        [ sh:property [ sh:path dcat:distribution ; sh:node tables:NotArchivedFileShape ] ]
+    ) ;
+    sh:message "A source whose licence does not permit distributing its publisher's files marks each one not archived."@en .
+
+tables:NotArchivedFileShape a sh:NodeShape ;
+    sh:property [ sh:path tables:archived ; sh:hasValue false ; sh:minCount 1 ] .
 
 tables:SourceFilesShape a sh:NodeShape ;
     sh:targetClass tables:Source ;

@@ -4,6 +4,7 @@ import {
   mkdir,
   mkdtemp,
   readdir,
+  readFile,
   rm,
   writeFile,
 } from "node:fs/promises";
@@ -14,7 +15,7 @@ import { carry } from "./carry.js";
 import type { Fetch } from "./detection.js";
 import { extract, unzip } from "./archive.js";
 import { type Described, describe } from "./describe.js";
-import { type Quad, REC, TABLES } from "./rdf.js";
+import { parseTurtle, type Quad, REC, TABLES } from "./rdf.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
 import { Feed, type Input } from "./feed.js";
 import {
@@ -43,6 +44,8 @@ export interface Contract {
   readonly vocabulary: Vocabulary;
   readonly rowShapes: Shapes;
   readonly declarationShapes: Shapes;
+  /** The licences a source may name, and what each permits. */
+  readonly licences: readonly Quad[];
   readonly feedShapes: Shapes;
   readonly schema: RowSchema;
   /** Where the vocabulary was read from. */
@@ -69,6 +72,10 @@ export async function readContract(
     declarationShapes: await Shapes.read(
       shapes("source.shapes.ttl"),
       shapes("builder.shapes.ttl"),
+    ),
+    licences: parseTurtle(
+      await readFile(join(root, "vocab", "licences.ttl"), "utf8"),
+      "urn:licences:",
     ),
     feedShapes: (await Shapes.read(shapes("feed.shapes.ttl"))).and(
       vocabulary.shapes,
@@ -135,7 +142,7 @@ async function openListed(
       );
 }
 
-/** What the shapes say of a source's `source.ttl` and `builder.ttl`, read with the vocabulary's terms. */
+/** What the shapes say of a source's `source.ttl` and `builder.ttl`, read with the vocabulary's terms and the licences. */
 export function declarationViolations(
   contract: Contract,
   source: Source,
@@ -143,6 +150,7 @@ export function declarationViolations(
   return contract.declarationShapes.violations([
     ...source.declarations,
     ...contract.vocabulary.terms.quads,
+    ...contract.licences,
   ]);
 }
 

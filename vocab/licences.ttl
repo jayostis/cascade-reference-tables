@@ -1,0 +1,28 @@
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://creativecommons.org/publicdomain/mark/1.0/> a cc:License ;
+    rdfs:label "Public Domain Mark 1.0" ;
+    cc:permits cc:Reproduction, cc:Distribution, cc:DerivativeWorks .
+
+<http://creativecommons.org/publicdomain/zero/1.0/> a cc:License ;
+    rdfs:label "CC0 1.0 Universal" ;
+    cc:permits cc:Reproduction, cc:Distribution, cc:DerivativeWorks .
+
+<https://www.ncbi.nlm.nih.gov/home/about/policies/> a cc:License ;
+    rdfs:label "NCBI website and data usage policies" ;
+    cc:permits cc:Reproduction, cc:Distribution, cc:DerivativeWorks .
+
+<https://loinc.org/license/> a cc:License ;
+    rdfs:label "LOINC licence" ;
+    cc:permits cc:DerivativeWorks .
+
+<http://creativecommons.org/licenses/by-nd/4.0/> a cc:License ;
+    rdfs:label "CC BY-ND 4.0" ;
+    cc:permits cc:Reproduction, cc:Distribution .
+
+<https://www.snomed.org/get-snomed> a cc:License ;
+    rdfs:label "SNOMED CT Affiliate Licence" .
+
+<https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/license_agreement.html> a cc:License ;
+    rdfs:label "UMLS Metathesaurus License" .

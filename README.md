@@ -64,7 +64,9 @@ credit it asks for is each version's, and what carries a third party's copyright
 **https://jayostis.github.io/cascade-reference-tables/feed.ttl**, a DRAFT. Beside it, `checked.json` says when each
 source was last checked, and `rows/` holds each series' current rows and the rows they revise. Every version's rows
 and the publisher's input it was built from are kept in this repository's GitHub releases, but for an input its source
-marks not archived because its publisher keeps it.
+marks not archived because its publisher keeps it or its licence does not permit distributing it. A source names one
+of the licences in [`vocab/licences.ttl`](vocab/licences.ttl), which says what each permits; one whose rows may not be
+published is refused.
 
 A version is published through review:
 
