@@ -379,7 +379,7 @@ test("the source shape lists exactly the licences of vocab/licences.ttl, each wi
   assert.deepEqual(
     listed,
     values(
-      `SELECT ?l WHERE { ?p tables:licencePolicyOf ?l ; tables:publishesRows ?r ; tables:archivesPublisherFiles ?a ; rdfs:comment ?c
+      `SELECT ?l WHERE { ?p tables:licencePolicyOf ?l ; tables:publishesRows ?r ; tables:archivesPublisherFiles ?a
         FILTER NOT EXISTS { ?q tables:licencePolicyOf ?l FILTER (?q != ?p) } }`,
     ),
   );

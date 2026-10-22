@@ -159,16 +159,13 @@ export async function declarationViolations(
   contract: Contract,
   source: Source,
 ): Promise<string[]> {
-  const listed = new Set(contract.licences.map((q) => q.subject.value));
   const licenceTerms = new Set(
     contract.licences
       .map((q) => q.predicate.value)
       .filter((p) => p !== `${RDF}type` && !p.startsWith(RDFS)),
   );
   const claims = source.declarations
-    .filter(
-      (q) => listed.has(q.subject.value) || licenceTerms.has(q.predicate.value),
-    )
+    .filter((q) => licenceTerms.has(q.predicate.value))
     .map(
       (q) =>
         `${q.subject.value}: A source says nothing of a licence or a licence's policy.`,

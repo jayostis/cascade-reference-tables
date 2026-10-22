@@ -42,7 +42,7 @@ tables:archived a owl:DatatypeProperty ;
 
 tables:LicencePolicy a owl:Class ;
     rdfs:label "licence policy"@en ;
-    rdfs:comment "What the tables do with a source under one licence of vocab/licences.ttl, and why."@en .
+    rdfs:comment "What the tables do with a source under one licence of vocab/licences.ttl."@en .
 
 tables:licencePolicyOf a owl:ObjectProperty ;
     rdfs:label "licence policy of"@en ;
