@@ -95,6 +95,23 @@ test("a release file is read line by line, as each reader cuts it", async () => 
   }
 });
 
+test("a line that runs across two reads of the file is given whole", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "readers-"));
+  const long = "x".repeat((1 << 20) + 10);
+  try {
+    const path = join(dir, "long.txt");
+    await writeFile(path, `${long}\nshort\n`);
+    const found: unknown[] = [];
+    for await (const line of delimited(path, "|")) found.push(line);
+    assert.deepEqual(found, [
+      { number: 1, fields: [long] },
+      { number: 2, fields: ["short"] },
+    ]);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
 test("a gzip file is read line for line as its plain twin is, and a file that is not gzip is refused", async () => {
   const dir = await mkdtemp(join(tmpdir(), "readers-"));
   try {

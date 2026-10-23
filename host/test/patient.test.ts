@@ -99,12 +99,13 @@ test("a download cut off, refused or answered wrongly is tried again, resumed on
 });
 
 test("a download is given up after attempts in a row that read nothing new, saying what the publisher answered", async () => {
-  const { server, url } = await publisher(Array(20).fill("error"), true);
+  const { server, url, seen } = await publisher(Array(20).fill("error"), true);
   try {
     await assert.rejects(
       patientFetch(fetch, { attempts: 3, delayMs: 0 })(url),
       /3 attempts in a row.*answered 503/,
     );
+    assert.equal(seen.length, 3);
   } finally {
     server.close();
   }
