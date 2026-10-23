@@ -110,22 +110,22 @@ export function toRdf(row: Row): RdfRow {
                 literal(row.lastEvaluated, `${XSD}date`),
               ),
             ]),
-        ...(row.contributingSubmitters === undefined
+        ...(row.contributingSubmitterCount === undefined
           ? []
           : [
               triple(
                 row.variation,
                 `${CASCADE}contributingSubmitterCount`,
-                count(row.contributingSubmitters),
+                count(row.contributingSubmitterCount),
               ),
             ]),
-        ...(row.submitters === undefined
+        ...(row.submitterCount === undefined
           ? []
           : [
               triple(
                 row.variation,
                 `${CASCADE}submitterCount`,
-                count(row.submitters),
+                count(row.submitterCount),
               ),
             ]),
       ],

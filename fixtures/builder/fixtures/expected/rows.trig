@@ -7,25 +7,25 @@
 @prefix sssom: <https://w3id.org/sssom/> .
 
 <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> {
-    <urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18> a owl:Axiom ;
+    <urn:uuid:064bdbda-7965-8c20-8ee0-417849048a81> a owl:Axiom ;
         owl:annotatedSource cvx:141 ;
         owl:annotatedProperty obo:RO_0002350 ;
         owl:annotatedTarget cvx:88 ;
         sssom:mapping_justification semapv:ManualMappingCuration .
 
-    <urn:uuid:5300f61d-d3ad-8c21-9294-3befb5e1671f> a owl:Axiom ;
+    <urn:uuid:1c37afb3-d7b5-80e0-a0eb-522e44ee45cc> a owl:Axiom ;
         owl:annotatedSource cvx:150 ;
         owl:annotatedProperty obo:RO_0002350 ;
         owl:annotatedTarget cvx:88 ;
         sssom:mapping_justification semapv:ManualMappingCuration .
 
-    <urn:uuid:fe826896-62fd-846b-b824-086116c289f5> a owl:Axiom ;
+    <urn:uuid:cd8ccf65-973c-896b-81a9-46b221d6da72> a owl:Axiom ;
         owl:annotatedSource cvx:88 ;
         owl:annotatedProperty obo:RO_0002350 ;
         owl:annotatedTarget cvx:88 ;
         sssom:mapping_justification semapv:ManualMappingCuration .
 
-    <urn:uuid:3ded4abe-b079-8ca4-b08b-d8381d14c2b7> a owl:Axiom ;
+    <urn:uuid:988f5147-b9bf-8039-ab2b-deaf700999ad> a owl:Axiom ;
         owl:annotatedSource cvx:03 ;
         owl:annotatedProperty obo:RO_0002350 ;
         owl:annotatedTarget cvx:03 ;

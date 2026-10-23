@@ -89,8 +89,8 @@ export interface ClassificationRow {
   readonly classification?: readonly string[];
   readonly reviewStatus?: string;
   readonly lastEvaluated?: string;
-  readonly contributingSubmitters?: number;
-  readonly submitters?: number;
+  readonly contributingSubmitterCount?: number;
+  readonly submitterCount?: number;
 }
 
 /** A row in one of `builder/interface.schema.json`'s forms. */

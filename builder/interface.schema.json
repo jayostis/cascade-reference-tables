@@ -89,7 +89,7 @@
       "additionalProperties": false,
       "required": ["series", "variation"],
       "minProperties": 3,
-      "not": { "required": ["contributingSubmitters", "submitters"] },
+      "not": { "required": ["contributingSubmitterCount", "submitterCount"] },
       "properties": {
         "series": { "$ref": "#/$defs/iri" },
         "variation": { "$ref": "#/$defs/iri" },
@@ -100,8 +100,8 @@
           "type": "string",
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
         },
-        "contributingSubmitters": { "$ref": "#/$defs/count" },
-        "submitters": { "$ref": "#/$defs/count" }
+        "contributingSubmitterCount": { "$ref": "#/$defs/count" },
+        "submitterCount": { "$ref": "#/$defs/count" }
       }
     },
     "termType": {

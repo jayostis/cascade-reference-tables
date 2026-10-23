@@ -117,7 +117,7 @@ async function recordsCopy(
   name: string,
 ): Promise<{ folder: string; records: string }> {
   const folder = join(world.dir, name);
-  const records = join("ontologies", "records", "v1-draft");
+  const records = "ontologies";
   await cp(join(contract.vocabulary.folder, records), join(folder, records), {
     recursive: true,
   });
@@ -387,8 +387,8 @@ const steps = new Steps<World>()
       const old = contract.vocabulary.codeIri(`${CASCADE}CVX`, "");
       const turtle = (stem: string): string => stem.replaceAll(".", "\\\\.");
       for (const [file, from, to] of [
-        ["records.ttl", old, space as string],
-        ["records.shapes.ttl", turtle(old), turtle(space as string)],
+        ["cascade.ttl", old, space as string],
+        ["cascade.shapes.ttl", turtle(old), turtle(space as string)],
       ] as const) {
         const path = join(folder, records, file);
         const text = await readFile(path, "utf8");
@@ -428,7 +428,7 @@ const steps = new Steps<World>()
     "the carrying example's release {string} is built as {string} under the vocabulary before vaccine groups moved to member of",
     async (world, [release, label]) => {
       const { folder, records } = await recordsCopy(world, "before-member-of");
-      const path = join(folder, records, "records.shapes.ttl");
+      const path = join(folder, records, "cascade.shapes.ttl");
       const text = await readFile(path, "utf8");
       const fixed = "sh:hasValue obo:RO_0002350";
       assert.equal(text.split(fixed).length, 2, `${fixed} is not once`);
@@ -1077,7 +1077,7 @@ const steps = new Steps<World>()
           series,
           variation: `https://identifiers.org/clinvar:${i + 1}`,
           ...(i === 0 || i === (count as number) - 1 ? { hgvs: [found] } : {}),
-          submitters: 1,
+          submitterCount: 1,
         })),
       );
     },

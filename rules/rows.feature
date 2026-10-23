@@ -9,9 +9,9 @@ Feature: Rows
 
     Example: 141 is in the group 88
       When the example builder's release "release" is built as "1"
-      Then "Example vaccine groups" holds the row "urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18":
+      Then "Example vaccine groups" holds the row "urn:uuid:064bdbda-7965-8c20-8ee0-417849048a81":
         """
-        <urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18> a owl:Axiom ;
+        <urn:uuid:064bdbda-7965-8c20-8ee0-417849048a81> a owl:Axiom ;
           owl:annotatedSource <https://ns.cascadeprotocol.org/codes/cvx/141> ;
           owl:annotatedProperty <http://purl.obolibrary.org/obo/RO_0002350> ;
           owl:annotatedTarget <https://ns.cascadeprotocol.org/codes/cvx/88> ;
@@ -46,12 +46,12 @@ Feature: Rows
 
       Examples:
         | case                                 | rows                                                                                                                                                                                                | reason                                                                  |
-        | both submitter counts                | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "contributingSubmitters": 5, "submitters": 5}]                              | is no row of builder/interface.schema.json                              |
-        | an empty list of expressions         | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "hgvs": [], "submitters": 5}]                                               | is no row of builder/interface.schema.json                              |
-        | an expression IRI holding a raw >    | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "hgvs": ["https://ns.cascadeprotocol.org/codes/hgvs/NM_000249.3:c.2042C>T"], "submitters": 5}] | is no row of builder/interface.schema.json                              |
-        | an expression that is not a coding one | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "hgvs": ["https://ns.cascadeprotocol.org/codes/hgvs/NM_000249.3%3An.1A%3EG"], "submitters": 5}] | A variant classification row is found by coding NM_ expressions         |
-        | a classification of no concept       | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "classification": ["https://ns.cascadeprotocol.org/cascade#Maybe"], "submitters": 5}] | A classification is a concept of cascade:ClinVarClassifications.            |
-        | a second review status               | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "reviewStatus": "https://ns.cascadeprotocol.org/cascade#ClinVarExpertPanel", "submitters": 5}, {"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "reviewStatus": "https://ns.cascadeprotocol.org/cascade#ClinVarSingleSubmitter", "submitters": 5}] | is given twice, with different triples |
+        | both submitter counts                | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "contributingSubmitterCount": 5, "submitterCount": 5}]                              | is no row of builder/interface.schema.json                              |
+        | an empty list of expressions         | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "hgvs": [], "submitterCount": 5}]                                               | is no row of builder/interface.schema.json                              |
+        | an expression IRI holding a raw >    | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "hgvs": ["https://ns.cascadeprotocol.org/codes/hgvs/NM_000249.3:c.2042C>T"], "submitterCount": 5}] | is no row of builder/interface.schema.json                              |
+        | an expression that is not a coding one | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "hgvs": ["https://ns.cascadeprotocol.org/codes/hgvs/NM_000249.3%3An.1A%3EG"], "submitterCount": 5}] | A variant classification row is found by coding NM_ expressions         |
+        | a classification of no concept       | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "classification": ["https://ns.cascadeprotocol.org/cascade#Maybe"], "submitterCount": 5}] | A classification is a concept of cascade:ClinVarClassifications.            |
+        | a second review status               | [{"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "reviewStatus": "https://ns.cascadeprotocol.org/cascade#ClinVarExpertPanel", "submitterCount": 5}, {"series": "urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64", "variation": "https://identifiers.org/clinvar:90011", "reviewStatus": "https://ns.cascadeprotocol.org/cascade#ClinVarSingleSubmitter", "submitterCount": 5}] | is given twice, with different triples |
 
     Example: one expression on two rows of a version, a chunk of rows apart, is refused naming it
       When the classifications example builder is given 2001 rows, the first and the last found by the expression "NM_000249.3:c.1A>G"

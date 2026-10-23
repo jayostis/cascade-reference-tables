@@ -13,4 +13,4 @@ Feature: Naming a version
 
     Example: a series is named from the rows its first release gives
       When the example builder's release "release" is built as "1"
-      Then "Example vaccine names" is at "ni:///sha-256;5j7QOvdRCtsVe9MXPpFgeazELN7P7OfYeSfjyp5VSkI"
+      Then "Example vaccine names" is at "ni:///sha-256;HUfdai7LDjJev4yjyDyPd1ay3DpcvGeJf0Slqz4mkdg"

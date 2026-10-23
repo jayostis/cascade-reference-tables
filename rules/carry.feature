@@ -83,9 +83,9 @@ Feature: Carrying rows forward
         | series                      | revises | notes                         |
         | Example vaccine groups      | 1       | 3 added, 4 removed, 0 changed |
         | Example vaccine code status | 1       | 1 added, 0 removed, 0 changed |
-      And "Example vaccine groups" holds the row "urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18":
+      And "Example vaccine groups" holds the row "urn:uuid:064bdbda-7965-8c20-8ee0-417849048a81":
         """
-        <urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18> a owl:Axiom ;
+        <urn:uuid:064bdbda-7965-8c20-8ee0-417849048a81> a owl:Axiom ;
           owl:annotatedSource <https://ns.cascadeprotocol.org/codes/cvx/141> ;
           owl:annotatedProperty <http://purl.obolibrary.org/obo/RO_0002350> ;
           owl:annotatedTarget <https://ns.cascadeprotocol.org/codes/cvx/88> ;

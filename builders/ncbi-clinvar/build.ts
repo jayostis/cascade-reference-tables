@@ -30,7 +30,7 @@ const SHOWN = 5;
 
 /** A coding `NM_` expression in the normal form, as the vocabulary's `cascade:HgvsCodeShape` holds its IRI. */
 const HGVS_CODE =
-  /^http:\/\/varnomen\.hgvs\.org\/NM_[0-9]+\.[0-9]+%3Ac\.([A-Za-z0-9._~-]|%[0-9A-F]{2})+$/;
+  /^https:\/\/ns\.cascadeprotocol\.org\/codes\/hgvs\/NM_[0-9]+\.[0-9]+%3Ac\.([A-Za-z0-9._~-]|%[0-9A-F]{2})+$/;
 /** The expression in a variation's name: the gene and the protein change removed. */
 const NAME_EXPRESSION = /^(NM_\d+\.\d+)(\([^)]*\))?:(c\.\S+)/;
 
@@ -314,9 +314,9 @@ const build: Build = async function* (release: Release) {
 
     const count =
       said.scvs === undefined
-        ? { submitters: Number(said.submitters) }
+        ? { submitterCount: Number(said.submitters) }
         : {
-            contributingSubmitters:
+            contributingSubmitterCount:
               said.scvs === "-" ? 0 : said.scvs.split("|").length,
           };
     yield {

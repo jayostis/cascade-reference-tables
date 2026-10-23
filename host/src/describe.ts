@@ -19,7 +19,10 @@ interface Line {
 const NUMERIC = new Intl.Collator("en", { numeric: true });
 
 function codeOf(iri: string): string {
-  return iri.split(/[/#]/).pop()!;
+  return iri
+    .split(/[/#]/)
+    .pop()!
+    .replace(/^(clinvar|unii):/, "");
 }
 
 function plain(text: string): string {
@@ -43,8 +46,8 @@ const CLASSIFICATION_PREDICATES = [
   "clinvarClassification",
   "clinvarReviewStatus",
   "lastEvaluated",
-  "contributingSubmitters",
-  "submitters",
+  "contributingSubmitterCount",
+  "submitterCount",
 ].map((name) => `${CASCADE}${name}`);
 
 /** A classification row by its variation, what its source classes it as, when, and how many expressions find it. */

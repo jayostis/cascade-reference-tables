@@ -124,7 +124,7 @@ test("a classification row's difference names its variation, its classes by labe
     classification: classes.map((c) => `${CASCADE}${c}`),
     reviewStatus: `${CASCADE}ClinVarExpertPanel`,
     lastEvaluated: "2024-12-11",
-    contributingSubmitters: 5,
+    contributingSubmitterCount: 5,
   });
   const labels = new Map([
     [`${CASCADE}Pathogenic`, "Pathogenic"],
