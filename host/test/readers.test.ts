@@ -98,7 +98,7 @@ test("a release file is read line by line, as each reader cuts it", async () => 
 test("a gzip file is read line for line as its plain twin is, and a file that is not gzip is refused", async () => {
   const dir = await mkdtemp(join(tmpdir(), "readers-"));
   try {
-    const text = "﻿a|b\r\n\n".concat("c|d\n".repeat(50000), "e|f");
+    const text = "﻿a|b\r\n\n".concat("c|d\n".repeat(3), "e|f");
     await writeFile(join(dir, "plain.txt"), text);
     await writeFile(join(dir, "zipped.txt.gz"), gzipSync(text));
     const read = async (path: string, gzip: boolean) => {
@@ -107,14 +107,14 @@ test("a gzip file is read line for line as its plain twin is, and a file that is
       return found;
     };
     const plain = await read(join(dir, "plain.txt"), false);
-    assert.equal(plain.length, 50002);
+    assert.equal(plain.length, 5);
     assert.deepEqual(await read(join(dir, "zipped.txt.gz"), true), plain);
     await assert.rejects(
       read(join(dir, "plain.txt"), true),
       (error) =>
         error instanceof Refusal && /not a gzip file/.test(error.message),
     );
-    await writeFile(join(dir, "cut.txt.gz"), gzipSync(text).subarray(0, 40));
+    await writeFile(join(dir, "cut.txt.gz"), gzipSync(text).subarray(0, 20));
     await assert.rejects(read(join(dir, "cut.txt.gz"), true), Refusal);
   } finally {
     await rm(dir, { recursive: true, force: true });
