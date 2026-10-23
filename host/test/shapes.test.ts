@@ -124,6 +124,7 @@ test("the checked.json a build and a publish write conforms to its schema", asyn
       feed,
       site: join(dir, "site"),
       store: folderStore([out]),
+      vocabulary: (await readContract(ROOT)).vocabulary,
       checked: mergeChecked(built, {
         checked: {
           "urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d": {

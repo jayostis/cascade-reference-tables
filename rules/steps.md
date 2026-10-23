@@ -152,6 +152,11 @@ The releases of a publishing example are the rows files its builds wrote; the si
 | `the rows file of {string} {string} is in no release`                                               | it is removed from the releases                                                                     |
 | `the site holds the rows files of these versions of {string}: {string}, {string}`                   | of the series' versions, exactly those labelled have their rows files on the site                   |
 | `the publish is stopped, saying {string}`                                                           | the publish stopped with a reason containing the text                                               |
+| `the site is published under a vocabulary that does not declare {string}`                           | the same, the vocabulary being a copy whose table kind of that local name has no row shape          |
+| `the site holds the rows file of {string} {string}`                                                 | the rows file of that series' version of that label is on the site                                  |
+| `the site holds no rows file of {string}`                                                           | no rows file of any version of that series is on the site                                           |
+| `the site's page lists {string}`                                                                    | the page has an entry for the series of that label                                                  |
+| `the site's page does not list {string}`                                                            | it has none                                                                                         |
 | `the site holds nothing`                                                                            | the site's folder was never written                                                                 |
 
 ## Carrying rows forward

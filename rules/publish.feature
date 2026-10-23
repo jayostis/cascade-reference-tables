@@ -45,3 +45,14 @@ Feature: Publishing the site
         | source                                        | label                 | at                   | found       |
         | urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19 | Example vaccine codes | 2026-10-01T00:00:00Z | new         |
         | urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d | CDC CVX               | 2026-09-30T06:23:00Z | nothing new |
+
+  Rule: H14. A series whose table kind the vocabulary does not declare is retired: its rows are neither verified nor served, and its page entry is gone
+
+    Example: a vocabulary without the kind of code status
+      When the example builder's release "release" is built as "1"
+      And the rows file of "Example vaccine code status" "1" is in no release
+      And the site is published under a vocabulary that does not declare "RetiredCodes"
+      Then the site holds the rows file of "Example vaccine names" "1"
+      And the site holds no rows file of "Example vaccine code status"
+      And the site's page lists "Example vaccine names"
+      And the site's page does not list "Example vaccine code status"

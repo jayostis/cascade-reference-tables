@@ -292,6 +292,34 @@ function historyOf(world: World): Fetch {
   };
 }
 
+async function publishSite(
+  world: World,
+  vocabulary: Contract["vocabulary"],
+): Promise<void> {
+  world.site = join(world.dir, "site");
+  try {
+    await publish({
+      feed: world.feed,
+      site: world.site,
+      store: folderStore([world.out]),
+      vocabulary,
+      checked: mergeChecked(
+        world.siteChecks ?? { checked: {} },
+        JSON.parse(
+          await readFile(join(world.out, "checked.json"), "utf8"),
+        ) as SiteChecks,
+      ),
+    });
+  } catch (error) {
+    world.stopped = error as Error;
+  }
+}
+
+function pageOf(world: World): string {
+  assert.equal(world.stopped, undefined);
+  return readFileSync(join(world.site!, "index.html"), "utf8");
+}
+
 function seriesNamed(label: string): string {
   const found = example.series.find((s) => s.label === label);
   assert.ok(found, `no series is labelled ${label}`);
@@ -1242,23 +1270,51 @@ const steps = new Steps<World>()
     ) as SiteChecks;
     assert.deepEqual(held, wanted);
   })
-  .define("the site is published", async (world) => {
-    world.site = join(world.dir, "site");
-    try {
-      await publish({
-        feed: world.feed,
-        site: world.site,
-        store: folderStore([world.out]),
-        checked: mergeChecked(
-          world.siteChecks ?? { checked: {} },
-          JSON.parse(
-            await readFile(join(world.out, "checked.json"), "utf8"),
-          ) as SiteChecks,
-        ),
-      });
-    } catch (error) {
-      world.stopped = error as Error;
-    }
+  .define("the site is published", (world) =>
+    publishSite(world, contract.vocabulary),
+  )
+  .define(
+    "the site is published under a vocabulary that does not declare {string}",
+    async (world, [kind]) => {
+      const { folder, records } = await recordsCopy(world, "retired-kind");
+      const path = join(folder, records, "cascade.ttl");
+      const text = await readFile(path, "utf8");
+      const block = new RegExp(
+        `(\\ncascade:${kind as string} a cascade:TableKind ;[^]*?)\\n    cascade:rowShape [^\\n]*`,
+      );
+      assert.ok(block.test(text), `${kind as string} is no table kind`);
+      await writeFile(path, text.replace(block, "$1"));
+      await publishSite(world, (await readContract(ROOT, folder)).vocabulary);
+    },
+  )
+  .define(
+    "the site holds the rows file of {string} {string}",
+    async (world, [label, version]) => {
+      assert.equal(world.stopped, undefined);
+      const feed = await feedOf(world);
+      const { file } = feed.rowsOf(
+        versionLabelled(feed, seriesNamed(label as string), version as string),
+      );
+      assert.ok(existsSync(join(world.site!, file)), file);
+    },
+  )
+  .define("the site holds no rows file of {string}", async (world, [label]) => {
+    assert.equal(world.stopped, undefined);
+    const feed = await feedOf(world);
+    for (const version of feed.graph.objects(
+      seriesNamed(label as string),
+      `${DCAT}hasVersion`,
+    ))
+      assert.equal(
+        existsSync(join(world.site!, feed.rowsOf(version.value).file)),
+        false,
+      );
+  })
+  .define("the site's page lists {string}", (world, [label]) => {
+    assert.ok(pageOf(world).includes(`<li>${label as string}:`));
+  })
+  .define("the site's page does not list {string}", (world, [label]) => {
+    assert.ok(!pageOf(world).includes(`<li>${label as string}:`));
   })
   .define(
     "the site holds the rows files of these versions of {string}: {string}, {string}",

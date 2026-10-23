@@ -114,6 +114,10 @@ export class Vocabulary {
     );
   }
 
+  declares(kind: string): boolean {
+    return this.terms.value(kind, `${CASCADE}rowShape`) !== undefined;
+  }
+
   kind(iri: string): Kind {
     const rowShape = this.terms.value(iri, `${CASCADE}rowShape`);
     if (rowShape === undefined) throw new Error(`${iri} is not a table kind`);
