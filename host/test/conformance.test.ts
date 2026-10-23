@@ -29,6 +29,44 @@ for (const folder of builders)
       test(ex.name, () => runConformance(contract, folder, ex));
   });
 
+describe("builder/conformance.feature on a builder whose rows differ from one build to the next", async () => {
+  let outside: string;
+  before(async () => {
+    outside = await mkdtemp(join(tmpdir(), "unsteady-builder-"));
+    await cp(EXAMPLE, outside, {
+      recursive: true,
+      filter: (path) => !path.endsWith(".ts"),
+    });
+    const compiled = pathToFileURL(
+      join(ROOT, "dist", "fixtures", "builder", "build.js"),
+    ).href;
+    await writeFile(
+      join(outside, "build.js"),
+      [
+        `import original from ${JSON.stringify(compiled)};`,
+        "let builds = 0;",
+        "export default async function* (release) {",
+        "  builds += 1;",
+        "  for await (const row of original(release))",
+        "    yield row.prefLabel === undefined ? row : { ...row, prefLabel: row.prefLabel + builds };",
+        "}",
+        "",
+      ].join("\n"),
+    );
+  });
+  after(() => rm(outside, { recursive: true, force: true }));
+  test("a build gives the same rows every time", async () => {
+    const examples = await conformanceExamples(ROOT);
+    const same = examples.find(
+      (ex) => ex.name === "a build gives the same rows every time",
+    )!;
+    await assert.rejects(
+      runConformance(contract, outside, same),
+      /two builds differ/,
+    );
+  });
+});
+
 describe("builder/conformance.feature on a builder outside the repository, with the vocabulary given", async () => {
   let outside: string;
   let given: Contract;
