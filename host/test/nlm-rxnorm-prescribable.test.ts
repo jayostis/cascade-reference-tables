@@ -13,13 +13,13 @@ import { keyed, SeriesRows, toRdf } from "../src/rows.js";
 import { loadBuild, loadHistory, readSource } from "../src/source.js";
 
 const ROOT = join(import.meta.dirname, "..", "..", "..");
+const contract = await readContract(ROOT);
 const FOLDER = join(ROOT, "builders", "nlm-rxnorm-prescribable");
 const STATUS = "urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88";
 const PRODUCTS = "urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12";
 const RXNORM = "http://www.nlm.nih.gov/research/umls/rxnorm/";
 
 async function statusRows(history: string): Promise<SeriesRows> {
-  const contract = await readContract(ROOT);
   const build = (await loadHistory(ROOT, FOLDER))!;
   const dir = await mkdtemp(join(tmpdir(), "rxnorm-history-"));
   try {
@@ -84,7 +84,6 @@ const rel = (to: string, relation: string, from: string) =>
 
 /** Every row the builder yields for a release of these concepts (RXNCONSO lines) and relationships (RXNREL lines). */
 async function builtFrom(concepts: string, relations: string) {
-  const contract = await readContract(ROOT);
   const build = await loadBuild(ROOT, FOLDER);
   const dir = await mkdtemp(join(tmpdir(), "rxnorm-precise-"));
   try {
@@ -137,7 +136,6 @@ test("a precise ingredient RXNCONSO does not hold gives no row and no refusal", 
 });
 
 test("a drug products row for a code that is no product is refused with the shape's message", async () => {
-  const contract = await readContract(ROOT);
   const source = await readSource(FOLDER);
   const notProduct: Build = async function* () {
     yield { series: PRODUCTS, subject: `${RXNORM}21`, termType: "IN" };
@@ -153,7 +151,6 @@ test("a drug products row for a code that is no product is refused with the shap
 });
 
 test("a product that leaves the release is carried as a term type row", async () => {
-  const contract = await readContract(ROOT);
   const source = await readSource(FOLDER);
   const current = parseTrig(
     await readFile(join(FOLDER, "fixtures", "expected", "rows.trig"), "utf8"),

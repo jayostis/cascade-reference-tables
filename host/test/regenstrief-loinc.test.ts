@@ -11,6 +11,7 @@ import { keyed, type SeriesRows, toRdf } from "../src/rows.js";
 import { loadBuild, readSource } from "../src/source.js";
 
 const ROOT = join(import.meta.dirname, "..", "..", "..");
+const contract = await readContract(ROOT);
 const FOLDER = join(ROOT, "builders", "regenstrief-loinc");
 const FIXTURE = join(FOLDER, "fixtures", "release");
 
@@ -49,7 +50,7 @@ async function built(edits: Edits): Promise<Map<string, SeriesRows>> {
       await writeFile(path, edit!(await readFile(path, "utf8")));
     }
     return await rowsOf(
-      await readContract(ROOT),
+      contract,
       await readSource(FOLDER),
       await loadBuild(ROOT, FOLDER),
       dir,
@@ -446,7 +447,6 @@ test("the source's announcement pattern finds each version in the answer of the 
 });
 
 test("a panel member row is named as the vocabulary names it, by its panel, its member and its sequence", async () => {
-  const contract = await readContract(ROOT);
   const vector = keyed(
     parseTurtle(
       await readFile(
