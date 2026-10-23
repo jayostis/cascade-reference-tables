@@ -12,7 +12,7 @@ import { loadBuild } from "../src/source.js";
 
 const ROOT = join(import.meta.dirname, "..", "..", "..");
 const FOLDER = join(ROOT, "builders", "cdc-icd-10-cm");
-const ICD = "http://hl7.org/fhir/sid/icd-10-cm/";
+const ICD = "https://ns.cascadeprotocol.org/codes/icd10cm/";
 
 /** Order lines as code without its dot, flag and title; conversion rows as new code, year and previous codes. */
 function release(order: string[][], conversions: string[][]): Release {

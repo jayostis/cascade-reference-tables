@@ -4,7 +4,7 @@
 @prefix pav: <http://purl.org/pav/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
 @prefix spdx: <http://spdx.org/rdf/terms#> .
 @prefix sssom: <https://w3id.org/sssom/> .
 @prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
@@ -170,7 +170,7 @@
 
 <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;_PaBO6Ye-GlUmcbwIqEu72VdXPFjk5f0v2r2o7dfcMk> ;
     dcat:hasVersion <ni:///sha-256;_PaBO6Ye-GlUmcbwIqEu72VdXPFjk5f0v2r2o7dfcMk>,
         <ni:///sha-256;jcRDQNGnXPLjXtEG-I9q7YguBixWXEPdreh4ZdrZ7uc> ;
@@ -179,11 +179,11 @@
     dct:publisher <https://publisher.example/> ;
     dct:source <urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19> ;
     rdfs:label "Example vaccine code status" ;
-    rec:tableKind rec:CodeStatus .
+    cascade:tableKind cascade:RetiredCodes .
 
 <urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;VvWGMkblTrqSzWxbHOoRX6reI9MtOJmsrvVezaYoMfU> ;
     dcat:hasVersion <ni:///sha-256;5j7QOvdRCtsVe9MXPpFgeazELN7P7OfYeSfjyp5VSkI>,
         <ni:///sha-256;VvWGMkblTrqSzWxbHOoRX6reI9MtOJmsrvVezaYoMfU> ;
@@ -192,11 +192,11 @@
     dct:publisher <https://publisher.example/> ;
     dct:source <urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19> ;
     rdfs:label "Example vaccine names" ;
-    rec:tableKind rec:CodeNames .
+    cascade:tableKind cascade:CodeNames .
 
 <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;18zPYUK0binaJzyHv_H37D-u74S94kfP38ubGB7wq0I> ;
     dcat:hasVersion <ni:///sha-256;18zPYUK0binaJzyHv_H37D-u74S94kfP38ubGB7wq0I>,
         <ni:///sha-256;rPBgqPcFHEY99RRNDzxbJ7FGb41B6uJMfOLtLg1cH7I> ;
@@ -205,4 +205,4 @@
     dct:publisher <https://publisher.example/> ;
     dct:source <urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19> ;
     rdfs:label "Example vaccine groups" ;
-    rec:tableKind rec:VaccineGroups .
+    cascade:tableKind cascade:VaccineGroups .

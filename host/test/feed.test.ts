@@ -54,7 +54,7 @@ test("an unchanged file newly modified, and two series with no rows, give a conf
   const first = await tag();
   const names: Row = {
     series: "urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c",
-    subject: "http://hl7.org/fhir/sid/cvx/88",
+    subject: "https://ns.cascadeprotocol.org/codes/cvx/88",
     prefLabel: "flu",
     notation: "88",
   };

@@ -1,7 +1,7 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
 @prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
 
 <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> a tables:Source, dcat:Dataset ;
@@ -19,17 +19,17 @@
 
 <https://ror.org/05f2ywb48> rdfs:label "Regenstrief Institute" .
 
-<urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943> a rec:ReferenceSeries ;
+<urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943> a cascade:ReferenceSeries ;
     rdfs:label "Regenstrief LOINC names" ;
-    rec:tableKind rec:CodeNames ;
+    cascade:tableKind cascade:CodeNames ;
     dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> .
 
-<urn:uuid:8caff025-8214-4910-81d7-16dfac334dae> a rec:ReferenceSeries ;
+<urn:uuid:8caff025-8214-4910-81d7-16dfac334dae> a cascade:ReferenceSeries ;
     rdfs:label "Regenstrief LOINC code status" ;
-    rec:tableKind rec:CodeStatus ;
+    cascade:tableKind cascade:RetiredCodes ;
     dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> .
 
-<urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c> a rec:ReferenceSeries ;
+<urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c> a cascade:ReferenceSeries ;
     rdfs:label "Regenstrief LOINC panel members" ;
-    rec:tableKind rec:PanelMembers ;
+    cascade:tableKind cascade:PanelMembers ;
     dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> .

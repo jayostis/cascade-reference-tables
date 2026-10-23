@@ -24,10 +24,10 @@ Feature: Carrying rows forward
         | series                      | revises | notes                         |
         | Example vaccine groups      | 1       | 0 added, 1 removed, 0 changed |
         | Example vaccine code status | 1       | 1 added, 0 removed, 0 changed |
-      And "Example vaccine code status" holds the row "http://hl7.org/fhir/sid/cvx/141":
+      And "Example vaccine code status" holds the row "https://ns.cascadeprotocol.org/codes/cvx/141":
         """
-        <http://hl7.org/fhir/sid/cvx/141> <http://www.w3.org/2002/07/owl#deprecated> true ;
-          <http://purl.org/dc/terms/isReplacedBy> <http://hl7.org/fhir/sid/cvx/150> .
+        <https://ns.cascadeprotocol.org/codes/cvx/141> <http://www.w3.org/2002/07/owl#deprecated> true ;
+          <http://purl.org/dc/terms/isReplacedBy> <https://ns.cascadeprotocol.org/codes/cvx/150> .
         """
       And the last build asked the history for "03, 141"
       And each version of the last build records "history.jsonl" among its inputs
@@ -86,8 +86,8 @@ Feature: Carrying rows forward
       And "Example vaccine groups" holds the row "urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18":
         """
         <urn:uuid:6586d27d-9d3a-8175-bea7-9066f7806b18> a owl:Axiom ;
-          owl:annotatedSource <http://hl7.org/fhir/sid/cvx/141> ;
+          owl:annotatedSource <https://ns.cascadeprotocol.org/codes/cvx/141> ;
           owl:annotatedProperty <http://purl.obolibrary.org/obo/RO_0002350> ;
-          owl:annotatedTarget <http://hl7.org/fhir/sid/cvx/88> ;
+          owl:annotatedTarget <https://ns.cascadeprotocol.org/codes/cvx/88> ;
           sssom:mapping_justification semapv:ManualMappingCuration .
         """

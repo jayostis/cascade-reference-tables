@@ -4,7 +4,7 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
 @prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -129,7 +129,7 @@ tables:builderVersion a owl:DatatypeProperty ;
 
 tables:carriesForward a owl:DatatypeProperty ;
     rdfs:label "carries forward"@en ;
-    rdfs:domain rec:ReferenceSeries ;
+    rdfs:domain cascade:ReferenceSeries ;
     rdfs:range xsd:boolean .
 
 tables:historyLookup a owl:ObjectProperty ;

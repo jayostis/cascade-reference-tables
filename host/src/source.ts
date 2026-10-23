@@ -13,7 +13,7 @@ import {
   type Term,
   RDF,
   RDFS,
-  REC,
+  CASCADE,
   TABLES,
 } from "./rdf.js";
 
@@ -46,7 +46,7 @@ export interface Listing {
 /** A series a source declares, whether its rows are kept when their code leaves the release, and the genes it covers. */
 export interface SourceSeries extends SeriesDescription {
   readonly carriesForward: boolean;
-  /** The `rec:coversGene` symbols the declaration states, sorted. */
+  /** The `cascade:coversGene` symbols the declaration states, sorted. */
   readonly coversGene: readonly string[];
 }
 
@@ -223,7 +223,7 @@ export async function readSource(folder: string): Promise<Source> {
       .map((series) => ({
         iri: series,
         label: value(series, `${RDFS}label`),
-        kind: value(series, `${REC}tableKind`),
+        kind: value(series, `${CASCADE}tableKind`),
         source: iri,
         license: value(iri, `${DCT}license`),
         publisher: value(iri, `${DCT}publisher`),
@@ -232,7 +232,7 @@ export async function readSource(folder: string): Promise<Source> {
           value(series, `${TABLES}carriesForward`),
         ),
         coversGene: graph
-          .objects(series, `${REC}coversGene`)
+          .objects(series, `${CASCADE}coversGene`)
           .map((gene) => gene.value)
           .sort(),
       })),

@@ -22,7 +22,7 @@ import {
   type Quad,
   RDF,
   RDFS,
-  REC,
+  CASCADE,
   TABLES,
 } from "./rdf.js";
 import { readRowsFile, rowsFile } from "./distribution.js";
@@ -274,11 +274,11 @@ async function checkShapes(
     throw new Refusal(
       `rows of ${description.label} do not conform:\n${found.join("\n")}`,
     );
-  if (description.kind === `${REC}VariantClassifications`)
+  if (description.kind === `${CASCADE}VariantClassifications`)
     checkExpressionsUnique(description, rows);
 }
 
-/** Each `rec:hgvsExpression` is on one row of the whole version, which the shape checks only within a chunk. */
+/** Each `cascade:hgvsExpression` is on one row of the whole version, which the shape checks only within a chunk. */
 function checkExpressionsUnique(
   description: SourceSeries,
   rows: SeriesRows,
@@ -286,7 +286,7 @@ function checkExpressionsUnique(
   const owner = new Map<string, string>();
   for (const [key, quads] of rows.rows)
     for (const q of quads) {
-      if (q.predicate.value !== `${REC}hgvsExpression`) continue;
+      if (q.predicate.value !== `${CASCADE}hgvsExpression`) continue;
       const held = owner.get(q.object.value);
       if (held !== undefined && held !== key)
         throw new Refusal(
@@ -478,7 +478,7 @@ export async function build(
     for (const row of rows) series.get(iri)!.add(row);
   if (carried.history !== undefined)
     for (const description of source.series)
-      if (description.kind === `${REC}CodeStatus`)
+      if (description.kind === `${CASCADE}RetiredCodes`)
         await checkShapes(contract, description, series.get(description.iri)!);
   const inputs: Input[] = [];
   const inputFiles: Kept[] = [];

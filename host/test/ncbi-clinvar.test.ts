@@ -7,7 +7,7 @@ import { gunzipSync, gzipSync } from "node:zlib";
 import { Refusal } from "../src/builder.js";
 import { build, readContract, rowsOf } from "../src/pipeline.js";
 import type { Contract } from "../src/pipeline.js";
-import { DCT, REC } from "../src/rdf.js";
+import { DCT, CASCADE } from "../src/rdf.js";
 import { Feed } from "../src/feed.js";
 import type { SeriesRows } from "../src/rows.js";
 import { loadBuild, readSource, type Source } from "../src/source.js";
@@ -15,7 +15,6 @@ import { loadBuild, readSource, type Source } from "../src/source.js";
 const ROOT = join(import.meta.dirname, "..", "..", "..");
 const FOLDER = join(ROOT, "builders", "ncbi-clinvar");
 const RELEASE = join(FOLDER, "fixtures", "release");
-const GENOMICS = "https://ns.cascadeprotocol.org/genomics/v1#";
 const SUMMARY = "variant_summary.txt.gz";
 const SNAPSHOT = "hgvs4variation.txt.gz";
 
@@ -28,9 +27,9 @@ before(async () => {
   contract = await readContract(ROOT);
   source = await readSource(FOLDER);
   classifications = source.series.find(
-    (s) => s.kind === `${REC}VariantClassifications`,
+    (s) => s.kind === `${CASCADE}VariantClassifications`,
   )!.iri;
-  names = source.series.find((s) => s.kind === `${REC}CodeNames`)!.iri;
+  names = source.series.find((s) => s.kind === `${CASCADE}CodeNames`)!.iri;
 });
 
 const text = async (file: string): Promise<string[]> =>
@@ -75,8 +74,7 @@ function said(
     .sort();
 }
 
-const clinvar = (id: string): string =>
-  `http://www.ncbi.nlm.nih.gov/clinvar/${id}`;
+const clinvar = (id: string): string => `https://identifiers.org/clinvar:${id}`;
 
 /** The same lines with their columns in another order, the first column staying first. */
 const reordered = (lines: readonly string[]): string[] =>
@@ -149,7 +147,7 @@ test("every value of the vocabulary's tests/vectors/clinvar/values.json parses t
         series,
         classifications,
         clinvar(String(1000 + i)),
-        `${REC}clinvarClassification`,
+        `${CASCADE}clinvarClassification`,
       ),
       [...v.concepts].sort(),
       v.written,
@@ -170,7 +168,7 @@ test("every value of the vocabulary's tests/vectors/clinvar/values.json parses t
         series,
         classifications,
         clinvar(String(2000 + i)),
-        `${REC}clinvarReviewStatus`,
+        `${CASCADE}clinvarReviewStatus`,
       ),
       v.concept === null ? [] : [v.concept],
       v.written,
@@ -183,10 +181,10 @@ test("the fixture release gives 90011's row both of its expressions, and each th
     await text(SNAPSHOT),
   );
   assert.deepEqual(
-    said(series, classifications, clinvar("90011"), `${REC}hgvsExpression`),
+    said(series, classifications, clinvar("90011"), `${CASCADE}hgvsExpression`),
     [
-      "http://varnomen.hgvs.org/NM_000249.3%3Ac.2042C%3ET",
-      "http://varnomen.hgvs.org/NM_000249.4%3Ac.2042C%3ET",
+      "https://ns.cascadeprotocol.org/codes/hgvs/NM_000249.3%3Ac.2042C%3ET",
+      "https://ns.cascadeprotocol.org/codes/hgvs/NM_000249.4%3Ac.2042C%3ET",
     ],
   );
   assert.deepEqual(
@@ -194,9 +192,9 @@ test("the fixture release gives 90011's row both of its expressions, and each th
       series,
       classifications,
       clinvar("90011"),
-      `${REC}clinvarClassification`,
+      `${CASCADE}clinvarClassification`,
     ),
-    [`${GENOMICS}LikelyPathogenic`, `${GENOMICS}Pathogenic`],
+    [`${CASCADE}LikelyPathogenic`, `${CASCADE}Pathogenic`],
   );
   assert.equal(
     series.get(names)!.rows.size,
@@ -220,8 +218,8 @@ test("the fixture release gives 90011's row both of its expressions, and each th
 test("a variation only the summary has keeps its row, found by its name's expression", async () => {
   const { series } = await built(await text(SUMMARY), await text(SNAPSHOT));
   assert.deepEqual(
-    said(series, classifications, clinvar("90020"), `${REC}hgvsExpression`),
-    ["http://varnomen.hgvs.org/NM_000251.3%3Ac.2A%3EG"],
+    said(series, classifications, clinvar("90020"), `${CASCADE}hgvsExpression`),
+    ["https://ns.cascadeprotocol.org/codes/hgvs/NM_000251.3%3Ac.2A%3EG"],
   );
 });
 
@@ -242,7 +240,7 @@ test("a summary without the SCVs column, as before 2023, counts submitters, not 
     await text(SNAPSHOT),
   );
   assert.deepEqual(
-    said(series, classifications, clinvar("90011"), `${REC}submitters`),
+    said(series, classifications, clinvar("90011"), `${CASCADE}submitterCount`),
     ["5"],
   );
   assert.deepEqual(
@@ -250,7 +248,7 @@ test("a summary without the SCVs column, as before 2023, counts submitters, not 
       series,
       classifications,
       clinvar("90011"),
-      `${REC}contributingSubmitters`,
+      `${CASCADE}contributingSubmitterCount`,
     ),
     [],
   );

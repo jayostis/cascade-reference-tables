@@ -3,7 +3,7 @@ import { type Build, Refusal } from "../../host/src/builder.js";
 const GROUPS = "urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd";
 const NAMES = "urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c";
 const STATUS = "urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f";
-const CVX = "https://ns.cascadeprotocol.org/records/v1-draft#CVX";
+const CVX = "https://ns.cascadeprotocol.org/cascade#CVX";
 const RETIRED = new Map([
   ["Active", false],
   ["Retired", true],

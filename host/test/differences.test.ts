@@ -5,7 +5,7 @@ import { describe } from "../src/describe.js";
 import { differences, markdown, type Outcome } from "../src/pipeline.js";
 import { keyed, toRdf } from "../src/rows.js";
 
-const CVX = "http://hl7.org/fhir/sid/cvx/";
+const CVX = "https://ns.cascadeprotocol.org/codes/cvx/";
 const MEMBER_OF = "http://purl.obolibrary.org/obo/RO_0002350";
 const SERIES = "urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0";
 
@@ -116,21 +116,20 @@ test("a version's differences read by their codes, sorted by code, whatever the 
 });
 
 test("a classification row's difference names its variation, its classes by label, its status, its day and its expressions, never retired", () => {
-  const GENOMICS = "https://ns.cascadeprotocol.org/genomics/v1#";
-  const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
+  const CASCADE = "https://ns.cascadeprotocol.org/cascade#";
   const row = (classes: string[], hgvs: string[]): Row => ({
     series: SERIES,
-    variation: "http://www.ncbi.nlm.nih.gov/clinvar/90011",
-    hgvs: hgvs.map((h) => `http://varnomen.hgvs.org/${h}`),
-    classification: classes.map((c) => `${GENOMICS}${c}`),
-    reviewStatus: `${REC}ClinVarExpertPanel`,
+    variation: "https://identifiers.org/clinvar:90011",
+    hgvs: hgvs.map((h) => `https://ns.cascadeprotocol.org/codes/hgvs/${h}`),
+    classification: classes.map((c) => `${CASCADE}${c}`),
+    reviewStatus: `${CASCADE}ClinVarExpertPanel`,
     lastEvaluated: "2024-12-11",
     contributingSubmitters: 5,
   });
   const labels = new Map([
-    [`${GENOMICS}Pathogenic`, "Pathogenic"],
-    [`${GENOMICS}LikelyPathogenic`, "Likely pathogenic"],
-    [`${REC}ClinVarExpertPanel`, "reviewed by expert panel"],
+    [`${CASCADE}Pathogenic`, "Pathogenic"],
+    [`${CASCADE}LikelyPathogenic`, "Likely pathogenic"],
+    [`${CASCADE}ClinVarExpertPanel`, "reviewed by expert panel"],
   ]);
   const before = quadsOf([row(["Pathogenic"], ["NM_1.1%3Ac.1A%3EG"])]);
   const after = quadsOf([

@@ -43,7 +43,7 @@ import {
   PREFIXES,
   type Quad,
   quad,
-  REC,
+  CASCADE,
 } from "../src/rdf.js";
 import {
   type Checked as SiteChecks,
@@ -384,7 +384,7 @@ const steps = new Steps<World>()
     "the vocabulary moves CVX's space to {string}",
     async (world, [space]) => {
       const { folder, records } = await recordsCopy(world, "moved-vocabulary");
-      const old = contract.vocabulary.codeIri(`${REC}CVX`, "");
+      const old = contract.vocabulary.codeIri(`${CASCADE}CVX`, "");
       const turtle = (stem: string): string => stem.replaceAll(".", "\\\\.");
       for (const [file, from, to] of [
         ["records.ttl", old, space as string],
@@ -1070,12 +1070,12 @@ const steps = new Steps<World>()
     "the classifications example builder is given {int} rows, the first and the last found by the expression {string}",
     (world, [count, expression]) => {
       const series = classifications.series[0]!.iri;
-      const found = codeIri(`${REC}HGVS`, expression as string);
+      const found = codeIri(`${CASCADE}HGVS`, expression as string);
       return classificationsGiven(
         world,
         Array.from({ length: count as number }, (_, i) => ({
           series,
-          variation: `http://www.ncbi.nlm.nih.gov/clinvar/${i + 1}`,
+          variation: `https://identifiers.org/clinvar:${i + 1}`,
           ...(i === 0 || i === (count as number) - 1 ? { hgvs: [found] } : {}),
           submitters: 1,
         })),
@@ -1098,7 +1098,7 @@ const steps = new Steps<World>()
         .map(([prefix, space]) => `@prefix ${prefix}: <${space}> .`)
         .join("\n");
       const expected = parseTurtle(
-        `@prefix genomics: <https://ns.cascadeprotocol.org/genomics/v1#> .\n${prefixes}\n${await readFile(join(folder, "row.ttl"), "utf8")}`,
+        `@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .\n${prefixes}\n${await readFile(join(folder, "row.ttl"), "utf8")}`,
         "urn:x:",
       );
       assert.deepEqual(

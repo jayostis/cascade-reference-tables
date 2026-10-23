@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { withProperty } from "../src/carry.js";
-import { recordName } from "../src/names.js";
-import { iri, literal, OWL, quad, REC } from "../src/rdf.js";
+import { tableRowName } from "../src/names.js";
+import { iri, literal, OWL, quad, CASCADE } from "../src/rdf.js";
 
 const OBO = "http://purl.obolibrary.org/obo/";
 const [PANEL, MEMBER] = [
@@ -17,7 +17,7 @@ test("a carried panel row, given the property its kind fixes, is named over its 
     [`${OWL}annotatedProperty`, iri(`${OBO}RO_0002350`)],
     [`${OWL}annotatedTarget`, iri(MEMBER)],
     [
-      `${REC}panelSequence`,
+      `${CASCADE}panelSequence`,
       literal("03", "http://www.w3.org/2001/XMLSchema#integer"),
     ],
   ].map(([predicate, object]) =>
@@ -26,7 +26,7 @@ test("a carried panel row, given the property its kind fixes, is named over its 
   const carried = withProperty({ key, triples }, `${OBO}RO_0002351`);
   assert.equal(
     carried.key,
-    recordName([PANEL, `${OBO}RO_0002351`, MEMBER, "3"]),
+    tableRowName(PANEL, `${OBO}RO_0002351`, MEMBER, 3n),
   );
   assert.ok(carried.triples.every((t) => t.subject.value === carried.key));
 });

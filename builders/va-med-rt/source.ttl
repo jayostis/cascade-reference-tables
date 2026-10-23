@@ -1,7 +1,7 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
 @prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
 
 <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> a tables:Source, dcat:Dataset ;
@@ -15,12 +15,12 @@
 
 <https://ror.org/05rsv9s98> rdfs:label "U.S. Department of Veterans Affairs" .
 
-<urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a> a rec:ReferenceSeries ;
+<urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a> a cascade:ReferenceSeries ;
     rdfs:label "VA MED-RT drug classes" ;
-    rec:tableKind rec:DrugClasses ;
+    cascade:tableKind cascade:DrugClasses ;
     dct:source <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> .
 
-<urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f> a rec:ReferenceSeries ;
+<urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f> a cascade:ReferenceSeries ;
     rdfs:label "VA MED-RT names" ;
-    rec:tableKind rec:CodeNames ;
+    cascade:tableKind cascade:CodeNames ;
     dct:source <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> .

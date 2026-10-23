@@ -4,7 +4,7 @@ import { readRowsFile } from "./distribution.js";
 import { Feed } from "./feed.js";
 import { versionName } from "./names.js";
 import type { SeenInputs } from "./pipeline.js";
-import { PROV, RDF, RDFS, REC } from "./rdf.js";
+import { PROV, RDF, RDFS, CASCADE } from "./rdf.js";
 import type { RowsStore } from "./stores.js";
 
 /** The last check of each source, by its IRI, as `checked.json` holds it. */
@@ -37,7 +37,7 @@ export function mergeChecked(...files: readonly Checked[]): Checked {
 function page(feed: Feed): string {
   const graph = feed.graph;
   const items = graph
-    .subjects(`${RDF}type`, `${REC}ReferenceSeries`)
+    .subjects(`${RDF}type`, `${CASCADE}ReferenceSeries`)
     .sort()
     .map((series) => {
       const label = graph.value(series, `${RDFS}label`) ?? series;
@@ -78,7 +78,10 @@ export async function publish(options: {
   const feed = await Feed.read(options.feed);
   const graph = feed.graph;
   const files = new Map<string, Uint8Array>();
-  for (const series of graph.subjects(`${RDF}type`, `${REC}ReferenceSeries`)) {
+  for (const series of graph.subjects(
+    `${RDF}type`,
+    `${CASCADE}ReferenceSeries`,
+  )) {
     const current = feed.current(series);
     if (current === undefined) continue;
     const previous = graph.value(current, `${PROV}wasRevisionOf`);

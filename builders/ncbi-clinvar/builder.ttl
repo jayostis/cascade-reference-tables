@@ -3,5 +3,5 @@
 
 <urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a> a tables:Builder ;
     rdfs:label "ncbi-clinvar" ;
-    tables:builderVersion "1" ;
+    tables:builderVersion "2" ;
     tables:builds <urn:uuid:5f313f75-f35d-496e-aca0-c5cde375f116> .

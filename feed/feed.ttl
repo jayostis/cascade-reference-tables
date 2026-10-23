@@ -4,7 +4,7 @@
 @prefix pav: <http://purl.org/pav/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
 @prefix spdx: <http://spdx.org/rdf/terms#> .
 @prefix sssom: <https://w3id.org/sssom/> .
 @prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
@@ -68,7 +68,7 @@
     prov:wasAttributedTo <urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a> ;
     prov:wasDerivedFrom <ni:///sha-256;5MYYudJvAXrPiy1ORMhmajJ91rszxOwMfgnXlgeR8gg>,
         <ni:///sha-256;pqWN9NkEnJGHp5qPtOcPHztVUOFwjGx0t74LJo9QMto> ;
-    rec:coversGene "EPCAM",
+    cascade:coversGene "EPCAM",
         "MLH1",
         "MSH2",
         "MSH6",
@@ -746,7 +746,7 @@
 
 <urn:uuid:14f76251-2926-43ef-90c3-47101c1da3dd>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;ARd__QN4ztoDE7SCxo2P3zU2QypNowEdTz6R8-_rbxw> ;
     dcat:hasVersion <ni:///sha-256;ARd__QN4ztoDE7SCxo2P3zU2QypNowEdTz6R8-_rbxw>,
         <ni:///sha-256;vCHwBYQbINtxv64W2WPuctcGQ6ZSf06bsTYkACjpmtQ> ;
@@ -755,11 +755,11 @@
     dct:publisher <https://ror.org/042twtr12> ;
     dct:source <urn:uuid:273aeb46-e2b3-4ff6-81dd-5ab327489d0c> ;
     rdfs:label "CDC ICD-10-CM code conversions" ;
-    rec:tableKind rec:CodeConversions .
+    cascade:tableKind cascade:CodeConversions .
 
 <urn:uuid:1653be1a-b871-4e0f-8c22-f13bbbf1b6d6>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;VIf0Nkcq8y_q_E4BCgLWyvnbGB-e90qEiHPPVUuBM04> ;
     dcat:hasVersion <ni:///sha-256;VIf0Nkcq8y_q_E4BCgLWyvnbGB-e90qEiHPPVUuBM04> ;
     dct:bibliographicCitation "Source: ClinVar, National Center for Biotechnology Information, U.S. National Library of Medicine; Landrum MJ et al., Nucleic Acids Res. 2018;46(D1):D1062-D1067, PMID 29165669. NCBI places no restrictions on the use or distribution of the data. Some submitters may claim patent, copyright, or other intellectual property rights in all or a portion of the data, which NCBI is not in a position to assess. ClinVar data is not intended for direct diagnostic use or medical decision-making without review by a genetics professional." ;
@@ -767,11 +767,11 @@
     dct:publisher <https://ror.org/02meqm098> ;
     dct:source <urn:uuid:5f313f75-f35d-496e-aca0-c5cde375f116> ;
     rdfs:label "ClinVar variation names, Lynch syndrome genes" ;
-    rec:tableKind rec:CodeNames .
+    cascade:tableKind cascade:CodeNames .
 
 <urn:uuid:25623afd-6445-4394-8174-93ffacaea90e>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;CpSJjk9Wj2YhAqu1YqEOtJ9APnrxhgZ3jFaR0Lwmk-8> ;
     dcat:hasVersion <ni:///sha-256;5dWeRk7uMU99fQf7D_sevXBkDSnLV3SDzndu9jxA1fc>,
         <ni:///sha-256;CpSJjk9Wj2YhAqu1YqEOtJ9APnrxhgZ3jFaR0Lwmk-8> ;
@@ -780,11 +780,11 @@
     dct:publisher <https://ror.org/042twtr12> ;
     dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> ;
     rdfs:label "CDC CVX vaccine groups" ;
-    rec:tableKind rec:VaccineGroups .
+    cascade:tableKind cascade:VaccineGroups .
 
 <urn:uuid:2f1d04ac-2101-4d15-8251-566846a14488>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;yEytKce0fn8pAxQ6PUr91Sul5VXVDNKKEex9HsK02ks> ;
     dcat:hasVersion <ni:///sha-256;yEytKce0fn8pAxQ6PUr91Sul5VXVDNKKEex9HsK02ks> ;
     dct:bibliographicCitation "Source: CDC" ;
@@ -792,11 +792,11 @@
     dct:publisher <https://ror.org/042twtr12> ;
     dct:source <urn:uuid:273aeb46-e2b3-4ff6-81dd-5ab327489d0c> ;
     rdfs:label "CDC ICD-10-CM names" ;
-    rec:tableKind rec:CodeNames .
+    cascade:tableKind cascade:CodeNames .
 
 <urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ> ;
     dcat:hasVersion <ni:///sha-256;BszJQatQDH2rTURFnE-sFfwAjvBu7yj2mFMS3Dlxr8I>,
         <ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ> ;
@@ -805,7 +805,7 @@
     dct:publisher <https://ror.org/0060t0j89> ;
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
     rdfs:label "NLM RxNorm Prescribable NDC drugs" ;
-    rec:tableKind rec:NdcDrugs .
+    cascade:tableKind cascade:NdcDrugs .
 
 <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7>
     a tables:Builder ;
@@ -813,7 +813,7 @@
 
 <urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;yPNnVXOEiVM_teaQ_gNI7qegPyDrxKMslyEPD1HNGM0> ;
     dcat:hasVersion <ni:///sha-256;yPNnVXOEiVM_teaQ_gNI7qegPyDrxKMslyEPD1HNGM0> ;
     dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
@@ -821,11 +821,11 @@
     dct:publisher <https://ror.org/0060t0j89> ;
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
     rdfs:label "NLM RxNorm Prescribable drug products" ;
-    rec:tableKind rec:DrugProducts .
+    cascade:tableKind cascade:DrugProducts .
 
 <urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;tjAJHzXlxhRB4xsChH6CrnVIADVMekpg0Ywr2BJ06xk> ;
     dcat:hasVersion <ni:///sha-256;tjAJHzXlxhRB4xsChH6CrnVIADVMekpg0Ywr2BJ06xk> ;
     dct:bibliographicCitation "Source: CDC" ;
@@ -833,11 +833,11 @@
     dct:publisher <https://ror.org/042twtr12> ;
     dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> ;
     rdfs:label "CDC CVX code status" ;
-    rec:tableKind rec:CodeStatus .
+    cascade:tableKind cascade:RetiredCodes .
 
 <urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;Th5sT_qWjb26xofek35qG9Sm88egbWa8GibjkQ1D22M> ;
     dcat:hasVersion <ni:///sha-256;Th5sT_qWjb26xofek35qG9Sm88egbWa8GibjkQ1D22M> ;
     dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
@@ -845,11 +845,11 @@
     dct:publisher <https://ror.org/0060t0j89> ;
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
     rdfs:label "NLM RxNorm Prescribable code status" ;
-    rec:tableKind rec:CodeStatus .
+    cascade:tableKind cascade:RetiredCodes .
 
 <urn:uuid:84a9f86a-f5e4-45b1-9e92-cd4ba027a389>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;4g2HI-n2y8OLnc1DFChcgrsoq7RUOKOcGiwHJOFKUik> ;
     dcat:hasVersion <ni:///sha-256;4g2HI-n2y8OLnc1DFChcgrsoq7RUOKOcGiwHJOFKUik> ;
     dct:bibliographicCitation "Source: ClinVar, National Center for Biotechnology Information, U.S. National Library of Medicine; Landrum MJ et al., Nucleic Acids Res. 2018;46(D1):D1062-D1067, PMID 29165669. NCBI places no restrictions on the use or distribution of the data. Some submitters may claim patent, copyright, or other intellectual property rights in all or a portion of the data, which NCBI is not in a position to assess. ClinVar data is not intended for direct diagnostic use or medical decision-making without review by a genetics professional." ;
@@ -857,11 +857,11 @@
     dct:publisher <https://ror.org/02meqm098> ;
     dct:source <urn:uuid:5f313f75-f35d-496e-aca0-c5cde375f116> ;
     rdfs:label "ClinVar variant classifications, Lynch syndrome genes" ;
-    rec:tableKind rec:VariantClassifications .
+    cascade:tableKind cascade:VariantClassifications .
 
 <urn:uuid:8caff025-8214-4910-81d7-16dfac334dae>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;QGaS7FFPmTI2W9-VbX0nVqAL3G1R299JiCK_Y_jdMzc> ;
     dcat:hasVersion <ni:///sha-256;QGaS7FFPmTI2W9-VbX0nVqAL3G1R299JiCK_Y_jdMzc> ;
     dct:bibliographicCitation "This material contains content from LOINC (http://loinc.org). LOINC is copyright © Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc." ;
@@ -869,7 +869,7 @@
     dct:publisher <https://ror.org/05f2ywb48> ;
     dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> ;
     rdfs:label "Regenstrief LOINC code status" ;
-    rec:tableKind rec:CodeStatus .
+    cascade:tableKind cascade:RetiredCodes .
 
 <urn:uuid:8ff42a00-01df-410b-b079-79da75a576c4>
     a tables:Builder ;
@@ -877,7 +877,7 @@
 
 <urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;Gj7zBk74Fz9kFgH4syRIztyd3gs3L57K_0JZTQPpMDo> ;
     dcat:hasVersion <ni:///sha-256;Gj7zBk74Fz9kFgH4syRIztyd3gs3L57K_0JZTQPpMDo> ;
     dct:bibliographicCitation "Source: Medication Reference Terminology (MED-RT), U.S. Department of Veterans Affairs, distributed by the National Cancer Institute's Enterprise Vocabulary Services." ;
@@ -885,11 +885,11 @@
     dct:publisher <https://ror.org/05rsv9s98> ;
     dct:source <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> ;
     rdfs:label "VA MED-RT names" ;
-    rec:tableKind rec:CodeNames .
+    cascade:tableKind cascade:CodeNames .
 
 <urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;Bldp7_nf-OGuyFYioV_cgFlDgPFsNWCXaNZxj-YZoG8> ;
     dcat:hasVersion <ni:///sha-256;Bldp7_nf-OGuyFYioV_cgFlDgPFsNWCXaNZxj-YZoG8> ;
     dct:bibliographicCitation "This product uses publicly available data from the U.S. National Library of Medicine (NLM), National Institutes of Health, Department of Health and Human Services; NLM is not responsible for the product and does not endorse or recommend this or any other product." ;
@@ -897,11 +897,11 @@
     dct:publisher <https://ror.org/0060t0j89> ;
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
     rdfs:label "NLM RxNorm Prescribable names" ;
-    rec:tableKind rec:CodeNames .
+    cascade:tableKind cascade:CodeNames .
 
 <urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;Yhyi0u35KLH3XvDxcSx7-GZ1GvEttqv1dAKNsFwqca0> ;
     dcat:hasVersion <ni:///sha-256;Yhyi0u35KLH3XvDxcSx7-GZ1GvEttqv1dAKNsFwqca0> ;
     dct:bibliographicCitation "Source: Medication Reference Terminology (MED-RT), U.S. Department of Veterans Affairs, distributed by the National Cancer Institute's Enterprise Vocabulary Services." ;
@@ -909,11 +909,11 @@
     dct:publisher <https://ror.org/05rsv9s98> ;
     dct:source <urn:uuid:20d40bb7-7e32-4e1f-8185-f70f0c63409c> ;
     rdfs:label "VA MED-RT drug classes" ;
-    rec:tableKind rec:DrugClasses .
+    cascade:tableKind cascade:DrugClasses .
 
 <urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;3Dv98Vt7f7u-VUHK2RfW8xM-T3tMEDJlh_hUotOEaWE> ;
     dcat:hasVersion <ni:///sha-256;3Dv98Vt7f7u-VUHK2RfW8xM-T3tMEDJlh_hUotOEaWE> ;
     dct:bibliographicCitation "This material contains content from LOINC (http://loinc.org). LOINC is copyright © Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc." ;
@@ -921,7 +921,7 @@
     dct:publisher <https://ror.org/05f2ywb48> ;
     dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> ;
     rdfs:label "Regenstrief LOINC names" ;
-    rec:tableKind rec:CodeNames .
+    cascade:tableKind cascade:CodeNames .
 
 <urn:uuid:bc79093c-0012-4626-ac27-5c25331e179a>
     a tables:Builder ;
@@ -929,7 +929,7 @@
 
 <urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;JqDi3rslgKNd7_FoEXvRe-3zugKIsBxRB_Kav447Q90> ;
     dcat:hasVersion <ni:///sha-256;JqDi3rslgKNd7_FoEXvRe-3zugKIsBxRB_Kav447Q90> ;
     dct:bibliographicCitation "This material contains content from LOINC (http://loinc.org). LOINC is copyright © Regenstrief Institute, Inc. and the Logical Observation Identifiers Names and Codes (LOINC) Committee and is available at no cost under the license at http://loinc.org/license. LOINC® is a registered United States trademark of Regenstrief Institute, Inc." ;
@@ -937,7 +937,7 @@
     dct:publisher <https://ror.org/05f2ywb48> ;
     dct:source <urn:uuid:624de99d-c275-433e-9ff1-5f1eaa65abe9> ;
     rdfs:label "Regenstrief LOINC panel members" ;
-    rec:tableKind rec:PanelMembers .
+    cascade:tableKind cascade:PanelMembers .
 
 <urn:uuid:c5a78758-ff08-4f42-88cb-5fb4e9065e64>
     a tables:Builder ;
@@ -945,7 +945,7 @@
 
 <urn:uuid:cab9299d-e0e6-4d85-858b-7167d0fcbeb6>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;ZB0Knn3eLEuMXZO2UAxQ1Fz16o7IC1aFCgE6BGyIdWE> ;
     dcat:hasVersion <ni:///sha-256;EStDF-p0nfL0iLcKqTwc3uXf4-tmgQbvWAneo9Hg_CI>,
         <ni:///sha-256;ZB0Knn3eLEuMXZO2UAxQ1Fz16o7IC1aFCgE6BGyIdWE>,
@@ -955,11 +955,11 @@
     dct:publisher <https://ror.org/0060t0j89> ;
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
     rdfs:label "NLM RxNorm Prescribable product ingredients" ;
-    rec:tableKind rec:ProductIngredients .
+    cascade:tableKind cascade:ProductIngredients .
 
 <urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;GtXGNa2VLBkvTgNDAmpFUsBtn6IZZoUmhlIsiKdoC1M> ;
     dcat:hasVersion <ni:///sha-256;F0FaPQH1w75tY2g4up1goTUEHq9Jvzmt9WbYLJNyKvA>,
         <ni:///sha-256;GtXGNa2VLBkvTgNDAmpFUsBtn6IZZoUmhlIsiKdoC1M> ;
@@ -968,11 +968,11 @@
     dct:publisher <https://ror.org/0060t0j89> ;
     dct:source <urn:uuid:8c055259-8d91-4972-9976-a9e85c086808> ;
     rdfs:label "NLM RxNorm Prescribable brand generics" ;
-    rec:tableKind rec:BrandGenerics .
+    cascade:tableKind cascade:BrandGenerics .
 
 <urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;TWm1el7r6UDZSNAVrRNiiZM8gFs5ng4lbuhfhBSvZqI> ;
     dcat:hasVersion <ni:///sha-256;TWm1el7r6UDZSNAVrRNiiZM8gFs5ng4lbuhfhBSvZqI>,
         <ni:///sha-256;tpZm07us0enkqQZrq5oSYnvQQv5HS7esFT1JncGL77w> ;
@@ -981,11 +981,11 @@
     dct:publisher <https://ror.org/042twtr12> ;
     dct:source <urn:uuid:273aeb46-e2b3-4ff6-81dd-5ab327489d0c> ;
     rdfs:label "CDC ICD-10-CM code status" ;
-    rec:tableKind rec:CodeStatus .
+    cascade:tableKind cascade:RetiredCodes .
 
 <urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0>
     a dcat:Dataset,
-        rec:ReferenceSeries ;
+        cascade:ReferenceSeries ;
     dcat:hasCurrentVersion <ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE> ;
     dcat:hasVersion <ni:///sha-256;Z0gMEk0Iq2pNqMByQjSjSP2cZGl6sksWU_pjVFK1MGE> ;
     dct:bibliographicCitation "Source: CDC" ;
@@ -993,4 +993,4 @@
     dct:publisher <https://ror.org/042twtr12> ;
     dct:source <urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d> ;
     rdfs:label "CDC CVX names" ;
-    rec:tableKind rec:CodeNames .
+    cascade:tableKind cascade:CodeNames .

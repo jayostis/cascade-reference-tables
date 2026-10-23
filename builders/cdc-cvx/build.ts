@@ -3,7 +3,7 @@ import { type Build, Refusal } from "../../host/src/builder.js";
 const GROUPS = "urn:uuid:25623afd-6445-4394-8174-93ffacaea90e";
 const NAMES = "urn:uuid:f71f6797-48ec-4875-9b87-4cb1be1d9be0";
 const STATUS = "urn:uuid:624f752e-dfba-45e7-a3e5-710ff7204a79";
-const CVX = "https://ns.cascadeprotocol.org/records/v1-draft#CVX";
+const CVX = "https://ns.cascadeprotocol.org/cascade#CVX";
 const MEMBER_OF = "http://purl.obolibrary.org/obo/RO_0002350";
 const CURATED = "https://w3id.org/semapv/vocab/ManualMappingCuration";
 

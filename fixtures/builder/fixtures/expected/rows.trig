@@ -1,4 +1,4 @@
-@prefix cvx: <http://hl7.org/fhir/sid/cvx/> .
+@prefix cvx: <https://ns.cascadeprotocol.org/codes/cvx/> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix obo: <http://purl.obolibrary.org/obo/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .

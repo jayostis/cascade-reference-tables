@@ -16,7 +16,7 @@ const ROOT = join(import.meta.dirname, "..", "..", "..");
 const FOLDER = join(ROOT, "builders", "nlm-rxnorm-prescribable");
 const STATUS = "urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88";
 const PRODUCTS = "urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12";
-const RXNORM = "http://www.nlm.nih.gov/research/umls/rxnorm/";
+const RXNORM = "https://ns.cascadeprotocol.org/codes/rxnorm/";
 
 async function statusRows(history: string): Promise<SeriesRows> {
   const contract = await readContract(ROOT);
