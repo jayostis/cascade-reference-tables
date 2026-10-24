@@ -5,10 +5,10 @@ const GENERICS = "urn:uuid:cf861deb-999f-4f57-9cca-4b2cbe421bf4";
 const PRODUCTS = "urn:uuid:61ca1c5b-722e-4baa-88a8-1e4e4a8afe12";
 const NAMES = "urn:uuid:9e794869-eb5a-4818-a8d9-1cff8abae5ba";
 const STATUS = "urn:uuid:6828cb6b-4adc-460b-8f01-08d36ef2ae88";
-const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
+const CASCADE = "https://ns.cascadeprotocol.org/cascade#";
 const BROAD_MATCH = "http://www.w3.org/2004/02/skos/core#broadMatch";
 const HAS_ACTIVE_INGREDIENT = "http://purl.obolibrary.org/obo/RO_0002248";
-const HAS_PRECISE_INGREDIENT = `${REC}hasPreciseIngredient`;
+const HAS_PRECISE_INGREDIENT = `${CASCADE}hasPreciseIngredient`;
 const CURATED = "https://w3id.org/semapv/vocab/ManualMappingCuration";
 const CHAINED = "https://w3id.org/semapv/vocab/MappingChaining";
 
@@ -30,7 +30,7 @@ const GENERIC = new Map([
  */
 const build: Build = async function* (release) {
   const rxnorm = (code: string): string =>
-    release.codeIri(`${REC}RxNorm`, code);
+    release.codeIri(`${CASCADE}RxNorm`, code);
   const termType = new Map<string, string>();
   const preferred = new Map<string, string>();
   const others = new Map<string, Set<string>>();
@@ -212,7 +212,7 @@ interface Answer {
  */
 export const history: Build = async function* (release) {
   const rxnorm = (code: string): string =>
-    release.codeIri(`${REC}RxNorm`, code);
+    release.codeIri(`${CASCADE}RxNorm`, code);
   for await (const { number, value } of release.file("history.jsonl").json()) {
     const { code, answer } = value as { code: string; answer: Answer };
     const status = answer.rxcuiStatusHistory?.metaData?.status;

@@ -1,10 +1,10 @@
 @prefix adms: <http://www.w3.org/ns/adms#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix pav: <http://purl.org/pav/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
 @prefix spdx: <http://spdx.org/rdf/terms#> .
 @prefix sssom: <https://w3id.org/sssom/> .
 @prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
@@ -16,22 +16,27 @@
     dcat:dataset <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f>,
         <urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c>,
         <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> ;
-    dct:modified "2026-10-15T20:52:50Z"^^xsd:dateTime ;
+    dct:modified "2026-10-24T01:16:23Z"^^xsd:dateTime ;
     dct:title "Cascade reference tables (DRAFT)" .
 
-<ni:///sha-256;18zPYUK0binaJzyHv_H37D-u74S94kfP38ubGB7wq0I>
+<ni:///sha-256;5SAo6eYSP0o86W0nZZ5knjxLTh8xceP4hSR31XShqgo>
+    a prov:Entity ;
+    dct:title "codes.txt" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "e52028e9e6123f4a3ce96d27659e649e3c4b4e1f3171e3f8852477d574a1aa0a" ] .
+
+<ni:///sha-256;68-WRpHcxt2OYRoYAZ-JjXN8uQUGuCm56i3PPOqgVeo>
     a dcat:Dataset,
         prov:Entity,
         sssom:MappingSet ;
     adms:versionNotes "1 added, 0 removed, 0 changed" ;
-    dcat:distribution <rows/f3067edb66143c3f806a4060a40820d60fe9dd6d9aa4e353e023f83de8c9bff8.nq.gz> ;
+    dcat:distribution <rows/b866a2f376081e23b438f5a2e506839e098b8efa6d88cee95d75b11497d88877.nq.gz> ;
     dcat:version "2" ;
-    dct:issued "2026-10-15T20:52:50Z"^^xsd:dateTime ;
+    dct:issued "2026-10-24T01:16:23Z"^^xsd:dateTime ;
     pav:version "2" ;
     prov:specializationOf <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> ;
     prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
     prov:wasDerivedFrom <ni:///sha-256;I1K8y236wgJ202PKxAGCMWcyG3R2PPn8UyCDa7ZUZlM> ;
-    prov:wasRevisionOf <ni:///sha-256;rPBgqPcFHEY99RRNDzxbJ7FGb41B6uJMfOLtLg1cH7I> ;
+    prov:wasRevisionOf <ni:///sha-256;IPwCLHYeiU1z81lI2Aaz-K5g6TDTY2-wPcoMFEKQk5I> ;
     sssom:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
     sssom:mapping_set_version "2" ;
     sssom:mapping_tool "example" ;
@@ -39,18 +44,13 @@
     sssom:subject_source_version "2" ;
     tables:builderVersion "1" .
 
-<ni:///sha-256;5SAo6eYSP0o86W0nZZ5knjxLTh8xceP4hSR31XShqgo>
-    a prov:Entity ;
-    dct:title "codes.txt" ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "e52028e9e6123f4a3ce96d27659e649e3c4b4e1f3171e3f8852477d574a1aa0a" ] .
-
-<ni:///sha-256;5j7QOvdRCtsVe9MXPpFgeazELN7P7OfYeSfjyp5VSkI>
+<ni:///sha-256;HUfdai7LDjJev4yjyDyPd1ay3DpcvGeJf0Slqz4mkdg>
     a dcat:Dataset,
         prov:Entity ;
     adms:versionNotes "5 added, 0 removed, 0 changed" ;
-    dcat:distribution <rows/c3182e88ffc2f30b70fa83100f9b9aae74b263bc244f8cf933bc3bdec5e657a2.nq.gz> ;
+    dcat:distribution <rows/92bd8ebfe31b85df0ae529048ce71314f1b82d17e86498629c8b0c0b3b9c3a36.nq.gz> ;
     dcat:version "1" ;
-    dct:issued "2026-10-15T20:52:48Z"^^xsd:dateTime ;
+    dct:issued "2026-10-24T01:16:15Z"^^xsd:dateTime ;
     pav:version "1" ;
     prov:specializationOf <urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> ;
     prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
@@ -62,55 +62,14 @@
     dct:title "codes.txt" ;
     spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "2352bccb6dfac20276d363cac401823167321b74763cf9fc5320836bb6546653" ] .
 
-<ni:///sha-256;VvWGMkblTrqSzWxbHOoRX6reI9MtOJmsrvVezaYoMfU>
-    a dcat:Dataset,
-        prov:Entity ;
-    adms:versionNotes "1 added, 1 removed, 1 changed" ;
-    dcat:distribution <rows/4cce2296d366bcea6a2326c3d02e032ba59fbb332ae66ba94a0baf350526abec.nq.gz> ;
-    dcat:version "2" ;
-    dct:issued "2026-10-15T20:52:50Z"^^xsd:dateTime ;
-    pav:version "2" ;
-    prov:specializationOf <urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> ;
-    prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
-    prov:wasDerivedFrom <ni:///sha-256;I1K8y236wgJ202PKxAGCMWcyG3R2PPn8UyCDa7ZUZlM> ;
-    prov:wasRevisionOf <ni:///sha-256;5j7QOvdRCtsVe9MXPpFgeazELN7P7OfYeSfjyp5VSkI> ;
-    tables:builderVersion "1" .
-
-<ni:///sha-256;_PaBO6Ye-GlUmcbwIqEu72VdXPFjk5f0v2r2o7dfcMk>
-    a dcat:Dataset,
-        prov:Entity ;
-    adms:versionNotes "1 added, 1 removed, 0 changed" ;
-    dcat:distribution <rows/5c57134f59990679bde870a92c0b1da47cba197d382b02e38f7dfa176e3e46c1.nq.gz> ;
-    dcat:version "2" ;
-    dct:issued "2026-10-15T20:52:50Z"^^xsd:dateTime ;
-    pav:version "2" ;
-    prov:specializationOf <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> ;
-    prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
-    prov:wasDerivedFrom <ni:///sha-256;I1K8y236wgJ202PKxAGCMWcyG3R2PPn8UyCDa7ZUZlM> ;
-    prov:wasRevisionOf <ni:///sha-256;jcRDQNGnXPLjXtEG-I9q7YguBixWXEPdreh4ZdrZ7uc> ;
-    tables:builderVersion "1" .
-
-<ni:///sha-256;jcRDQNGnXPLjXtEG-I9q7YguBixWXEPdreh4ZdrZ7uc>
-    a dcat:Dataset,
-        prov:Entity ;
-    adms:versionNotes "1 added, 0 removed, 0 changed" ;
-    dcat:distribution <rows/2eecee46aa15aa3f352c786c19f1336c1782cefcaac2ffabf3194fbc87c4d9b2.nq.gz> ;
-    dcat:version "1" ;
-    dct:issued "2026-10-15T20:52:48Z"^^xsd:dateTime ;
-    pav:version "1" ;
-    prov:specializationOf <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> ;
-    prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
-    prov:wasDerivedFrom <ni:///sha-256;5SAo6eYSP0o86W0nZZ5knjxLTh8xceP4hSR31XShqgo> ;
-    tables:builderVersion "1" .
-
-<ni:///sha-256;rPBgqPcFHEY99RRNDzxbJ7FGb41B6uJMfOLtLg1cH7I>
+<ni:///sha-256;IPwCLHYeiU1z81lI2Aaz-K5g6TDTY2-wPcoMFEKQk5I>
     a dcat:Dataset,
         prov:Entity,
         sssom:MappingSet ;
     adms:versionNotes "4 added, 0 removed, 0 changed" ;
-    dcat:distribution <rows/846604d43d7e316bd2070158034b6f761b68d227d73b7c2ce9abc9da3b5b9688.nq.gz> ;
+    dcat:distribution <rows/eddb4918f6f3dce10b8fe316444c38c88288f51cf2d3bfcc618455a649cd9943.nq.gz> ;
     dcat:version "1" ;
-    dct:issued "2026-10-15T20:52:48Z"^^xsd:dateTime ;
+    dct:issued "2026-10-24T01:16:15Z"^^xsd:dateTime ;
     pav:version "1" ;
     prov:specializationOf <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> ;
     prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
@@ -122,87 +81,128 @@
     sssom:subject_source_version "1" ;
     tables:builderVersion "1" .
 
-<rows/2eecee46aa15aa3f352c786c19f1336c1782cefcaac2ffabf3194fbc87c4d9b2.nq.gz>
-    a dcat:Distribution ;
-    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
-    dcat:downloadURL <rows/2eecee46aa15aa3f352c786c19f1336c1782cefcaac2ffabf3194fbc87c4d9b2.nq.gz> ;
-    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "2eecee46aa15aa3f352c786c19f1336c1782cefcaac2ffabf3194fbc87c4d9b2" ] .
+<ni:///sha-256;VpYf5XnMmlW_BzKjBqkEoUKHLJNeOx6iS7EvaXbIHgg>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "1 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/8f5142a8808933f88f6f318d12cc6ea2d09454cdd4e64a667755b15fed05ed2a.nq.gz> ;
+    dcat:version "1" ;
+    dct:issued "2026-10-24T01:16:15Z"^^xsd:dateTime ;
+    pav:version "1" ;
+    prov:specializationOf <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> ;
+    prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
+    prov:wasDerivedFrom <ni:///sha-256;5SAo6eYSP0o86W0nZZ5knjxLTh8xceP4hSR31XShqgo> ;
+    tables:builderVersion "1" .
 
-<rows/4cce2296d366bcea6a2326c3d02e032ba59fbb332ae66ba94a0baf350526abec.nq.gz>
-    a dcat:Distribution ;
-    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
-    dcat:downloadURL <rows/4cce2296d366bcea6a2326c3d02e032ba59fbb332ae66ba94a0baf350526abec.nq.gz> ;
-    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "4cce2296d366bcea6a2326c3d02e032ba59fbb332ae66ba94a0baf350526abec" ] .
+<ni:///sha-256;hTb7_IYmYWMe91gaiYP1CumDoUmNxjJd_VNCATPLp-0>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "1 added, 1 removed, 0 changed" ;
+    dcat:distribution <rows/4dae062830c549fbc36159e6d6812f662d8c8d8f2651997f8d3449b5bda2f5b0.nq.gz> ;
+    dcat:version "2" ;
+    dct:issued "2026-10-24T01:16:23Z"^^xsd:dateTime ;
+    pav:version "2" ;
+    prov:specializationOf <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> ;
+    prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
+    prov:wasDerivedFrom <ni:///sha-256;I1K8y236wgJ202PKxAGCMWcyG3R2PPn8UyCDa7ZUZlM> ;
+    prov:wasRevisionOf <ni:///sha-256;VpYf5XnMmlW_BzKjBqkEoUKHLJNeOx6iS7EvaXbIHgg> ;
+    tables:builderVersion "1" .
 
-<rows/5c57134f59990679bde870a92c0b1da47cba197d382b02e38f7dfa176e3e46c1.nq.gz>
-    a dcat:Distribution ;
-    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
-    dcat:downloadURL <rows/5c57134f59990679bde870a92c0b1da47cba197d382b02e38f7dfa176e3e46c1.nq.gz> ;
-    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "5c57134f59990679bde870a92c0b1da47cba197d382b02e38f7dfa176e3e46c1" ] .
+<ni:///sha-256;l6tYv-yIaz3Us4A9eDJ00hOM0_sz0iO5bgAcoVr4jYA>
+    a dcat:Dataset,
+        prov:Entity ;
+    adms:versionNotes "1 added, 1 removed, 1 changed" ;
+    dcat:distribution <rows/8af74702d7812534bc5acf6914309cc907760aa521af1b5fc041ab9675ed5c61.nq.gz> ;
+    dcat:version "2" ;
+    dct:issued "2026-10-24T01:16:23Z"^^xsd:dateTime ;
+    pav:version "2" ;
+    prov:specializationOf <urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> ;
+    prov:wasAttributedTo <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0> ;
+    prov:wasDerivedFrom <ni:///sha-256;I1K8y236wgJ202PKxAGCMWcyG3R2PPn8UyCDa7ZUZlM> ;
+    prov:wasRevisionOf <ni:///sha-256;HUfdai7LDjJev4yjyDyPd1ay3DpcvGeJf0Slqz4mkdg> ;
+    tables:builderVersion "1" .
 
-<rows/846604d43d7e316bd2070158034b6f761b68d227d73b7c2ce9abc9da3b5b9688.nq.gz>
+<rows/4dae062830c549fbc36159e6d6812f662d8c8d8f2651997f8d3449b5bda2f5b0.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
-    dcat:downloadURL <rows/846604d43d7e316bd2070158034b6f761b68d227d73b7c2ce9abc9da3b5b9688.nq.gz> ;
+    dcat:downloadURL <rows/4dae062830c549fbc36159e6d6812f662d8c8d8f2651997f8d3449b5bda2f5b0.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "846604d43d7e316bd2070158034b6f761b68d227d73b7c2ce9abc9da3b5b9688" ] .
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "4dae062830c549fbc36159e6d6812f662d8c8d8f2651997f8d3449b5bda2f5b0" ] .
 
-<rows/c3182e88ffc2f30b70fa83100f9b9aae74b263bc244f8cf933bc3bdec5e657a2.nq.gz>
+<rows/8af74702d7812534bc5acf6914309cc907760aa521af1b5fc041ab9675ed5c61.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
-    dcat:downloadURL <rows/c3182e88ffc2f30b70fa83100f9b9aae74b263bc244f8cf933bc3bdec5e657a2.nq.gz> ;
+    dcat:downloadURL <rows/8af74702d7812534bc5acf6914309cc907760aa521af1b5fc041ab9675ed5c61.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "c3182e88ffc2f30b70fa83100f9b9aae74b263bc244f8cf933bc3bdec5e657a2" ] .
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "8af74702d7812534bc5acf6914309cc907760aa521af1b5fc041ab9675ed5c61" ] .
 
-<rows/f3067edb66143c3f806a4060a40820d60fe9dd6d9aa4e353e023f83de8c9bff8.nq.gz>
+<rows/8f5142a8808933f88f6f318d12cc6ea2d09454cdd4e64a667755b15fed05ed2a.nq.gz>
     a dcat:Distribution ;
     dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
-    dcat:downloadURL <rows/f3067edb66143c3f806a4060a40820d60fe9dd6d9aa4e353e023f83de8c9bff8.nq.gz> ;
+    dcat:downloadURL <rows/8f5142a8808933f88f6f318d12cc6ea2d09454cdd4e64a667755b15fed05ed2a.nq.gz> ;
     dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
-    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "f3067edb66143c3f806a4060a40820d60fe9dd6d9aa4e353e023f83de8c9bff8" ] .
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "8f5142a8808933f88f6f318d12cc6ea2d09454cdd4e64a667755b15fed05ed2a" ] .
+
+<rows/92bd8ebfe31b85df0ae529048ce71314f1b82d17e86498629c8b0c0b3b9c3a36.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/92bd8ebfe31b85df0ae529048ce71314f1b82d17e86498629c8b0c0b3b9c3a36.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "92bd8ebfe31b85df0ae529048ce71314f1b82d17e86498629c8b0c0b3b9c3a36" ] .
+
+<rows/b866a2f376081e23b438f5a2e506839e098b8efa6d88cee95d75b11497d88877.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/b866a2f376081e23b438f5a2e506839e098b8efa6d88cee95d75b11497d88877.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "b866a2f376081e23b438f5a2e506839e098b8efa6d88cee95d75b11497d88877" ] .
+
+<rows/eddb4918f6f3dce10b8fe316444c38c88288f51cf2d3bfcc618455a649cd9943.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/eddb4918f6f3dce10b8fe316444c38c88288f51cf2d3bfcc618455a649cd9943.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "eddb4918f6f3dce10b8fe316444c38c88288f51cf2d3bfcc618455a649cd9943" ] .
 
 <urn:uuid:015721e2-1bad-41be-9801-38b53b1970c0>
     a tables:Builder ;
     rdfs:label "example" .
 
 <urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f>
-    a dcat:Dataset,
-        rec:ReferenceSeries ;
-    dcat:hasCurrentVersion <ni:///sha-256;_PaBO6Ye-GlUmcbwIqEu72VdXPFjk5f0v2r2o7dfcMk> ;
-    dcat:hasVersion <ni:///sha-256;_PaBO6Ye-GlUmcbwIqEu72VdXPFjk5f0v2r2o7dfcMk>,
-        <ni:///sha-256;jcRDQNGnXPLjXtEG-I9q7YguBixWXEPdreh4ZdrZ7uc> ;
+    a cascade:ReferenceSeries,
+        dcat:Dataset ;
+    cascade:tableKind cascade:RetiredCodes ;
+    dcat:hasCurrentVersion <ni:///sha-256;hTb7_IYmYWMe91gaiYP1CumDoUmNxjJd_VNCATPLp-0> ;
+    dcat:hasVersion <ni:///sha-256;VpYf5XnMmlW_BzKjBqkEoUKHLJNeOx6iS7EvaXbIHgg>,
+        <ni:///sha-256;hTb7_IYmYWMe91gaiYP1CumDoUmNxjJd_VNCATPLp-0> ;
     dct:bibliographicCitation "Source: an example publisher" ;
     dct:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
     dct:publisher <https://publisher.example/> ;
     dct:source <urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19> ;
-    rdfs:label "Example vaccine code status" ;
-    rec:tableKind rec:CodeStatus .
+    rdfs:label "Example vaccine code status" .
 
 <urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c>
-    a dcat:Dataset,
-        rec:ReferenceSeries ;
-    dcat:hasCurrentVersion <ni:///sha-256;VvWGMkblTrqSzWxbHOoRX6reI9MtOJmsrvVezaYoMfU> ;
-    dcat:hasVersion <ni:///sha-256;5j7QOvdRCtsVe9MXPpFgeazELN7P7OfYeSfjyp5VSkI>,
-        <ni:///sha-256;VvWGMkblTrqSzWxbHOoRX6reI9MtOJmsrvVezaYoMfU> ;
+    a cascade:ReferenceSeries,
+        dcat:Dataset ;
+    cascade:tableKind cascade:CodeNames ;
+    dcat:hasCurrentVersion <ni:///sha-256;l6tYv-yIaz3Us4A9eDJ00hOM0_sz0iO5bgAcoVr4jYA> ;
+    dcat:hasVersion <ni:///sha-256;HUfdai7LDjJev4yjyDyPd1ay3DpcvGeJf0Slqz4mkdg>,
+        <ni:///sha-256;l6tYv-yIaz3Us4A9eDJ00hOM0_sz0iO5bgAcoVr4jYA> ;
     dct:bibliographicCitation "Source: an example publisher" ;
     dct:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
     dct:publisher <https://publisher.example/> ;
     dct:source <urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19> ;
-    rdfs:label "Example vaccine names" ;
-    rec:tableKind rec:CodeNames .
+    rdfs:label "Example vaccine names" .
 
 <urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd>
-    a dcat:Dataset,
-        rec:ReferenceSeries ;
-    dcat:hasCurrentVersion <ni:///sha-256;18zPYUK0binaJzyHv_H37D-u74S94kfP38ubGB7wq0I> ;
-    dcat:hasVersion <ni:///sha-256;18zPYUK0binaJzyHv_H37D-u74S94kfP38ubGB7wq0I>,
-        <ni:///sha-256;rPBgqPcFHEY99RRNDzxbJ7FGb41B6uJMfOLtLg1cH7I> ;
+    a cascade:ReferenceSeries,
+        dcat:Dataset ;
+    cascade:tableKind cascade:VaccineGroups ;
+    dcat:hasCurrentVersion <ni:///sha-256;68-WRpHcxt2OYRoYAZ-JjXN8uQUGuCm56i3PPOqgVeo> ;
+    dcat:hasVersion <ni:///sha-256;68-WRpHcxt2OYRoYAZ-JjXN8uQUGuCm56i3PPOqgVeo>,
+        <ni:///sha-256;IPwCLHYeiU1z81lI2Aaz-K5g6TDTY2-wPcoMFEKQk5I> ;
     dct:bibliographicCitation "Source: an example publisher" ;
     dct:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
     dct:publisher <https://publisher.example/> ;
     dct:source <urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19> ;
-    rdfs:label "Example vaccine groups" ;
-    rec:tableKind rec:VaccineGroups .
+    rdfs:label "Example vaccine groups" .

@@ -49,7 +49,7 @@ test("a feed breaking one constraint is refused with its message", async () => {
   const cases: [string, string][] = [
     ["DELETE WHERE { <> dct:title ?t }", "The catalog has one title."],
     [
-      "DELETE { ?s rdfs:label ?l } WHERE { ?s rdfs:label ?l ; a rec:ReferenceSeries }",
+      "DELETE { ?s rdfs:label ?l } WHERE { ?s rdfs:label ?l ; a cascade:ReferenceSeries }",
       "A series has one name.",
     ],
     ["DELETE WHERE { ?s dct:license ?l }", "A series names its one licence."],
@@ -125,6 +125,7 @@ test("the checked.json a build and a publish write conforms to its schema", asyn
       feed,
       site: join(dir, "site"),
       store: folderStore([out]),
+      vocabulary: (await readContract(ROOT)).vocabulary,
       checked: mergeChecked(built, {
         checked: {
           "urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d": {
@@ -274,7 +275,7 @@ test("a source states a file's compression as gzip and whether it is archived on
       "Only a source detected by its announcement names an announcement page.",
     ],
     [
-      "INSERT { ?s rec:coversGene 7 } WHERE { ?s rec:coversGene 'MLH1' }",
+      "INSERT { ?s cascade:coversGene 7 } WHERE { ?s cascade:coversGene 'MLH1' }",
       "A source fills at least one series, each a urn:uuid: with one name and one table kind.",
     ],
   ];
@@ -387,11 +388,11 @@ test("a source carrying rows forward and looking up their history declares what 
   assert.deepEqual(await declarationViolations(contract, source), []);
   const cases: [string, string][] = [
     [
-      "INSERT { ?s tables:carriesForward true } WHERE { ?s rec:tableKind rec:CodeStatus }",
+      "INSERT { ?s tables:carriesForward true } WHERE { ?s cascade:tableKind cascade:RetiredCodes }",
       "A series carrying rows forward does not hold code status.",
     ],
     [
-      'DELETE { ?s tables:carriesForward ?c } INSERT { ?s tables:carriesForward "yes" } WHERE { ?s tables:carriesForward ?c ; rec:tableKind rec:CodeNames }',
+      'DELETE { ?s tables:carriesForward ?c } INSERT { ?s tables:carriesForward "yes" } WHERE { ?s tables:carriesForward ?c ; cascade:tableKind cascade:CodeNames }',
       "A series says once, as a boolean, whether it carries rows forward.",
     ],
     [
@@ -399,11 +400,11 @@ test("a source carrying rows forward and looking up their history declares what 
       "A history lookup names one code system and one URL template, which holds {code}.",
     ],
     [
-      "INSERT { ?s tables:historyLookup [ tables:codeSystem rec:CVX ; tables:urlTemplate 'https://publisher.example/{code}' ] } WHERE { ?s a tables:Source }",
+      "INSERT { ?s tables:historyLookup [ tables:codeSystem cascade:CVX ; tables:urlTemplate 'https://publisher.example/{code}' ] } WHERE { ?s a tables:Source }",
       "A source has at most one history lookup.",
     ],
     [
-      "DELETE { ?s rec:tableKind rec:CodeStatus } INSERT { ?s rec:tableKind rec:CodeNames } WHERE { ?s rec:tableKind rec:CodeStatus }",
+      "DELETE { ?s cascade:tableKind cascade:RetiredCodes } INSERT { ?s cascade:tableKind cascade:CodeNames } WHERE { ?s cascade:tableKind cascade:RetiredCodes }",
       "A source with a history lookup fills exactly one code status series.",
     ],
     [

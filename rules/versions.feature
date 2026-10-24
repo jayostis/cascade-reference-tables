@@ -24,8 +24,8 @@ Feature: Versions
         | Example vaccine code status | 1       | 1 added, 1 removed, 0 changed |
       And the last build's differences list these keys:
         | series                      | added                           | removed                        | changed                         |
-        | Example vaccine names       | http://hl7.org/fhir/sid/cvx/140 | http://hl7.org/fhir/sid/cvx/57 | http://hl7.org/fhir/sid/cvx/150 |
-        | Example vaccine code status | http://hl7.org/fhir/sid/cvx/03  | http://hl7.org/fhir/sid/cvx/57 |                                 |
+        | Example vaccine names       | https://ns.cascadeprotocol.org/codes/cvx/140 | https://ns.cascadeprotocol.org/codes/cvx/57 | https://ns.cascadeprotocol.org/codes/cvx/150 |
+        | Example vaccine code status | https://ns.cascadeprotocol.org/codes/cvx/03  | https://ns.cascadeprotocol.org/codes/cvx/57 |                                 |
 
     Example: a version built by a new builder version of a release already built is labelled to differ from the version it revises
       When the example builder's release "release" is built as "1"

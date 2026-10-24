@@ -7,7 +7,7 @@ import {
 
 const CLASSIFICATIONS = "urn:uuid:84a9f86a-f5e4-45b1-9e92-cd4ba027a389";
 const NAMES = "urn:uuid:1653be1a-b871-4e0f-8c22-f13bbbf1b6d6";
-const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
+const CASCADE = "https://ns.cascadeprotocol.org/cascade#";
 const VARIANT_SUMMARY = "variant_summary.txt.gz";
 const HGVS4VARIATION = "hgvs4variation.txt.gz";
 const SCVS = "SCVsForAggregateGermlineClassification";
@@ -28,9 +28,9 @@ const MONTHS = [
 /** The shown examples of a finding. */
 const SHOWN = 5;
 
-/** A coding `NM_` expression in the normal form, as the vocabulary's `rec:HgvsCodeShape` holds its IRI. */
+/** A coding `NM_` expression in the normal form, as the vocabulary's `cascade:HgvsCodeShape` holds its IRI. */
 const HGVS_CODE =
-  /^http:\/\/varnomen\.hgvs\.org\/NM_[0-9]+\.[0-9]+%3Ac\.([A-Za-z0-9._~-]|%[0-9A-F]{2})+$/;
+  /^https:\/\/ns\.cascadeprotocol\.org\/codes\/hgvs\/NM_[0-9]+\.[0-9]+%3Ac\.([A-Za-z0-9._~-]|%[0-9A-F]{2})+$/;
 /** The expression in a variation's name: the gene and the protein change removed. */
 const NAME_EXPRESSION = /^(NM_\d+\.\d+)(\([^)]*\))?:(c\.\S+)/;
 
@@ -143,10 +143,10 @@ const build: Build = async function* (release: Release) {
   const genes = new Set(release.genes(CLASSIFICATIONS));
   if (genes.size === 0)
     throw new Refusal("the source declares no genes for its classifications");
-  const classes = release.concepts(`${REC}ClinVarClassifications`);
-  const statuses = release.concepts(`${REC}ClinVarReviewStatuses`);
+  const classes = release.concepts(`${CASCADE}ClinVarClassifications`);
+  const statuses = release.concepts(`${CASCADE}ClinVarReviewStatuses`);
   const variationIri = (id: string): string =>
-    release.codeIri(`${REC}ClinVar`, id);
+    release.codeIri(`${CASCADE}ClinVar`, id);
   const summary = release.file(VARIANT_SUMMARY);
   const snapshot = release.file(HGVS4VARIATION);
 
@@ -307,16 +307,16 @@ const build: Build = async function* (release: Release) {
     const hgvs: string[] = [];
     for (const expression of [...expressions].sort()) {
       if (ambiguous.has(expression)) continue;
-      const code = release.codeIri(`${REC}HGVS`, expression);
+      const code = release.codeIri(`${CASCADE}HGVS`, expression);
       if (HGVS_CODE.test(code)) hgvs.push(code);
       else notCoding.push(expression);
     }
 
     const count =
       said.scvs === undefined
-        ? { submitters: Number(said.submitters) }
+        ? { submitterCount: Number(said.submitters) }
         : {
-            contributingSubmitters:
+            contributingSubmitterCount:
               said.scvs === "-" ? 0 : said.scvs.split("|").length,
           };
     yield {

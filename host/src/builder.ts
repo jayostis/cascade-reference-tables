@@ -29,14 +29,14 @@ export interface ReleaseFile {
 /** What a builder is handed: the release's files, the IRIs of codes, and what the vocabulary and its source state. */
 export interface Release {
   file(name: string): ReleaseFile;
-  /** A code's IRI in a code system the vocabulary names, such as `rec:CVX`. */
+  /** A code's IRI in a code system the vocabulary names, such as `cascade:CVX`. */
   codeIri(system: string, code: string): string;
   /**
    * Each label of a concept of the scheme, its `skos:prefLabel`, `skos:altLabel` and `skos:notation`, with the
    * concept's IRI, as the pinned vocabulary states them.
    */
   concepts(scheme: string): ReadonlyMap<string, string>;
-  /** The genes (`rec:coversGene`) the source declares for the series, sorted. */
+  /** The genes (`cascade:coversGene`) the source declares for the series, sorted. */
   genes(series: string): readonly string[];
   /** Something a person should see on the pull request; the build goes on. */
   finding(text: string): void;
@@ -89,8 +89,8 @@ export interface ClassificationRow {
   readonly classification?: readonly string[];
   readonly reviewStatus?: string;
   readonly lastEvaluated?: string;
-  readonly contributingSubmitters?: number;
-  readonly submitters?: number;
+  readonly contributingSubmitterCount?: number;
+  readonly submitterCount?: number;
 }
 
 /** A row in one of `builder/interface.schema.json`'s forms. */

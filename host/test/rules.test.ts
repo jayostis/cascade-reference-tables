@@ -41,7 +41,7 @@ import {
   PREFIXES,
   type Quad,
   quad,
-  REC,
+  CASCADE,
 } from "../src/rdf.js";
 import {
   type Checked as SiteChecks,
@@ -114,7 +114,7 @@ async function recordsCopy(
   name: string,
 ): Promise<{ folder: string; records: string }> {
   const folder = join(world.dir, name);
-  const records = join("ontologies", "records", "v1-draft");
+  const records = "ontologies";
   await cp(join(contract.vocabulary.folder, records), join(folder, records), {
     recursive: true,
   });
@@ -289,6 +289,34 @@ function historyOf(world: World): Fetch {
   };
 }
 
+async function publishSite(
+  world: World,
+  vocabulary: Contract["vocabulary"],
+): Promise<void> {
+  world.site = join(world.dir, "site");
+  try {
+    await publish({
+      feed: world.feed,
+      site: world.site,
+      store: folderStore([world.out]),
+      vocabulary,
+      checked: mergeChecked(
+        world.siteChecks ?? { checked: {} },
+        JSON.parse(
+          await readFile(join(world.out, "checked.json"), "utf8"),
+        ) as SiteChecks,
+      ),
+    });
+  } catch (error) {
+    world.stopped = error as Error;
+  }
+}
+
+function pageOf(world: World): string {
+  assert.equal(world.stopped, undefined);
+  return readFileSync(join(world.site!, "index.html"), "utf8");
+}
+
 function seriesNamed(label: string): string {
   const found = example.series.find((s) => s.label === label);
   assert.ok(found, `no series is labelled ${label}`);
@@ -381,11 +409,11 @@ const steps = new Steps<World>()
     "the vocabulary moves CVX's space to {string}",
     async (world, [space]) => {
       const { folder, records } = await recordsCopy(world, "moved-vocabulary");
-      const old = contract.vocabulary.codeIri(`${REC}CVX`, "");
+      const old = contract.vocabulary.codeIri(`${CASCADE}CVX`, "");
       const turtle = (stem: string): string => stem.replaceAll(".", "\\\\.");
       for (const [file, from, to] of [
-        ["records.ttl", old, space as string],
-        ["records.shapes.ttl", turtle(old), turtle(space as string)],
+        ["cascade.ttl", old, space as string],
+        ["cascade.shapes.ttl", turtle(old), turtle(space as string)],
       ] as const) {
         const path = join(folder, records, file);
         const text = await readFile(path, "utf8");
@@ -425,7 +453,7 @@ const steps = new Steps<World>()
     "the carrying example's release {string} is built as {string} under the vocabulary before vaccine groups moved to member of",
     async (world, [release, label]) => {
       const { folder, records } = await recordsCopy(world, "before-member-of");
-      const path = join(folder, records, "records.shapes.ttl");
+      const path = join(folder, records, "cascade.shapes.ttl");
       const text = await readFile(path, "utf8");
       const fixed = "sh:hasValue obo:RO_0002350";
       assert.equal(text.split(fixed).length, 2, `${fixed} is not once`);
@@ -1067,14 +1095,14 @@ const steps = new Steps<World>()
     "the classifications example builder is given {int} rows, the first and the last found by the expression {string}",
     (world, [count, expression]) => {
       const series = classifications.series[0]!.iri;
-      const found = codeIri(`${REC}HGVS`, expression as string);
+      const found = codeIri(`${CASCADE}HGVS`, expression as string);
       return classificationsGiven(
         world,
         Array.from({ length: count as number }, (_, i) => ({
           series,
-          variation: `http://www.ncbi.nlm.nih.gov/clinvar/${i + 1}`,
+          variation: `https://identifiers.org/clinvar:${i + 1}`,
           ...(i === 0 || i === (count as number) - 1 ? { hgvs: [found] } : {}),
-          submitters: 1,
+          submitterCount: 1,
         })),
       );
     },
@@ -1095,7 +1123,7 @@ const steps = new Steps<World>()
         .map(([prefix, space]) => `@prefix ${prefix}: <${space}> .`)
         .join("\n");
       const expected = parseTurtle(
-        `@prefix genomics: <https://ns.cascadeprotocol.org/genomics/v1#> .\n${prefixes}\n${await readFile(join(folder, "row.ttl"), "utf8")}`,
+        `@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .\n${prefixes}\n${await readFile(join(folder, "row.ttl"), "utf8")}`,
         "urn:x:",
       );
       assert.deepEqual(
@@ -1239,23 +1267,51 @@ const steps = new Steps<World>()
     ) as SiteChecks;
     assert.deepEqual(held, wanted);
   })
-  .define("the site is published", async (world) => {
-    world.site = join(world.dir, "site");
-    try {
-      await publish({
-        feed: world.feed,
-        site: world.site,
-        store: folderStore([world.out]),
-        checked: mergeChecked(
-          world.siteChecks ?? { checked: {} },
-          JSON.parse(
-            await readFile(join(world.out, "checked.json"), "utf8"),
-          ) as SiteChecks,
-        ),
-      });
-    } catch (error) {
-      world.stopped = error as Error;
-    }
+  .define("the site is published", (world) =>
+    publishSite(world, contract.vocabulary),
+  )
+  .define(
+    "the site is published under a vocabulary that does not declare {string}",
+    async (world, [kind]) => {
+      const { folder, records } = await recordsCopy(world, "retired-kind");
+      const path = join(folder, records, "cascade.ttl");
+      const text = await readFile(path, "utf8");
+      const block = new RegExp(
+        `(\\ncascade:${kind as string} a cascade:TableKind ;[^]*?)\\n    cascade:rowShape [^\\n]*`,
+      );
+      assert.ok(block.test(text), `${kind as string} is no table kind`);
+      await writeFile(path, text.replace(block, "$1"));
+      await publishSite(world, (await readContract(ROOT, folder)).vocabulary);
+    },
+  )
+  .define(
+    "the site holds the rows file of {string} {string}",
+    async (world, [label, version]) => {
+      assert.equal(world.stopped, undefined);
+      const feed = await feedOf(world);
+      const { file } = feed.rowsOf(
+        versionLabelled(feed, seriesNamed(label as string), version as string),
+      );
+      assert.ok(existsSync(join(world.site!, file)), file);
+    },
+  )
+  .define("the site holds no rows file of {string}", async (world, [label]) => {
+    assert.equal(world.stopped, undefined);
+    const feed = await feedOf(world);
+    for (const version of feed.graph.objects(
+      seriesNamed(label as string),
+      `${DCAT}hasVersion`,
+    ))
+      assert.equal(
+        existsSync(join(world.site!, feed.rowsOf(version.value).file)),
+        false,
+      );
+  })
+  .define("the site's page lists {string}", (world, [label]) => {
+    assert.ok(pageOf(world).includes(`<li>${label as string}:`));
+  })
+  .define("the site's page does not list {string}", (world, [label]) => {
+    assert.ok(!pageOf(world).includes(`<li>${label as string}:`));
   })
   .define(
     "the site holds the rows files of these versions of {string}: {string}, {string}",

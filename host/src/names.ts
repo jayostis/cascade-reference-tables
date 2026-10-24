@@ -4,7 +4,9 @@ import { canonize } from "rdf-canonize";
 import { defaultGraph, PROV, type Quad, quad, triple } from "./rdf.js";
 
 const NI = "ni:///sha-256;";
-const RECORD_NAMESPACE = "90c60849-c5ef-4ca6-bfb8-8662bd07d2b5";
+const NAMESPACE = "90c60849-c5ef-4ca6-bfb8-8662bd07d2b5";
+const TABLE_ROW_NAMING_RULE =
+  "https://ns.cascadeprotocol.org/cascade#TableRowNamingRule";
 
 export const THIS_VERSION = "urn:cascade:this-version";
 
@@ -30,9 +32,25 @@ export async function sha256OfFile(path: string): Promise<Buffer> {
   return hash.digest();
 }
 
-/** A name from its inputs by the Bridge's record rule (N2). */
-export function recordName(inputs: readonly string[]): string {
-  const digest = sha256([RECORD_NAMESPACE, ...inputs].join("|"));
+const escaped = (part: string): string =>
+  part.replaceAll("%", "%25").replaceAll("|", "%7C");
+
+/** A mapping row's name by N11, from the IRIs of its source, property and target and, for a panel member, its sequence. */
+export function tableRowName(
+  source: string,
+  property: string,
+  target: string,
+  panelSequence?: bigint,
+): string {
+  const inputs = [
+    source,
+    property,
+    target,
+    ...(panelSequence === undefined ? [] : [String(panelSequence)]),
+  ];
+  const digest = sha256(
+    [NAMESPACE, TABLE_ROW_NAMING_RULE, ...inputs].map(escaped).join("|"),
+  );
   digest[6] = (digest[6]! & 0x0f) | 0x80;
   digest[8] = (digest[8]! & 0x3f) | 0x80;
   const hex = digest.subarray(0, 16).toString("hex");

@@ -1,7 +1,7 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
 @prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
@@ -19,17 +19,17 @@
         [ dct:title "codes.txt" ; tables:namePattern "^codes-.*\\.txt$" ; tables:archivePattern "^codes-" ] ,
         [ dct:title "notes.txt" ; tables:namePattern "^notes-.*\\.txt$" ] .
 
-<urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> a rec:ReferenceSeries ;
+<urn:uuid:c1a6678c-2b4d-4287-b852-9039e6a71afd> a cascade:ReferenceSeries ;
     rdfs:label "Example vaccine groups" ;
-    rec:tableKind rec:VaccineGroups ;
+    cascade:tableKind cascade:VaccineGroups ;
     dct:source <urn:uuid:0d6bcefb-bc49-45ec-bb0b-e5ca5bb6f60d> .
 
-<urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> a rec:ReferenceSeries ;
+<urn:uuid:6e9c1dc9-8c36-49a8-929c-cd9f6701076c> a cascade:ReferenceSeries ;
     rdfs:label "Example vaccine names" ;
-    rec:tableKind rec:CodeNames ;
+    cascade:tableKind cascade:CodeNames ;
     dct:source <urn:uuid:0d6bcefb-bc49-45ec-bb0b-e5ca5bb6f60d> .
 
-<urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> a rec:ReferenceSeries ;
+<urn:uuid:57b9415b-3531-4995-8dfb-48b69ead096f> a cascade:ReferenceSeries ;
     rdfs:label "Example vaccine code status" ;
-    rec:tableKind rec:CodeStatus ;
+    cascade:tableKind cascade:RetiredCodes ;
     dct:source <urn:uuid:0d6bcefb-bc49-45ec-bb0b-e5ca5bb6f60d> .

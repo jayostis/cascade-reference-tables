@@ -5,7 +5,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix spdx: <http://spdx.org/rdf/terms#> .
 @prefix sssom: <https://w3id.org/sssom/> .
@@ -32,12 +32,12 @@ tables:CatalogShape a sh:NodeShape ;
         sh:message "The catalog states when it last changed, once."@en
     ] , [
         sh:path dcat:dataset ;
-        sh:class rec:ReferenceSeries ;
+        sh:class cascade:ReferenceSeries ;
         sh:message "Each dataset of the catalog is a reference series."@en
     ] .
 
 tables:SeriesShape a sh:NodeShape ;
-    sh:targetClass rec:ReferenceSeries ;
+    sh:targetClass cascade:ReferenceSeries ;
     sh:class dcat:Dataset ;
     sh:pattern "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" ;
     sh:message "A series is a dcat:Dataset named by a urn:uuid:."@en ;
@@ -48,7 +48,7 @@ tables:SeriesShape a sh:NodeShape ;
         sh:maxCount 1 ;
         sh:message "A series has one name."@en
     ] , [
-        sh:path rec:tableKind ;
+        sh:path cascade:tableKind ;
         sh:nodeKind sh:IRI ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
@@ -101,7 +101,7 @@ tables:VersionShape a sh:NodeShape ;
         sh:message "A version is listed by one series."@en
     ] , [
         sh:path prov:specializationOf ;
-        sh:class rec:ReferenceSeries ;
+        sh:class cascade:ReferenceSeries ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:message "A version is of one series."@en

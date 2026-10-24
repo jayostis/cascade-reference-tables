@@ -3,7 +3,7 @@ import { type Build, Refusal } from "../../host/src/builder.js";
 const NAMES = "urn:uuid:b6ba7e56-1361-4d73-abef-42efe31e6943";
 const STATUS = "urn:uuid:8caff025-8214-4910-81d7-16dfac334dae";
 const MEMBERS = "urn:uuid:bc968e29-9f45-4160-b910-a70a06bbca9c";
-const LOINC = "https://ns.cascadeprotocol.org/records/v1-draft#LOINC";
+const LOINC = "https://ns.cascadeprotocol.org/cascade#LOINC";
 const HAS_MEMBER = "http://purl.obolibrary.org/obo/RO_0002351";
 const CURATED = "https://w3id.org/semapv/vocab/ManualMappingCuration";
 

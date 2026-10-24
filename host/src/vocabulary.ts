@@ -9,14 +9,15 @@ import {
   parseTurtle,
   type Quad,
   RDF,
-  REC,
+  CASCADE,
   SH,
   SKOS,
   VOID,
 } from "./rdf.js";
 
 const run = promisify(execFile);
-const RECORDS = "ontologies/records/v1-draft/";
+const TERMS = "ontologies/cascade.ttl";
+const SHAPES = "ontologies/cascade.shapes.ttl";
 
 export interface Pin {
   readonly repository: string;
@@ -45,7 +46,7 @@ export async function resolveVocabulary(root: string): Promise<Resolved> {
   if (named !== undefined && named !== "")
     return { folder: resolve(named), said: `cascade-vocabulary: ${named}` };
   const sibling = join(dirname(resolve(root)), basename(pin.repository));
-  if (existsSync(join(sibling, RECORDS))) {
+  if (existsSync(join(sibling, TERMS))) {
     const commit = await git(sibling, "rev-parse", "HEAD").catch(() => "");
     return {
       folder: sibling,
@@ -53,7 +54,7 @@ export async function resolveVocabulary(root: string): Promise<Resolved> {
     };
   }
   const folder = join(root, ".cache", "cascade-vocabulary", pin.commit);
-  if (!existsSync(join(folder, RECORDS))) {
+  if (!existsSync(join(folder, TERMS))) {
     await mkdir(dirname(folder), { recursive: true });
     const partial = await mkdtemp(`${folder}.partial-`);
     await git(partial, "init", "--quiet");
@@ -76,7 +77,7 @@ export async function resolveVocabulary(root: string): Promise<Resolved> {
     );
     // Another run fetching the same commit may have put it in place first.
     await rename(partial, folder).catch(async (error: unknown) => {
-      if (!existsSync(join(folder, RECORDS))) throw error;
+      if (!existsSync(join(folder, TERMS))) throw error;
       await rm(partial, { recursive: true, force: true });
     });
   }
@@ -105,19 +106,20 @@ export class Vocabulary {
 
   static async read(folder: string): Promise<Vocabulary> {
     const read = async (file: string): Promise<Quad[]> =>
-      parseTurtle(
-        await readFile(join(folder, RECORDS, file), "utf8"),
-        `${REC}`,
-      );
+      parseTurtle(await readFile(join(folder, file), "utf8"), `${CASCADE}`);
     return new Vocabulary(
       folder,
-      new Graph(await read("records.ttl")),
-      await read("records.shapes.ttl"),
+      new Graph(await read(TERMS)),
+      await read(SHAPES),
     );
   }
 
+  declares(kind: string): boolean {
+    return this.terms.value(kind, `${CASCADE}rowShape`) !== undefined;
+  }
+
   kind(iri: string): Kind {
-    const rowShape = this.terms.value(iri, `${REC}rowShape`);
+    const rowShape = this.terms.value(iri, `${CASCADE}rowShape`);
     if (rowShape === undefined) throw new Error(`${iri} is not a table kind`);
     return { iri, rowShape };
   }
@@ -145,7 +147,7 @@ export class Vocabulary {
   /** The code system whose `void:uriSpace` the IRI starts with, the longest space first; `undefined` for none. */
   systemOf(codeIri: string): string | undefined {
     this.#spaces ??= this.terms
-      .subjects(`${RDF}type`, `${REC}CodeSystem`)
+      .subjects(`${RDF}type`, `${CASCADE}CodeSystem`)
       .flatMap((system) => {
         const space = this.terms.value(system, `${VOID}uriSpace`);
         return space === undefined ? [] : [{ system, space }];

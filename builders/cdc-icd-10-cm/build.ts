@@ -7,7 +7,7 @@ import {
 const NAMES = "urn:uuid:2f1d04ac-2101-4d15-8251-566846a14488";
 const STATUS = "urn:uuid:f110e5af-abb3-418f-9b24-ecbd1ffa5540";
 const CONVERSIONS = "urn:uuid:14f76251-2926-43ef-90c3-47101c1da3dd";
-const ICD10CM = "https://ns.cascadeprotocol.org/records/v1-draft#ICD10CM";
+const ICD10CM = "https://ns.cascadeprotocol.org/cascade#ICD10CM";
 const IS_REPLACED_BY = "http://purl.org/dc/terms/isReplacedBy";
 const CURATED = "https://w3id.org/semapv/vocab/ManualMappingCuration";
 const CHAINED = "https://w3id.org/semapv/vocab/MappingChaining";

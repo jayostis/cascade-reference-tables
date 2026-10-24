@@ -11,7 +11,7 @@ The `n`th build of an example happens on 2026-10-0`n` at 00:00 UTC.
 | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `the example builder's release {string} is built as {string}`                     | the release folder of that name under `fixtures/builder/fixtures/` is built, its versions labelled with the second string                 |
 | `the example builder at version {string} builds the release {string} as {string}` | the same as the first, the example builder declared at that version                                                                       |
-| `the vocabulary moves CVX's space to {string}`                                    | the builds that follow read a vocabulary whose `rec:CVX` has that `void:uriSpace`                                                         |
+| `the vocabulary moves CVX's space to {string}`                                    | the builds that follow read a vocabulary whose `cascade:CVX` has that `void:uriSpace`                                                     |
 | `the example builder, given the release {string}, yields {}`                      | a build of the release folder of that name, which need not exist, whose builder yields the rows of the JSON array given and opens no file |
 
 ## Then
@@ -129,14 +129,14 @@ of `release-2`, the third's of `release-3`, and answers 404 for any other.
 | `the example builder, finding {string}, builds the release {string} as {string}`                                   | the release is built as the second string says, the builder reporting the finding                         |
 | `the example builder's release {string} is built as {string}, the series covering the genes {string}`              | the release is built with each series declaring the genes, comma-separated                                |
 | `the last build made a version of each series`                                                                     | every series of the example source has a version in the last build                                        |
-| `each version of the last build covers the genes {string}`                                                         | every version the last build made states exactly those genes with `rec:coversGene`                        |
+| `each version of the last build covers the genes {string}`                                                         | every version the last build made states exactly those genes with `cascade:coversGene`                    |
 | `the build's differences.md lists the finding {string}`                                                            | `differences.md` has a "Findings" heading with the finding beneath it                                     |
 | `the build's differences.md begins with the credit {string}`                                                       | `differences.md` opens with the text, then the first series' heading                                      |
 | `the release keeps the input {string}`                                                                             | `release.json` lists the input of that name among the files to keep                                       |
 | `the release keeps no input`                                                                                       | `release.json` lists no input                                                                             |
 | `the example source names the licence {string}`                                                                    | the example source of the steps that follow names that licence in place of its own                        |
 | `the classifications example builder yields {}`                                                                    | the rows of the JSON array given are checked as the rows of the one series of `fixtures/classifications/` |
-| `the classifications example builder is given {int} rows, the first and the last found by the expression {string}` | that many rows, one variation each, the first and the last holding the expression's `rec:HGVS` IRI        |
+| `the classifications example builder is given {int} rows, the first and the last found by the expression {string}` | that many rows, one variation each, the first and the last holding the expression's `cascade:HGVS` IRI    |
 | `the vocabulary's tests/vectors/clinvar/row.json gives the row of its row.ttl`                                     | the schema accepts the row, and the host's triples for it are those of the Turtle                         |
 
 ## Publishing
@@ -152,6 +152,11 @@ The releases of a publishing example are the rows files its builds wrote; the si
 | `the rows file of {string} {string} is in no release`                                               | it is removed from the releases                                                                     |
 | `the site holds the rows files of these versions of {string}: {string}, {string}`                   | of the series' versions, exactly those labelled have their rows files on the site                   |
 | `the publish is stopped, saying {string}`                                                           | the publish stopped with a reason containing the text                                               |
+| `the site is published under a vocabulary that does not declare {string}`                           | the same, the vocabulary being a copy whose table kind of that local name has no row shape          |
+| `the site holds the rows file of {string} {string}`                                                 | the rows file of that series' version of that label is on the site                                  |
+| `the site holds no rows file of {string}`                                                           | no rows file of any version of that series is on the site                                           |
+| `the site's page lists {string}`                                                                    | the page has an entry for the series of that label                                                  |
+| `the site's page does not list {string}`                                                            | it has none                                                                                         |
 | `the site holds nothing`                                                                            | the site's folder was never written                                                                 |
 
 ## Carrying rows forward

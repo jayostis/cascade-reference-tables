@@ -4,8 +4,9 @@ import { readRowsFile } from "./distribution.js";
 import { Feed } from "./feed.js";
 import { versionName } from "./names.js";
 import type { SeenInputs } from "./pipeline.js";
-import { PROV, RDF, RDFS, REC } from "./rdf.js";
+import { PROV, RDF, RDFS, CASCADE } from "./rdf.js";
 import type { RowsStore } from "./stores.js";
+import type { Vocabulary } from "./vocabulary.js";
 
 /** The last check of each source, by its IRI, as `checked.json` holds it. */
 export interface Checked {
@@ -34,10 +35,17 @@ export function mergeChecked(...files: readonly Checked[]): Checked {
   return { checked: merged };
 }
 
-function page(feed: Feed): string {
+/** A series whose table kind the vocabulary does not declare: the feed keeps its versions, the site neither verifies nor serves them. */
+function retired(feed: Feed, vocabulary: Vocabulary, series: string): boolean {
+  const kind = feed.graph.value(series, `${CASCADE}tableKind`);
+  return kind !== undefined && !vocabulary.declares(kind);
+}
+
+function page(feed: Feed, vocabulary: Vocabulary): string {
   const graph = feed.graph;
   const items = graph
-    .subjects(`${RDF}type`, `${REC}ReferenceSeries`)
+    .subjects(`${RDF}type`, `${CASCADE}ReferenceSeries`)
+    .filter((series) => !retired(feed, vocabulary, series))
     .sort()
     .map((series) => {
       const label = graph.value(series, `${RDFS}label`) ?? series;
@@ -73,14 +81,19 @@ export async function publish(options: {
   readonly feed: string;
   readonly site: string;
   readonly store: RowsStore;
+  readonly vocabulary: Vocabulary;
   readonly checked: Checked;
 }): Promise<string[]> {
   const feed = await Feed.read(options.feed);
   const graph = feed.graph;
   const files = new Map<string, Uint8Array>();
-  for (const series of graph.subjects(`${RDF}type`, `${REC}ReferenceSeries`)) {
+  for (const series of graph.subjects(
+    `${RDF}type`,
+    `${CASCADE}ReferenceSeries`,
+  )) {
     const current = feed.current(series);
-    if (current === undefined) continue;
+    if (current === undefined || retired(feed, options.vocabulary, series))
+      continue;
     const previous = graph.value(current, `${PROV}wasRevisionOf`);
     for (const version of previous === undefined
       ? [current]
@@ -108,6 +121,9 @@ export async function publish(options: {
     join(options.site, "checked.json"),
     `${JSON.stringify(options.checked, null, 2)}\n`,
   );
-  await writeFile(join(options.site, "index.html"), page(feed));
+  await writeFile(
+    join(options.site, "index.html"),
+    page(feed, options.vocabulary),
+  );
   return [...files.keys()].sort();
 }

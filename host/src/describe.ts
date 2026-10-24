@@ -1,5 +1,5 @@
 import type { Differences } from "./pipeline.js";
-import { DCT, OWL, type Quad, REC, SKOS, SSSOM } from "./rdf.js";
+import { DCT, OWL, type Quad, CASCADE, SKOS, SSSOM } from "./rdf.js";
 
 /** The label of a concept IRI, where the vocabulary gives one. */
 export type LabelOf = (iri: string) => string | undefined;
@@ -19,7 +19,10 @@ interface Line {
 const NUMERIC = new Intl.Collator("en", { numeric: true });
 
 function codeOf(iri: string): string {
-  return iri.split(/[/#]/).pop()!;
+  return iri
+    .split(/[/#]/)
+    .pop()!
+    .replace(/^(clinvar|unii):/, "");
 }
 
 function plain(text: string): string {
@@ -43,20 +46,20 @@ const CLASSIFICATION_PREDICATES = [
   "clinvarClassification",
   "clinvarReviewStatus",
   "lastEvaluated",
-  "contributingSubmitters",
-  "submitters",
-].map((name) => `${REC}${name}`);
+  "contributingSubmitterCount",
+  "submitterCount",
+].map((name) => `${CASCADE}${name}`);
 
 /** A classification row by its variation, what its source classes it as, when, and how many expressions find it. */
 function classification(rows: readonly Quad[], labelOf: LabelOf): Line {
   const subject = rows[0]!.subject.value;
   const named = (iri: string): string => plain(labelOf(iri) ?? codeOf(iri));
-  const classes = objectsOf(rows, `${REC}clinvarClassification`)
+  const classes = objectsOf(rows, `${CASCADE}clinvarClassification`)
     .map(named)
     .sort();
-  const [status] = objectsOf(rows, `${REC}clinvarReviewStatus`);
-  const [evaluated] = objectsOf(rows, `${REC}lastEvaluated`);
-  const expressions = objectsOf(rows, `${REC}hgvsExpression`).length;
+  const [status] = objectsOf(rows, `${CASCADE}clinvarReviewStatus`);
+  const [evaluated] = objectsOf(rows, `${CASCADE}lastEvaluated`);
+  const expressions = objectsOf(rows, `${CASCADE}hgvsExpression`).length;
   const parts = [
     classes.length === 0 ? "no classification" : classes.join(", "),
     ...(status === undefined ? [] : [`(${named(status)})`]),
@@ -76,8 +79,8 @@ function line(rows: readonly Quad[], labelOf: LabelOf, whole = false): Line {
     const target = objectsOf(rows, `${OWL}annotatedTarget`)[0]!;
     const predicate = codeOf(objectsOf(rows, `${OWL}annotatedProperty`)[0]!);
     const [justification] = objectsOf(rows, `${SSSOM}mapping_justification`);
-    const [sequence] = objectsOf(rows, `${REC}panelSequence`);
-    const [required] = objectsOf(rows, `${REC}observationRequiredInPanel`);
+    const [sequence] = objectsOf(rows, `${CASCADE}panelSequence`);
+    const [required] = objectsOf(rows, `${CASCADE}observationRequiredInPanel`);
     const place =
       sequence === undefined
         ? ""

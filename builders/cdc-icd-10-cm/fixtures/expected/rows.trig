@@ -1,5 +1,5 @@
 @prefix dct: <http://purl.org/dc/terms/> .
-@prefix icd: <http://hl7.org/fhir/sid/icd-10-cm/> .
+@prefix icd: <https://ns.cascadeprotocol.org/codes/icd10cm/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix semapv: <https://w3id.org/semapv/vocab/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
@@ -32,35 +32,35 @@
 }
 
 <urn:uuid:14f76251-2926-43ef-90c3-47101c1da3dd> {
-    <urn:uuid:5b201078-bf05-8399-bd63-1e92584d2a47> a owl:Axiom ;
+    <urn:uuid:82e2b466-4dd8-8eda-8007-622a0ec65f53> a owl:Axiom ;
         owl:annotatedSource icd:C88.0 ;
         owl:annotatedProperty dct:isReplacedBy ;
         owl:annotatedTarget icd:C88.00 ;
         sssom:mapping_justification semapv:ManualMappingCuration ;
         sssom:mapping_cardinality "1:1" .
 
-    <urn:uuid:654e89f9-f295-870b-8825-05f3971b1cf9> a owl:Axiom ;
+    <urn:uuid:5c8ff516-4020-8d73-8492-652f0de2dd03> a owl:Axiom ;
         owl:annotatedSource icd:D69.1 ;
         owl:annotatedProperty dct:isReplacedBy ;
         owl:annotatedTarget icd:D69.11 ;
         sssom:mapping_justification semapv:ManualMappingCuration ;
         sssom:mapping_cardinality "1:n" .
 
-    <urn:uuid:f5d8e1a8-c79f-89f9-aac8-4c58802f0c36> a owl:Axiom ;
+    <urn:uuid:98587b93-950e-8b11-93d3-f2c74070a923> a owl:Axiom ;
         owl:annotatedSource icd:D69.1 ;
         owl:annotatedProperty dct:isReplacedBy ;
         owl:annotatedTarget icd:D69.19 ;
         sssom:mapping_justification semapv:ManualMappingCuration ;
         sssom:mapping_cardinality "1:n" .
 
-    <urn:uuid:86655e98-a232-894d-87d1-2a47bf45d175> a owl:Axiom ;
+    <urn:uuid:d690da1e-7b0a-8445-b822-090ac82f9fb2> a owl:Axiom ;
         owl:annotatedSource icd:E66.8 ;
         owl:annotatedProperty dct:isReplacedBy ;
         owl:annotatedTarget icd:E66.813 ;
         sssom:mapping_justification semapv:ManualMappingCuration ;
         sssom:mapping_cardinality "n:1" .
 
-    <urn:uuid:c1b69dc8-b286-803d-8e9c-334a173bc96a> a owl:Axiom ;
+    <urn:uuid:9c2be183-9d1e-8a1c-897a-82522cd5f03a> a owl:Axiom ;
         owl:annotatedSource icd:T84.040A ;
         owl:annotatedProperty dct:isReplacedBy ;
         owl:annotatedTarget icd:M97.01XA ;

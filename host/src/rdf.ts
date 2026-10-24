@@ -42,7 +42,7 @@ export const SPDX = "http://spdx.org/rdf/terms#";
 export const VOID = "http://rdfs.org/ns/void#";
 export const SSSOM = "https://w3id.org/sssom/";
 export const SEMAPV = "https://w3id.org/semapv/vocab/";
-export const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
+export const CASCADE = "https://ns.cascadeprotocol.org/cascade#";
 export const TABLES = "https://ns.cascadeprotocol.org/tables/v1-draft#";
 
 export const PREFIXES: Readonly<Record<string, string>> = {
@@ -54,7 +54,7 @@ export const PREFIXES: Readonly<Record<string, string>> = {
   prov: PROV,
   rdf: RDF,
   rdfs: RDFS,
-  rec: REC,
+  cascade: CASCADE,
   semapv: SEMAPV,
   skos: SKOS,
   spdx: SPDX,

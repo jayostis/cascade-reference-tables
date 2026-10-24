@@ -1,68 +1,68 @@
 <urn:uuid:1653be1a-b871-4e0f-8c22-f13bbbf1b6d6> {
-  <http://www.ncbi.nlm.nih.gov/clinvar/90011> <http://www.w3.org/2004/02/skos/core#notation> "90011" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90011> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000249.4(MLH1):c.2042C>T (p.Ala681Val)" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90012> <http://www.w3.org/2004/02/skos/core#notation> "90012" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90012> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000251.3(MSH2):c.100A>G (p.Thr34Ala)" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90013> <http://www.w3.org/2004/02/skos/core#notation> "90013" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90013> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000535.7(PMS2):c.2T>C (p.Met1Thr)" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90014> <http://www.w3.org/2004/02/skos/core#notation> "90014" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90014> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000179.3(MSH6):c.3A>G (p.Met1?)" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90015> <http://www.w3.org/2004/02/skos/core#notation> "90015" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90015> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_002354.3(EPCAM):c.5A>G (p.Lys2Arg)" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90016> <http://www.w3.org/2004/02/skos/core#notation> "90016" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90016> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000249.4(MLH1):c.7del (p.Val3fs)" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90017> <http://www.w3.org/2004/02/skos/core#notation> "90017" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90017> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000179.3(MSH6):c.300A>G (p.Lys100Arg)" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90018> <http://www.w3.org/2004/02/skos/core#notation> "90018" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90018> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000179.3(MSH6):c.400A>G (p.Lys134Glu)" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90020> <http://www.w3.org/2004/02/skos/core#notation> "90020" .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90020> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000251.3:c.2A>G" .
+  <https://identifiers.org/clinvar:90011> <http://www.w3.org/2004/02/skos/core#notation> "90011" .
+  <https://identifiers.org/clinvar:90011> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000249.4(MLH1):c.2042C>T (p.Ala681Val)" .
+  <https://identifiers.org/clinvar:90012> <http://www.w3.org/2004/02/skos/core#notation> "90012" .
+  <https://identifiers.org/clinvar:90012> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000251.3(MSH2):c.100A>G (p.Thr34Ala)" .
+  <https://identifiers.org/clinvar:90013> <http://www.w3.org/2004/02/skos/core#notation> "90013" .
+  <https://identifiers.org/clinvar:90013> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000535.7(PMS2):c.2T>C (p.Met1Thr)" .
+  <https://identifiers.org/clinvar:90014> <http://www.w3.org/2004/02/skos/core#notation> "90014" .
+  <https://identifiers.org/clinvar:90014> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000179.3(MSH6):c.3A>G (p.Met1?)" .
+  <https://identifiers.org/clinvar:90015> <http://www.w3.org/2004/02/skos/core#notation> "90015" .
+  <https://identifiers.org/clinvar:90015> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_002354.3(EPCAM):c.5A>G (p.Lys2Arg)" .
+  <https://identifiers.org/clinvar:90016> <http://www.w3.org/2004/02/skos/core#notation> "90016" .
+  <https://identifiers.org/clinvar:90016> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000249.4(MLH1):c.7del (p.Val3fs)" .
+  <https://identifiers.org/clinvar:90017> <http://www.w3.org/2004/02/skos/core#notation> "90017" .
+  <https://identifiers.org/clinvar:90017> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000179.3(MSH6):c.300A>G (p.Lys100Arg)" .
+  <https://identifiers.org/clinvar:90018> <http://www.w3.org/2004/02/skos/core#notation> "90018" .
+  <https://identifiers.org/clinvar:90018> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000179.3(MSH6):c.400A>G (p.Lys134Glu)" .
+  <https://identifiers.org/clinvar:90020> <http://www.w3.org/2004/02/skos/core#notation> "90020" .
+  <https://identifiers.org/clinvar:90020> <http://www.w3.org/2004/02/skos/core#prefLabel> "NM_000251.3:c.2A>G" .
 }
 <urn:uuid:84a9f86a-f5e4-45b1-9e92-cd4ba027a389> {
-  <http://www.ncbi.nlm.nih.gov/clinvar/90011> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/genomics/v1#LikelyPathogenic> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90011> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/genomics/v1#Pathogenic> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90011> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarReviewStatus> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarMultipleSubmittersNoConflicts> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90011> <https://ns.cascadeprotocol.org/records/v1-draft#contributingSubmitters> "5"^^<http://www.w3.org/2001/XMLSchema#integer> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90011> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_000249.3%3Ac.2042C%3ET> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90011> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_000249.4%3Ac.2042C%3ET> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90011> <https://ns.cascadeprotocol.org/records/v1-draft#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90012> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/genomics/v1#VUS> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90012> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarReviewStatus> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarSingleSubmitter> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90012> <https://ns.cascadeprotocol.org/records/v1-draft#contributingSubmitters> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90012> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_000251.3%3Ac.100A%3EG> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90012> <https://ns.cascadeprotocol.org/records/v1-draft#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90013> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarCombinationOnly> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90013> <https://ns.cascadeprotocol.org/records/v1-draft#contributingSubmitters> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90013> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_000535.7%3Ac.2T%3EC> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90014> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/genomics/v1#Pathogenic> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90014> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarReviewStatus> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarSingleSubmitter> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90014> <https://ns.cascadeprotocol.org/records/v1-draft#contributingSubmitters> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90014> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_000179.3%3Ac.3A%3EG> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90014> <https://ns.cascadeprotocol.org/records/v1-draft#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90015> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/genomics/v1#LikelyBenign> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90015> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarReviewStatus> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarSingleSubmitter> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90015> <https://ns.cascadeprotocol.org/records/v1-draft#contributingSubmitters> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90015> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_002354.3%3Ac.5A%3EG> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90015> <https://ns.cascadeprotocol.org/records/v1-draft#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90016> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/genomics/v1#Pathogenic> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90016> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarReviewStatus> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarSingleSubmitter> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90016> <https://ns.cascadeprotocol.org/records/v1-draft#contributingSubmitters> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90016> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_000249.4%3Ac.7del> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90016> <https://ns.cascadeprotocol.org/records/v1-draft#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90017> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/genomics/v1#Benign> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90017> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarReviewStatus> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarSingleSubmitter> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90017> <https://ns.cascadeprotocol.org/records/v1-draft#contributingSubmitters> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90017> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_000179.3%3Ac.300A%3EG> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90017> <https://ns.cascadeprotocol.org/records/v1-draft#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90018> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/genomics/v1#LikelyBenign> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90018> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarReviewStatus> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarSingleSubmitter> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90018> <https://ns.cascadeprotocol.org/records/v1-draft#contributingSubmitters> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90018> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_000179.3%3Ac.400A%3EG> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90018> <https://ns.cascadeprotocol.org/records/v1-draft#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90020> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/genomics/v1#VUS> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90020> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarClassification> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarVusHigh> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90020> <https://ns.cascadeprotocol.org/records/v1-draft#clinvarReviewStatus> <https://ns.cascadeprotocol.org/records/v1-draft#ClinVarNoClassificationProvided> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90020> <https://ns.cascadeprotocol.org/records/v1-draft#contributingSubmitters> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90020> <https://ns.cascadeprotocol.org/records/v1-draft#hgvsExpression> <http://varnomen.hgvs.org/NM_000251.3%3Ac.2A%3EG> .
-  <http://www.ncbi.nlm.nih.gov/clinvar/90020> <https://ns.cascadeprotocol.org/records/v1-draft#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
+  <https://identifiers.org/clinvar:90011> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#LikelyPathogenic> .
+  <https://identifiers.org/clinvar:90011> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#Pathogenic> .
+  <https://identifiers.org/clinvar:90011> <https://ns.cascadeprotocol.org/cascade#clinvarReviewStatus> <https://ns.cascadeprotocol.org/cascade#ClinVarMultipleSubmittersNoConflicts> .
+  <https://identifiers.org/clinvar:90011> <https://ns.cascadeprotocol.org/cascade#contributingSubmitterCount> "5"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <https://identifiers.org/clinvar:90011> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_000249.3%3Ac.2042C%3ET> .
+  <https://identifiers.org/clinvar:90011> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_000249.4%3Ac.2042C%3ET> .
+  <https://identifiers.org/clinvar:90011> <https://ns.cascadeprotocol.org/cascade#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
+  <https://identifiers.org/clinvar:90012> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#UncertainSignificance> .
+  <https://identifiers.org/clinvar:90012> <https://ns.cascadeprotocol.org/cascade#clinvarReviewStatus> <https://ns.cascadeprotocol.org/cascade#ClinVarSingleSubmitter> .
+  <https://identifiers.org/clinvar:90012> <https://ns.cascadeprotocol.org/cascade#contributingSubmitterCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <https://identifiers.org/clinvar:90012> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_000251.3%3Ac.100A%3EG> .
+  <https://identifiers.org/clinvar:90012> <https://ns.cascadeprotocol.org/cascade#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
+  <https://identifiers.org/clinvar:90013> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#ClinVarCombinationOnly> .
+  <https://identifiers.org/clinvar:90013> <https://ns.cascadeprotocol.org/cascade#contributingSubmitterCount> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <https://identifiers.org/clinvar:90013> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_000535.7%3Ac.2T%3EC> .
+  <https://identifiers.org/clinvar:90014> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#Pathogenic> .
+  <https://identifiers.org/clinvar:90014> <https://ns.cascadeprotocol.org/cascade#clinvarReviewStatus> <https://ns.cascadeprotocol.org/cascade#ClinVarSingleSubmitter> .
+  <https://identifiers.org/clinvar:90014> <https://ns.cascadeprotocol.org/cascade#contributingSubmitterCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <https://identifiers.org/clinvar:90014> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_000179.3%3Ac.3A%3EG> .
+  <https://identifiers.org/clinvar:90014> <https://ns.cascadeprotocol.org/cascade#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
+  <https://identifiers.org/clinvar:90015> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#LikelyBenign> .
+  <https://identifiers.org/clinvar:90015> <https://ns.cascadeprotocol.org/cascade#clinvarReviewStatus> <https://ns.cascadeprotocol.org/cascade#ClinVarSingleSubmitter> .
+  <https://identifiers.org/clinvar:90015> <https://ns.cascadeprotocol.org/cascade#contributingSubmitterCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <https://identifiers.org/clinvar:90015> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_002354.3%3Ac.5A%3EG> .
+  <https://identifiers.org/clinvar:90015> <https://ns.cascadeprotocol.org/cascade#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
+  <https://identifiers.org/clinvar:90016> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#Pathogenic> .
+  <https://identifiers.org/clinvar:90016> <https://ns.cascadeprotocol.org/cascade#clinvarReviewStatus> <https://ns.cascadeprotocol.org/cascade#ClinVarSingleSubmitter> .
+  <https://identifiers.org/clinvar:90016> <https://ns.cascadeprotocol.org/cascade#contributingSubmitterCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <https://identifiers.org/clinvar:90016> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_000249.4%3Ac.7del> .
+  <https://identifiers.org/clinvar:90016> <https://ns.cascadeprotocol.org/cascade#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
+  <https://identifiers.org/clinvar:90017> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#Benign> .
+  <https://identifiers.org/clinvar:90017> <https://ns.cascadeprotocol.org/cascade#clinvarReviewStatus> <https://ns.cascadeprotocol.org/cascade#ClinVarSingleSubmitter> .
+  <https://identifiers.org/clinvar:90017> <https://ns.cascadeprotocol.org/cascade#contributingSubmitterCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <https://identifiers.org/clinvar:90017> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_000179.3%3Ac.300A%3EG> .
+  <https://identifiers.org/clinvar:90017> <https://ns.cascadeprotocol.org/cascade#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
+  <https://identifiers.org/clinvar:90018> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#LikelyBenign> .
+  <https://identifiers.org/clinvar:90018> <https://ns.cascadeprotocol.org/cascade#clinvarReviewStatus> <https://ns.cascadeprotocol.org/cascade#ClinVarSingleSubmitter> .
+  <https://identifiers.org/clinvar:90018> <https://ns.cascadeprotocol.org/cascade#contributingSubmitterCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <https://identifiers.org/clinvar:90018> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_000179.3%3Ac.400A%3EG> .
+  <https://identifiers.org/clinvar:90018> <https://ns.cascadeprotocol.org/cascade#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
+  <https://identifiers.org/clinvar:90020> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#UncertainSignificance> .
+  <https://identifiers.org/clinvar:90020> <https://ns.cascadeprotocol.org/cascade#clinvarClassification> <https://ns.cascadeprotocol.org/cascade#ClinVarVusHigh> .
+  <https://identifiers.org/clinvar:90020> <https://ns.cascadeprotocol.org/cascade#clinvarReviewStatus> <https://ns.cascadeprotocol.org/cascade#ClinVarNoClassificationProvided> .
+  <https://identifiers.org/clinvar:90020> <https://ns.cascadeprotocol.org/cascade#contributingSubmitterCount> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+  <https://identifiers.org/clinvar:90020> <https://ns.cascadeprotocol.org/cascade#hgvsExpression> <https://ns.cascadeprotocol.org/codes/hgvs/NM_000251.3%3Ac.2A%3EG> .
+  <https://identifiers.org/clinvar:90020> <https://ns.cascadeprotocol.org/cascade#lastEvaluated> "2024-12-11"^^<http://www.w3.org/2001/XMLSchema#date> .
 }

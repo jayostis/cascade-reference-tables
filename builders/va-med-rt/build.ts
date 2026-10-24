@@ -3,18 +3,18 @@ import type { XmlElement } from "../../host/src/readers.js";
 
 const CLASSES = "urn:uuid:ab73ff9e-83d8-4886-96bc-40a59d3cb28a";
 const NAMES = "urn:uuid:9ded4da0-51bc-49fe-964a-19d74a36b91f";
-const REC = "https://ns.cascadeprotocol.org/records/v1-draft#";
-const RXNORM = `${REC}RxNorm`;
-const MEDRT = `${REC}MEDRT`;
-const MESH = `${REC}MeSH`;
+const CASCADE = "https://ns.cascadeprotocol.org/cascade#";
+const RXNORM = `${CASCADE}RxNorm`;
+const MEDRT = `${CASCADE}MEDRT`;
+const MESH = `${CASCADE}MeSH`;
 const CURATED = "https://w3id.org/semapv/vocab/ManualMappingCuration";
 const FDA = "FDASPL";
 
-const EPC = `${REC}establishedPharmacologicClass`;
+const EPC = `${CASCADE}establishedPharmacologicClass`;
 const RELATIONS = new Map([
-  ["has_MoA", { predicate: `${REC}mechanismOfAction`, kind: "[MoA]" }],
-  ["has_PE", { predicate: `${REC}physiologicEffect`, kind: "[PE]" }],
-  ["has_SC", { predicate: `${REC}chemicalStructure`, kind: "[EXT]" }],
+  ["has_MoA", { predicate: `${CASCADE}mechanismOfActionClass`, kind: "[MoA]" }],
+  ["has_PE", { predicate: `${CASCADE}physiologicEffectClass`, kind: "[PE]" }],
+  ["has_SC", { predicate: `${CASCADE}chemicalStructureClass`, kind: "[EXT]" }],
 ]);
 
 const field = (element: XmlElement, name: string): string =>

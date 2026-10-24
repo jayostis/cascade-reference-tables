@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import { Refusal, type Row } from "./builder.js";
-import { recordName } from "./names.js";
+import { tableRowName } from "./names.js";
 import {
   DCT,
   literal,
@@ -10,7 +10,7 @@ import {
   type Quad,
   RDF,
   type Term,
-  REC,
+  CASCADE,
   SKOS,
   SSSOM,
   triple,
@@ -28,18 +28,18 @@ export interface RdfRow {
 }
 
 /**
- * The row's triples, a mapping row named by the record rule over its subject, predicate and object, and a panel member
- * row also over its sequence (N11).
+ * The row's triples, a mapping row named by N11 over its subject, predicate and object, and a panel member
+ * row also over its sequence.
  */
 export function toRdf(row: Row): RdfRow {
   if ("subject_id" in row) {
     const member = "sequence" in row;
-    const key = recordName([
+    const key = tableRowName(
       row.subject_id,
       row.predicate_id,
       row.object_id,
-      ...(member ? [String(row.sequence)] : []),
-    ]);
+      member ? BigInt(row.sequence) : undefined,
+    );
     return {
       form: "mapping",
       key,
@@ -63,7 +63,7 @@ export function toRdf(row: Row): RdfRow {
           ? [
               triple(
                 key,
-                `${REC}panelSequence`,
+                `${CASCADE}panelSequence`,
                 literal(String(row.sequence), `${XSD}integer`),
               ),
               ...(row.required === undefined
@@ -71,7 +71,7 @@ export function toRdf(row: Row): RdfRow {
                 : [
                     triple(
                       key,
-                      `${REC}observationRequiredInPanel`,
+                      `${CASCADE}observationRequiredInPanel`,
                       literal(row.required),
                     ),
                   ]),
@@ -87,17 +87,17 @@ export function toRdf(row: Row): RdfRow {
       key: row.variation,
       triples: [
         ...(row.hgvs ?? []).map((code) =>
-          triple(row.variation, `${REC}hgvsExpression`, code),
+          triple(row.variation, `${CASCADE}hgvsExpression`, code),
         ),
         ...(row.classification ?? []).map((concept) =>
-          triple(row.variation, `${REC}clinvarClassification`, concept),
+          triple(row.variation, `${CASCADE}clinvarClassification`, concept),
         ),
         ...(row.reviewStatus === undefined
           ? []
           : [
               triple(
                 row.variation,
-                `${REC}clinvarReviewStatus`,
+                `${CASCADE}clinvarReviewStatus`,
                 row.reviewStatus,
               ),
             ]),
@@ -106,22 +106,28 @@ export function toRdf(row: Row): RdfRow {
           : [
               triple(
                 row.variation,
-                `${REC}lastEvaluated`,
+                `${CASCADE}lastEvaluated`,
                 literal(row.lastEvaluated, `${XSD}date`),
               ),
             ]),
-        ...(row.contributingSubmitters === undefined
+        ...(row.contributingSubmitterCount === undefined
           ? []
           : [
               triple(
                 row.variation,
-                `${REC}contributingSubmitters`,
-                count(row.contributingSubmitters),
+                `${CASCADE}contributingSubmitterCount`,
+                count(row.contributingSubmitterCount),
               ),
             ]),
-        ...(row.submitters === undefined
+        ...(row.submitterCount === undefined
           ? []
-          : [triple(row.variation, `${REC}submitters`, count(row.submitters))]),
+          : [
+              triple(
+                row.variation,
+                `${CASCADE}submitterCount`,
+                count(row.submitterCount),
+              ),
+            ]),
       ],
     };
   }
@@ -141,7 +147,9 @@ export function toRdf(row: Row): RdfRow {
     return {
       form: "termType",
       key: row.subject,
-      triples: [triple(row.subject, `${REC}termType`, literal(row.termType))],
+      triples: [
+        triple(row.subject, `${CASCADE}termType`, literal(row.termType)),
+      ],
     };
   return {
     form: "status",

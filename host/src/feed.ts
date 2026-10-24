@@ -14,7 +14,7 @@ import {
   RDF,
   RDFS,
   sameQuad,
-  REC,
+  CASCADE,
   SPDX,
   SSSOM,
   TABLES,
@@ -69,7 +69,7 @@ export interface NewVersion {
   readonly rowsFile: string;
   readonly checksum: string;
   readonly mapping: boolean;
-  /** The genes it covers (`rec:coversGene`). */
+  /** The genes it covers (`cascade:coversGene`). */
   readonly covers: readonly string[];
 }
 
@@ -145,7 +145,7 @@ export class Feed {
   /** The genes a version covers, sorted. */
   coversOf(version: string): string[] {
     return this.graph
-      .objects(version, `${REC}coversGene`)
+      .objects(version, `${CASCADE}coversGene`)
       .map((gene) => gene.value)
       .sort();
   }
@@ -212,9 +212,9 @@ export class Feed {
     if (!has(series.iri, `${RDFS}label`))
       add(
         triple(series.iri, `${RDF}type`, `${DCAT}Dataset`),
-        triple(series.iri, `${RDF}type`, `${REC}ReferenceSeries`),
+        triple(series.iri, `${RDF}type`, `${CASCADE}ReferenceSeries`),
         triple(series.iri, `${RDFS}label`, literal(series.label)),
-        triple(series.iri, `${REC}tableKind`, series.kind),
+        triple(series.iri, `${CASCADE}tableKind`, series.kind),
         triple(series.iri, `${DCT}source`, series.source),
         triple(series.iri, `${DCT}license`, series.license),
         triple(series.iri, `${DCT}publisher`, series.publisher),
@@ -237,7 +237,7 @@ export class Feed {
       triple(v, `${DCAT}version`, label),
       triple(v, `${PAV}version`, label),
       ...version.covers.map((gene) =>
-        triple(v, `${REC}coversGene`, literal(gene)),
+        triple(v, `${CASCADE}coversGene`, literal(gene)),
       ),
       ...(version.previous === undefined
         ? []

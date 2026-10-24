@@ -4,8 +4,8 @@ import { join } from "node:path";
 import { type Build, Refusal } from "./builder.js";
 import type { Fetch } from "./detection.js";
 import type { Contract } from "./pipeline.js";
-import { recordName } from "./names.js";
-import { iri, OWL, type Quad, quad, REC, SKOS } from "./rdf.js";
+import { tableRowName } from "./names.js";
+import { iri, OWL, type Quad, quad, CASCADE, SKOS } from "./rdf.js";
 import { releaseOf } from "./release.js";
 import { type Form, type RdfRow, type SeriesRows, toRdf } from "./rows.js";
 import type { Source } from "./source.js";
@@ -52,7 +52,7 @@ function formOf({ triples }: Group): Form {
     return "mapping";
   if (triples.some((t) => t.predicate.value === `${SKOS}prefLabel`))
     return "names";
-  return triples.some((t) => t.predicate.value === `${REC}termType`)
+  return triples.some((t) => t.predicate.value === `${CASCADE}termType`)
     ? "termType"
     : "status";
 }
@@ -65,21 +65,21 @@ function subjectOf(group: Group): string {
   );
 }
 
-/** A carried mapping row with the property its kind now fixes, named anew by the record rule (N11) over all of its kind's name inputs, a panel row's sequence among them. */
+/** A carried mapping row with the property its kind now fixes, named anew by N11 over all of its kind's name inputs, a panel row's sequence among them. */
 export function withProperty(group: Group, property: string): Group {
   const get = (predicate: string): string =>
     group.triples.find((t) => t.predicate.value === `${OWL}${predicate}`)!
       .object.value;
   if (get("annotatedProperty") === property) return group;
   const sequence = group.triples.find(
-    (t) => t.predicate.value === `${REC}panelSequence`,
+    (t) => t.predicate.value === `${CASCADE}panelSequence`,
   )?.object.value;
-  const key = recordName([
+  const key = tableRowName(
     get("annotatedSource"),
     property,
     get("annotatedTarget"),
-    ...(sequence === undefined ? [] : [String(BigInt(sequence))]),
-  ]);
+    sequence === undefined ? undefined : BigInt(sequence),
+  );
   return {
     key,
     triples: group.triples.map((t) =>
@@ -156,7 +156,7 @@ export async function carry(input: CarryInput): Promise<Carried> {
   const carrying = source.series.filter((s) => s.carriesForward);
   if (carrying.length === 0) return { rows: new Map() };
   const status = source.historyLookup
-    ? source.series.find((s) => s.kind === `${REC}CodeStatus`)
+    ? source.series.find((s) => s.kind === `${CASCADE}RetiredCodes`)
     : undefined;
   const taken = named(built);
   const rows = new Map<string, RdfRow[]>();

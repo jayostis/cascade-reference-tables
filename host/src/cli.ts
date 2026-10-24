@@ -173,6 +173,7 @@ async function publishCommand(root: string, args: string[]): Promise<number> {
         return (await folders.get(file)) ?? (await releases?.get(file));
       },
     },
+    vocabulary: (await readContract(root)).vocabulary,
     checked: mergeChecked(...checks),
   });
   for (const file of placed) console.log(file);

@@ -6,7 +6,7 @@ import { test } from "node:test";
 import { Refusal } from "../src/builder.js";
 import { readContract, rowsOf } from "../src/pipeline.js";
 import { csv } from "../src/readers.js";
-import { OWL, parseTurtle, REC, SKOS } from "../src/rdf.js";
+import { OWL, parseTurtle, CASCADE, SKOS } from "../src/rdf.js";
 import { keyed, type SeriesRows, toRdf } from "../src/rows.js";
 import { loadBuild, readSource } from "../src/source.js";
 
@@ -86,10 +86,10 @@ function membersOf(rows: Map<string, SeriesRows>): Member[] {
     .map((row) => ({
       panel: codeOf(row[`${OWL}annotatedSource`]!),
       member: codeOf(row[`${OWL}annotatedTarget`]!),
-      sequence: Number(row[`${REC}panelSequence`]),
-      ...(row[`${REC}observationRequiredInPanel`] === undefined
+      sequence: Number(row[`${CASCADE}panelSequence`]),
+      ...(row[`${CASCADE}observationRequiredInPanel`] === undefined
         ? {}
-        : { required: row[`${REC}observationRequiredInPanel`]! }),
+        : { required: row[`${CASCADE}observationRequiredInPanel`]! }),
     }))
     .sort(
       (a, b) =>

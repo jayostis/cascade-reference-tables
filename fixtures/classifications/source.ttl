@@ -1,7 +1,7 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rec: <https://ns.cascadeprotocol.org/records/v1-draft#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
 @prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
 
 <urn:uuid:6b8e4f20-1c3a-4d97-b5e2-7a9f0c3d1e48> a tables:Source, dcat:Dataset ;
@@ -12,8 +12,8 @@
     tables:detectedBy tables:ConditionalGet ;
     dcat:distribution [ dcat:downloadURL <https://publisher.example/downloads/codes.txt> ] .
 
-<urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64> a rec:ReferenceSeries ;
+<urn:uuid:0a7c93e2-4b1d-4f6a-8e35-9d2c1b7f0a64> a cascade:ReferenceSeries ;
     rdfs:label "Example variant classifications" ;
-    rec:tableKind rec:VariantClassifications ;
-    rec:coversGene "MLH1" ;
+    cascade:tableKind cascade:VariantClassifications ;
+    cascade:coversGene "MLH1" ;
     dct:source <urn:uuid:6b8e4f20-1c3a-4d97-b5e2-7a9f0c3d1e48> .
