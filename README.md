@@ -15,6 +15,33 @@ follow, the host, the builders of the open sources, and the feed apps read. The 
 Table kinds and their rows are [cascade-vocabulary](https://github.com/jayostis/cascade-vocabulary)'s, at the commit
 [`vocabulary.json`](vocabulary.json) pins.
 
+## What the public feed cannot hold
+
+The feed never holds SNOMED CT or CPT value-set expansions or hierarchy. SNOMED CT ids with names are openly publishable
+from the Global Patient Set (CC BY-ND 4.0), which the project does not use for membership.
+
+The reason: the UMLS licence §3 forbids redistributing subsets; SNOMED CT's Affiliate Licence §2.7 requires access
+control and §2.2.4 limits extracting a substantial portion; CPT needs an AMA licence for every use.
+
+The feed publishes only freely publishable code systems, each with its own attribution: LOINC and UCUM carry their
+notices (UCUM's verbatim); RxNorm, MED-RT, CVX, NDC and HL7 THO are public; ICD-10-CM is cleared for US use, with CDC's
+attribution and disclaimer; HCPCS Level II is published without its CPT and CDT rows (VSAC's "hcpcs" system also carries
+them).
+
+What that costs a rule that checks a value set:
+
+| rule checks              | free codes cover                                         | effect                                                                                                                                                                                                                    |
+| ------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| lab tests                | 92-100%                                                  | none                                                                                                                                                                                                                      |
+| medications              | ~100%                                                    | none                                                                                                                                                                                                                      |
+| diagnoses                | 4-82% across diabetes, hypertension, CKD and hepatitis C | a list that says who a rule applies to (people with diabetes) lacks a code: a missed question. A list that is evidence of something done or an exclusion (colonoscopy done; colon removed) lacks a code: a false question |
+| procedures (colonoscopy) | ~4%                                                      | nearly every colonoscopy is missed: only Medicare's screening G-codes are free (FIT, FOBT and sDNA tests are LOINC)                                                                                                       |
+
+A licensed list is published as its definition (its VSAC OID or URL and version, or ECL) and built where the licence is
+held: [#68](https://github.com/jayostis/cascade-reference-tables/issues/68).
+
+This is not legal advice; the [licence reading](https://github.com/jayostis/cascade-reference-tables/issues/68) is on #68.
+
 ## The host
 
 On Node 22:
