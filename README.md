@@ -15,6 +15,28 @@ follow, the host, the builders of the open sources, and the feed apps read. The 
 Table kinds and their rows are [cascade-vocabulary](https://github.com/jayostis/cascade-vocabulary)'s, at the commit
 [`vocabulary.json`](vocabulary.json) pins.
 
+## What the public feed cannot hold
+
+The feed publishes only freely publishable code systems: LOINC, RxNorm, MED-RT, CVX, NDC, UCUM, HL7 THO, HCPCS Level II
+(without its CPT rows: VSAC's "hcpcs" system also carries CPT Level I codes) and ICD-10-CM.
+
+It never holds SNOMED CT or CPT content, whether codes, value-set expansions or hierarchy. SNOMED CT's Affiliate Licence
+and the UMLS licence forbid redistributing subsets, and CPT needs an AMA licence for every use.
+
+What that costs a rule that checks a value set:
+
+| rule checks | free codes cover  | effect                                                                                                          |
+| ----------- | ----------------- | --------------------------------------------------------------------------------------------------------------- |
+| lab tests   | ~100%             | none                                                                                                            |
+| medications | ~100%             | none                                                                                                            |
+| diagnoses   | 4-82% of members  | ICD-10-CM mostly parallels SNOMED CT, so a diagnosis recorded only in SNOMED CT is missed, never falsely raised |
+| procedures  | ~4% (colonoscopy) | the rule cannot work on free codes                                                                              |
+
+A licensed list is published as its definition (VSAC OID and version) and built where the licence is held:
+[#68](https://github.com/jayostis/cascade-reference-tables/issues/68).
+
+This is not legal advice; the licence reading is in the care-gap epic's notes.
+
 ## The host
 
 On Node 22:
