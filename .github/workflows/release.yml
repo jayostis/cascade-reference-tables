@@ -1,0 +1,109 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: The commit on main to release, when it is not the head of main.
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    outputs:
+      commit: ${{ steps.pack.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.commit || github.sha }}
+          fetch-depth: ${{ github.event_name == 'workflow_dispatch' && '0' || '1' }}
+          persist-credentials: false
+      - if: ${{ github.event_name == 'workflow_dispatch' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor HEAD origin/main || { echo "::error::$(git rev-parse HEAD) is not on main"; exit 1; }
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - id: pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          commit=$(git rev-parse HEAD)
+          npm pkg set "version=0.0.0-commit-$commit"
+          mkdir -p "$RUNNER_TEMP/package"
+          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP/package"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: package
+          path: ${{ runner.temp }}/package/*.tgz
+          if-no-files-found: error
+
+  release:
+    needs: pack
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          name: package
+          path: package
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT: ${{ needs.pack.outputs.commit }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag=package-builds
+          file=$(ls package/*.tgz)
+          if ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$tag" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$COMMIT" \
+              --title "$tag" \
+              --notes "Each asset is this package packed at the commit its version names." \
+              --prerelease \
+              --latest=false ||
+              gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
+          fi
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' | grep -qxF "$(basename "$file")"; then
+            echo "::notice::$(basename "$file") is in $tag already"
+            exit 0
+          fi
+          gh release upload "$tag" "$file" --repo "$GITHUB_REPOSITORY"
+          echo "https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/$(basename "$file")"
+      - name: Keep package-builds to its newest 900 builds, under GitHub's 1000 assets, and every build a dependent's main pins
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          locks=""
+          for repository in jayostis/cascade-runtime-js jayostis/cascade-starter-kit; do
+            locks+=$(gh api "repos/$repository/contents/package-lock.json" -H "Accept: application/vnd.github.raw")
+          done
+          pinned=$(grep -oE 'cascade-reference-tables-0\.0\.0-commit-[0-9a-f]{40}\.tgz' <<< "$locks" | sort -u || true)
+          id=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/package-builds" -q .id)
+          gh api --paginate "repos/$GITHUB_REPOSITORY/releases/$id/assets?per_page=100" -q '.[] | [.created_at, .name] | @tsv' |
+            sort | head -n -900 | cut -f2 |
+            while IFS= read -r name; do
+              if grep -qxF "$name" <<< "$pinned"; then
+                echo "kept $name: a dependent's main pins it"
+                continue
+              fi
+              gh release delete-asset package-builds "$name" --repo "$GITHUB_REPOSITORY" --yes
+              echo "deleted $name"
+            done
