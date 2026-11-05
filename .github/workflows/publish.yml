@@ -59,7 +59,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          npm run --silent host -- publish --site build/site --releases "$GITHUB_REPOSITORY" \
+          npm run --silent host -- publish --site build/site --repository "$GITHUB_REPOSITORY" --releases "$GITHUB_REPOSITORY" \
             build/live-checked.json $(find build/checked -name checked.json)
       - id: rows
         run: echo "any=$(find build/site/rows -name '*.nq.gz' | head -1)" >> "$GITHUB_OUTPUT"

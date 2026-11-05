@@ -58,7 +58,7 @@ npm test
 npm run host -- test [<source>...]
 npm run host -- check <source> [--checked <checked.json>]
 npm run host -- build <source> [--release <folder> --label <text>] [--out build] [--feed feed/feed.ttl] [--releases <owner/repo>] [--checked <checked.json>]
-npm run host -- publish --site <folder> [--releases <owner/repo>] [--rows <folder>]... [<checked.json>...]
+npm run host -- publish --site <folder> --repository <owner/repo> [--releases <owner/repo>] [--rows <folder>]... [<checked.json>...]
 ```
 
 A source is a folder under `builders/`, or a path. Without `--release`, `build` checks the publisher and builds what
