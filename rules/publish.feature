@@ -56,3 +56,15 @@ Feature: Publishing the site
       And the site holds no rows file of "Example vaccine code status"
       And the site's page lists "Example vaccine names"
       And the site's page does not list "Example vaccine code status"
+
+  Rule: H15. The page names each table by its label, linking its rows file, its publisher and its licence, and says when it has no version; it links the hub and this repository
+
+    Example: a table with a version, and one without
+      When the example builder's release "release" is built as "1"
+      And the feed gives "Example vaccine groups" no current version
+      And the site is published
+      Then the site's page links the hub and this repository
+      And the site's page links the rows file of "Example vaccine names" "1"
+      And the site's page gives the identity of "Example vaccine names" "1"
+      And the site's page links the publisher and the licence of "Example vaccine names"
+      And the site's page says "Example vaccine groups" has no built version

@@ -4,7 +4,7 @@ import { readRowsFile } from "./distribution.js";
 import { Feed } from "./feed.js";
 import { versionName } from "./names.js";
 import type { SeenInputs } from "./pipeline.js";
-import { PROV, RDF, RDFS, CASCADE } from "./rdf.js";
+import { DCT, PROV, RDF, RDFS, CASCADE } from "./rdf.js";
 import type { RowsStore } from "./stores.js";
 import type { Vocabulary } from "./vocabulary.js";
 
@@ -41,17 +41,26 @@ function retired(feed: Feed, vocabulary: Vocabulary, series: string): boolean {
   return kind !== undefined && !vocabulary.declares(kind);
 }
 
-function page(feed: Feed, vocabulary: Vocabulary): string {
+function page(feed: Feed, vocabulary: Vocabulary, repository: string): string {
   const graph = feed.graph;
+  const link = (address: string, text: string): string =>
+    `<a href="${html(address)}">${html(text)}</a>`;
   const items = graph
     .subjects(`${RDF}type`, `${CASCADE}ReferenceSeries`)
     .filter((series) => !retired(feed, vocabulary, series))
     .sort()
     .map((series) => {
       const label = graph.value(series, `${RDFS}label`) ?? series;
-      const current = feed.current(series) ?? "";
-      return `<li>${html(label)}: <code>${html(current)}</code></li>`;
+      const current = feed.current(series);
+      const table =
+        current === undefined
+          ? "no built version"
+          : `${link(feed.rowsOf(current).file, `rows (version ${feed.labelOf(current)})`)}, identity <code>${html(current)}</code>`;
+      const publisher = graph.value(series, `${DCT}publisher`)!;
+      const licence = graph.value(series, `${DCT}license`)!;
+      return `<li id="${html(series)}"><strong>${html(label)}</strong>: ${table}; ${link(publisher, "publisher")}, ${link(licence, "licence")}</li>`;
     });
+  const [owner] = repository.split("/");
   return `<!doctype html>
 <html lang="en">
 <meta charset="utf-8">
@@ -59,7 +68,8 @@ function page(feed: Feed, vocabulary: Vocabulary): string {
 <title>Cascade reference tables (DRAFT)</title>
 <h1>Cascade reference tables</h1>
 <p><strong>DRAFT: no compatibility is promised before a numbered v1.</strong></p>
-<p>The feed: <a href="feed.ttl">feed.ttl</a>, a DCAT catalog. When each source was last checked: <a href="checked.json">checked.json</a>.</p>
+<p>Part of ${link(`https://${owner!.toLowerCase()}.github.io/cascade-runtime-js/`, "the Cascade hub")}. The code, the builders and the issues are in ${link(`https://github.com/${repository}`, repository)}.</p>
+<p>A reference table is a list of coded rows, such as what each code means or which codes are retired, built from one publisher's release. Apps read the tables through the feed: ${link("feed.ttl", "feed.ttl")}, a DCAT catalog of every table and its versions. ${link("checked.json", "checked.json")} says when each source was last checked.</p>
 <ul>
 ${items.join("\n")}
 </ul>
@@ -70,18 +80,22 @@ function html(text: string): string {
   return text
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 /**
  * Writes the site: the feed, each series' current version's rows file and the one it revises, each checked against its
- * checksum and its version's name before anything is written, the last checks, and a page saying the feed is a draft.
+ * checksum and its version's name before anything is written, the last checks, and a page naming each table, linking
+ * its rows file, and linking the hub and the repository.
  */
 export async function publish(options: {
   readonly feed: string;
   readonly site: string;
   readonly store: RowsStore;
   readonly vocabulary: Vocabulary;
+  /** The repository the site is published for, as `owner/name`. */
+  readonly repository: string;
   readonly checked: Checked;
 }): Promise<string[]> {
   const feed = await Feed.read(options.feed);
@@ -123,7 +137,7 @@ export async function publish(options: {
   );
   await writeFile(
     join(options.site, "index.html"),
-    page(feed, options.vocabulary),
+    page(feed, options.vocabulary, options.repository),
   );
   return [...files.keys()].sort();
 }

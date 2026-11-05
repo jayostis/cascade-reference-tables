@@ -157,6 +157,12 @@ The releases of a publishing example are the rows files its builds wrote; the si
 | `the site holds no rows file of {string}`                                                           | no rows file of any version of that series is on the site                                           |
 | `the site's page lists {string}`                                                                    | the page has an entry for the series of that label                                                  |
 | `the site's page does not list {string}`                                                            | it has none                                                                                         |
+| `the feed gives {string} no current version`                                                        | the feed no longer says which version of that series is current                                     |
+| `the site's page links the hub and this repository`                                                 | the page links the hub of the repository's owner and the repository the site was published for      |
+| `the site's page links the rows file of {string} {string}`                                          | the series' entry links the rows file of its version of that label                                  |
+| `the site's page gives the identity of {string} {string}`                                           | the series' entry shows the name of its version of that label                                       |
+| `the site's page links the publisher and the licence of {string}`                                   | the series' entry links the publisher and the licence the feed gives the series                     |
+| `the site's page says {string} has no built version`                                                | the series' entry says it has no version and links no rows file                                     |
 | `the site holds nothing`                                                                            | the site's folder was never written                                                                 |
 
 ## Carrying rows forward

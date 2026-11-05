@@ -22,7 +22,7 @@ import { folderStore, releaseStore } from "./stores.js";
 
 const USAGE = `host check <source> [--feed <file>] [--checked <file>]
 host build <source> [--release <folder> --label <text>] [--out <folder>] [--feed <file>] [--releases <owner/repo>] [--checked <file>]
-host publish --site <folder> [--feed <file>] [--releases <owner/repo>] [--rows <folder>]... [<checked.json>...]
+host publish --site <folder> --repository <owner/repo> [--feed <file>] [--releases <owner/repo>] [--rows <folder>]... [<checked.json>...]
 host test [<source>...]`;
 
 function now(): string {
@@ -150,10 +150,11 @@ async function publishCommand(root: string, args: string[]): Promise<number> {
       site: { type: "string" },
       feed: { type: "string", default: join(root, "feed", "feed.ttl") },
       releases: { type: "string" },
+      repository: { type: "string" },
       rows: { type: "string", multiple: true, default: [] },
     },
   });
-  if (values.site === undefined) {
+  if (values.site === undefined || values.repository === undefined) {
     console.error(USAGE);
     return 2;
   }
@@ -174,6 +175,7 @@ async function publishCommand(root: string, args: string[]): Promise<number> {
       },
     },
     vocabulary: (await readContract(root)).vocabulary,
+    repository: values.repository,
     checked: mergeChecked(...checks),
   });
   for (const file of placed) console.log(file);
