@@ -15,6 +15,12 @@ follow, the host, the builders of the open sources, and the feed apps read. The 
 Table kinds and their rows are [cascade-vocabulary](https://github.com/jayostis/cascade-vocabulary)'s, at the commit
 [`vocabulary.json`](vocabulary.json) pins.
 
+## Docs
+
+- [The Cascade hub](https://jayostis.github.io/cascade-runtime-js/): where to go for each thing, and every repository.
+- [This repository's site](https://jayostis.github.io/cascade-reference-tables/): the tables and the feed this repository publishes.
+- [Terms](https://jayostis.github.io/cascade-runtime-js/terms/): the terms the tables' codes are read with.
+
 ## What the public feed cannot hold
 
 The feed never holds SNOMED CT or CPT value-set expansions or hierarchy. SNOMED CT ids with names are openly publishable
