@@ -300,6 +300,7 @@ async function publishSite(
       site: world.site,
       store: folderStore([world.out]),
       vocabulary,
+      repository: REPOSITORY,
       checked: mergeChecked(
         world.siteChecks ?? { checked: {} },
         JSON.parse(
@@ -312,9 +313,24 @@ async function publishSite(
   }
 }
 
+const REPOSITORY = "example-org/example-tables";
+
 function pageOf(world: World): string {
   assert.equal(world.stopped, undefined);
   return readFileSync(join(world.site!, "index.html"), "utf8");
+}
+
+/** What the page says of a series after its label, which is the entry's name. */
+function entryOf(world: World, label: string): string | undefined {
+  return new RegExp(`<li[^>]*><strong>${label}</strong>(.*)</li>`).exec(
+    pageOf(world),
+  )?.[1];
+}
+
+function entryFor(world: World, label: string): string {
+  const entry = entryOf(world, label);
+  assert.ok(entry !== undefined, `the page has no entry for ${label}`);
+  return entry;
 }
 
 function seriesNamed(label: string): string {
@@ -1308,11 +1324,86 @@ const steps = new Steps<World>()
       );
   })
   .define("the site's page lists {string}", (world, [label]) => {
-    assert.ok(pageOf(world).includes(`<li>${label as string}:`));
+    entryFor(world, label as string);
   })
   .define("the site's page does not list {string}", (world, [label]) => {
-    assert.ok(!pageOf(world).includes(`<li>${label as string}:`));
+    assert.equal(entryOf(world, label as string), undefined);
   })
+  .define(
+    "the feed gives {string} no current version",
+    async (world, [label]) => {
+      const feed = await feedOf(world);
+      const series = seriesNamed(label as string);
+      const current = feed.current(series);
+      assert.ok(current, `${label as string} has no current version`);
+      const text = await readFile(world.feed, "utf8");
+      const line = new RegExp(
+        `\\n *dcat:hasCurrentVersion <${current.replace(/[$()*+.?[\\\]^{|}]/g, "\\$&")}> ;`,
+      );
+      assert.ok(line.test(text), "the feed states no current version line");
+      await writeFile(world.feed, text.replace(line, ""));
+    },
+  )
+  .define("the site's page links the hub and this repository", (world) => {
+    const page = pageOf(world);
+    assert.ok(
+      page.includes('href="https://example-org.github.io/cascade-runtime-js/"'),
+      "no link to the hub",
+    );
+    assert.ok(
+      page.includes('href="https://github.com/example-org/example-tables"'),
+      "no link to the repository",
+    );
+  })
+  .define(
+    "the site's page links the rows file of {string} {string}",
+    async (world, [label, version]) => {
+      const feed = await feedOf(world);
+      const { file } = feed.rowsOf(
+        versionLabelled(feed, seriesNamed(label as string), version as string),
+      );
+      assert.ok(
+        entryFor(world, label as string).includes(`href="${file}"`),
+        file,
+      );
+    },
+  )
+  .define(
+    "the site's page gives the identity of {string} {string}",
+    async (world, [label, version]) => {
+      const feed = await feedOf(world);
+      const name = versionLabelled(
+        feed,
+        seriesNamed(label as string),
+        version as string,
+      );
+      assert.ok(
+        entryFor(world, label as string).includes(`<code>${name}</code>`),
+        name,
+      );
+    },
+  )
+  .define(
+    "the site's page links the publisher and the licence of {string}",
+    async (world, [label]) => {
+      const graph = (await feedOf(world)).graph;
+      const series = seriesNamed(label as string);
+      const entry = entryFor(world, label as string);
+      for (const predicate of ["publisher", "license"]) {
+        const address = graph.value(series, `${DCT}${predicate}`);
+        assert.ok(address, `the feed gives ${label as string} no ${predicate}`);
+        assert.ok(entry.includes(`href="${address}"`), address);
+      }
+    },
+  )
+  .define(
+    "the site's page says {string} has no built version",
+    (world, [label]) => {
+      const entry = entryFor(world, label as string);
+      assert.ok(entry.includes("no built version"), entry);
+      assert.ok(!entry.includes(".nq.gz"), entry);
+    },
+  )
   .define(
     "the site holds the rows files of these versions of {string}: {string}, {string}",
     async (world, [label, ...labels]) => {

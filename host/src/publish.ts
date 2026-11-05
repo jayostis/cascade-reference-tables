@@ -82,6 +82,8 @@ export async function publish(options: {
   readonly site: string;
   readonly store: RowsStore;
   readonly vocabulary: Vocabulary;
+  /** The repository the site is published for, as `owner/name`. */
+  readonly repository: string;
   readonly checked: Checked;
 }): Promise<string[]> {
   const feed = await Feed.read(options.feed);
