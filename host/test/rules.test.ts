@@ -480,9 +480,19 @@ const steps = new Steps<World>()
       const { folder, records } = await recordsCopy(world, "before-member-of");
       const path = join(folder, records, "cascade.shapes.ttl");
       const text = await readFile(path, "utf8");
+      const shape = "cascade:VaccineGroupRowShape a sh:NodeShape";
       const fixed = "sh:hasValue obo:RO_0002350";
-      assert.equal(text.split(fixed).length, 2, `${fixed} is not once`);
-      await writeFile(path, text.replace(fixed, "sh:hasValue skos:broadMatch"));
+      assert.equal(text.split(shape).length, 2, `${shape} is not once`);
+      const from = text.indexOf(shape);
+      const end = text.slice(from).search(/\r?\n\r?\ncascade:/);
+      const block = text.slice(from, end < 0 ? undefined : from + end);
+      assert.equal(block.split(fixed).length, 2, `${fixed} is not once`);
+      await writeFile(
+        path,
+        text.slice(0, from) +
+          block.replace(fixed, "sh:hasValue skos:broadMatch") +
+          text.slice(from + block.length),
+      );
       const inner = await loadBuild(ROOT, EXAMPLE);
       const old: Build = async function* (opened) {
         for await (const row of inner(opened))
