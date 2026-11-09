@@ -111,6 +111,15 @@ export class Feed {
     return this.quads;
   }
 
+  /** A series whose table kind the vocabulary does not declare: the feed keeps its versions, and nothing checks, builds or serves them. */
+  isRetired(
+    series: string,
+    vocabulary: { declares(kind: string): boolean },
+  ): boolean {
+    const kind = this.graph.value(series, `${CASCADE}tableKind`);
+    return kind !== undefined && !vocabulary.declares(kind);
+  }
+
   current(series: string): string | undefined {
     return this.graph.value(series, `${DCAT}hasCurrentVersion`);
   }
