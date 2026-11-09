@@ -567,6 +567,16 @@ export async function build(
       previous,
       rows.triples(),
     );
+    const kinds = feed.kindsOf(description.iri);
+    const undeclared = kinds.filter((k) => !contract.vocabulary.declares(k));
+    if (undeclared.length > 0)
+      throw new Refusal(
+        `the feed gives ${description.label} the table kind ${undeclared.join(", ")}, which the vocabulary does not declare, so it takes no new version`,
+      );
+    if (kinds.length > 0 && (kinds.length > 1 || kinds[0] !== description.kind))
+      throw new Refusal(
+        `the feed gives ${description.label} the table kind ${kinds.join(", ")}, not ${description.kind}, which its source declares, so it takes no new version`,
+      );
     const file = await rowsFile(version, rows.triples());
     files.push(file);
     const revised = previous === undefined ? undefined : feed.labelOf(previous);

@@ -120,6 +120,14 @@ export class Feed {
     return kind !== undefined && !vocabulary.declares(kind);
   }
 
+  /** The table kinds the feed gives a series, sorted. */
+  kindsOf(series: string): string[] {
+    return this.graph
+      .objects(series, `${CASCADE}tableKind`)
+      .map((kind) => kind.value)
+      .sort();
+  }
+
   current(series: string): string | undefined {
     return this.graph.value(series, `${DCAT}hasCurrentVersion`);
   }

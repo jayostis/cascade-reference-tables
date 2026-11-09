@@ -143,27 +143,31 @@ of `release-2`, the third's of `release-3`, and answers 404 for any other.
 
 The releases of a publishing example are the rows files its builds wrote; the site is a folder of its own.
 
-| Step                                                                                                | What happens, or must hold                                                                          |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `the site's checks are:`                                                                            | before a publish, the live site's `checked.json`; after it, what the published `checked.json` holds |
-| `the site is published`                                                                             | the site is written from the feed, the releases and the checks, the last build's among them         |
-| `a byte of the rows file of {string} {string} is changed`                                           | the rows file of that series' version of that label, in the releases, loses its checksum            |
-| `the rows file of {string} {string} holds the rows of {string} {string}, and the feed its checksum` | that rows file is replaced by another version's, and the feed's checksum for it follows             |
-| `the rows file of {string} {string} is in no release`                                               | it is removed from the releases                                                                     |
-| `the site holds the rows files of these versions of {string}: {string}, {string}`                   | of the series' versions, exactly those labelled have their rows files on the site                   |
-| `the publish is stopped, saying {string}`                                                           | the publish stopped with a reason containing the text                                               |
-| `the site is published under a vocabulary that does not declare {string}`                           | the same, the vocabulary being a copy whose table kind of that local name has no row shape          |
-| `the site holds the rows file of {string} {string}`                                                 | the rows file of that series' version of that label is on the site                                  |
-| `the site holds no rows file of {string}`                                                           | no rows file of any version of that series is on the site                                           |
-| `the site's page lists {string}`                                                                    | the page has an entry for the series of that label                                                  |
-| `the site's page does not list {string}`                                                            | it has none                                                                                         |
-| `the feed gives {string} no current version`                                                        | the feed no longer says which version of that series is current                                     |
-| `the site's page links the hub and this repository`                                                 | the page links the hub of the repository's owner and the repository the site was published for      |
-| `the site's page links the rows file of {string} {string}`                                          | the series' entry links the rows file of its version of that label                                  |
-| `the site's page gives the identity of {string} {string}`                                           | the series' entry shows the name of its version of that label                                       |
-| `the site's page links the publisher and the licence of {string}`                                   | the series' entry links the publisher and the licence the feed gives the series                     |
-| `the site's page says {string} has no built version`                                                | the series' entry says it has no version and links no rows file                                     |
-| `the site holds nothing`                                                                            | the site's folder was never written                                                                 |
+| Step                                                                                                | What happens, or must hold                                                                            |
+| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `the site's checks are:`                                                                            | before a publish, the live site's `checked.json`; after it, what the published `checked.json` holds   |
+| `the site is published`                                                                             | the site is written from the feed, the releases and the checks, the last build's among them           |
+| `a byte of the rows file of {string} {string} is changed`                                           | the rows file of that series' version of that label, in the releases, loses its checksum              |
+| `the rows file of {string} {string} holds the rows of {string} {string}, and the feed its checksum` | that rows file is replaced by another version's, and the feed's checksum for it follows               |
+| `the rows file of {string} {string} is in no release`                                               | it is removed from the releases                                                                       |
+| `the site holds the rows files of these versions of {string}: {string}, {string}`                   | of the series' versions, exactly those labelled have their rows files on the site                     |
+| `the publish is stopped, saying {string}`                                                           | the publish stopped with a reason containing the text                                                 |
+| `the site is published under a vocabulary that does not declare {string}`                           | the same, the vocabulary being a copy whose table kind of that local name has no row shape            |
+| `the site holds the rows file of {string} {string}`                                                 | the rows file of that series' version of that label is on the site                                    |
+| `the site holds no rows file of {string}`                                                           | no rows file of any version of that series is on the site                                             |
+| `the site's page lists {string}`                                                                    | the page has an entry for the series of that label                                                    |
+| `the site's page does not list {string}`                                                            | it has none                                                                                           |
+| `the feed gives {string} no current version`                                                        | the feed no longer says which version of that series is current                                       |
+| `the feed holds a series of a table kind the vocabulary dropped`                                    | the series of `fixtures/feeds/retired-kind/series.ttl`, with its one version, is added to the feed    |
+| `the feed gives {string} the table kinds {string}`                                                  | the feed's table kinds of that series are those local names of the cascade namespace, comma-separated |
+| `the example builder's release {string} is built as {string}, the build being refused`              | the release is built as the second string says, and the build stops as a refusal                      |
+| `the feed is as it was before the refused build`                                                    | the feed holds exactly what it held when that build began                                             |
+| `the site's page links the hub and this repository`                                                 | the page links the hub of the repository's owner and the repository the site was published for        |
+| `the site's page links the rows file of {string} {string}`                                          | the series' entry links the rows file of its version of that label                                    |
+| `the site's page gives the identity of {string} {string}`                                           | the series' entry shows the name of its version of that label                                         |
+| `the site's page links the publisher and the licence of {string}`                                   | the series' entry links the publisher and the licence the feed gives the series                       |
+| `the site's page says {string} has no built version`                                                | the series' entry says it has no version and links no rows file                                       |
+| `the site holds nothing`                                                                            | the site's folder was never written                                                                   |
 
 ## Carrying rows forward
 

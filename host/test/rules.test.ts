@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  appendFile,
+  cp,
+  mkdtemp,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { before, describe, test } from "node:test";
@@ -67,6 +74,8 @@ interface World {
   readonly feeds: string[];
   readonly builds: Outcome[][];
   refusal?: Error;
+  /** The feed as it stood when a build was refused. */
+  feedBeforeRefusal?: string;
   publisher?: { release: string; modified: string; ignoresSince: boolean };
   /** Each request's `If-Modified-Since`, in order. */
   readonly asked: (string | undefined)[];
@@ -1328,6 +1337,56 @@ const steps = new Steps<World>()
   })
   .define("the site's page does not list {string}", (world, [label]) => {
     assert.equal(entryOf(world, label as string), undefined);
+  })
+  .define(
+    "the feed holds a series of a table kind the vocabulary dropped",
+    async (world) => {
+      await appendFile(
+        world.feed,
+        await readFile(
+          join(ROOT, "fixtures", "feeds", "retired-kind", "series.ttl"),
+        ),
+      );
+    },
+  )
+  .define(
+    "the feed gives {string} the table kinds {string}",
+    async (world, [label, kinds]) => {
+      const series = seriesNamed(label as string);
+      const text = await readFile(world.feed, "utf8");
+      const line = new RegExp(
+        `(\\n<${series.replace(/[$()*+.?[\\\]^{|}]/g, "\\$&")}>\\n(?: [^\\n]*\\n)*? +)cascade:tableKind [^\\n]*`,
+      );
+      assert.ok(
+        line.test(text),
+        `the feed states no table kind of ${label as string}`,
+      );
+      const given = (kinds as string)
+        .split(", ")
+        .map((kind) => `cascade:${kind}`)
+        .join(", ");
+      await writeFile(
+        world.feed,
+        text.replace(line, `$1cascade:tableKind ${given} ;`),
+      );
+    },
+  )
+  .define(
+    "the example builder's release {string} is built as {string}, the build being refused",
+    async (world, [release, label]) => {
+      world.feedBeforeRefusal = await readFile(world.feed, "utf8");
+      try {
+        await runBuild(world, release as string, label as string);
+      } catch (error) {
+        if (!(error instanceof Refusal)) throw error;
+        world.refusal = error;
+        return;
+      }
+      assert.fail("the build was not refused");
+    },
+  )
+  .define("the feed is as it was before the refused build", async (world) => {
+    assert.equal(await readFile(world.feed, "utf8"), world.feedBeforeRefusal);
   })
   .define(
     "the feed gives {string} no current version",
