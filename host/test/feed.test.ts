@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  appendFile,
+  mkdir,
+  mkdtemp,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, before, test } from "node:test";
@@ -90,6 +97,28 @@ test("a build whose feed would not conform writes no rows file", async () => {
     /would not conform/,
   );
   assert.equal(existsSync(join(out, "rows")), false);
+});
+
+test("a series whose table kind the vocabulary no longer declares stays in the feed, and a new version still conforms", async () => {
+  const published = join(dir, "retired-kind", "feed");
+  await build(contract, {
+    ...options("retired-kind", "release"),
+    out: published,
+  });
+  const retired = "urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf";
+  await appendFile(
+    options("retired-kind", "release").feed,
+    await readFile(
+      join(ROOT, "fixtures", "feeds", "retired-kind", "series.ttl"),
+    ),
+  );
+  const [outcome] = await build(contract, options("retired-kind", "release-2"));
+  assert.ok(outcome?.previous, "the second release revised nothing");
+  const feed = await Feed.read(options("retired-kind", "release").feed);
+  assert.equal(
+    feed.current(retired),
+    "ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ",
+  );
 });
 
 test("a rows file not relative to the feed is not read as one", () => {

@@ -35,19 +35,13 @@ export function mergeChecked(...files: readonly Checked[]): Checked {
   return { checked: merged };
 }
 
-/** A series whose table kind the vocabulary does not declare: the feed keeps its versions, the site neither verifies nor serves them. */
-function retired(feed: Feed, vocabulary: Vocabulary, series: string): boolean {
-  const kind = feed.graph.value(series, `${CASCADE}tableKind`);
-  return kind !== undefined && !vocabulary.declares(kind);
-}
-
 function page(feed: Feed, vocabulary: Vocabulary, repository: string): string {
   const graph = feed.graph;
   const link = (address: string, text: string): string =>
     `<a href="${html(address)}">${html(text)}</a>`;
   const items = graph
     .subjects(`${RDF}type`, `${CASCADE}ReferenceSeries`)
-    .filter((series) => !retired(feed, vocabulary, series))
+    .filter((series) => !feed.isRetired(series, vocabulary))
     .sort()
     .map((series) => {
       const label = graph.value(series, `${RDFS}label`) ?? series;
@@ -106,7 +100,7 @@ export async function publish(options: {
     `${CASCADE}ReferenceSeries`,
   )) {
     const current = feed.current(series);
-    if (current === undefined || retired(feed, options.vocabulary, series))
+    if (current === undefined || feed.isRetired(series, options.vocabulary))
       continue;
     const previous = graph.value(current, `${PROV}wasRevisionOf`);
     for (const version of previous === undefined

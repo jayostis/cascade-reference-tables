@@ -16,9 +16,11 @@ import type { Fetch } from "./detection.js";
 import { extract, unzip } from "./archive.js";
 import { type Described, describe } from "./describe.js";
 import {
+  DCAT,
   DCT,
   Graph,
   parseTurtle,
+  PROV,
   type Quad,
   RDF,
   RDFS,
@@ -59,6 +61,29 @@ export interface Contract {
   readonly schema: RowSchema;
   /** Where the vocabulary was read from. */
   readonly said: string;
+}
+
+/** What the feed's shapes and the vocabulary's find wrong with the feed, each retired series and its versions left out. */
+export async function feedViolations(
+  contract: Contract,
+  feed: Feed,
+): Promise<string[]> {
+  const graph = feed.graph;
+  const retired = new Set(
+    graph
+      .subjects(`${RDF}type`, `${CASCADE}ReferenceSeries`)
+      .filter((series) => feed.isRetired(series, contract.vocabulary)),
+  );
+  for (const series of [...retired])
+    for (const version of graph.subjects(`${PROV}specializationOf`, series))
+      retired.add(version);
+  return contract.feedShapes.violations(
+    feed.triples.filter(
+      ({ subject, predicate, object }) =>
+        !retired.has(subject.value) &&
+        !(predicate.value === `${DCAT}dataset` && retired.has(object.value)),
+    ),
+  );
 }
 
 export async function readContract(
@@ -542,6 +567,16 @@ export async function build(
       previous,
       rows.triples(),
     );
+    const kinds = feed.kindsOf(description.iri);
+    const undeclared = kinds.filter((k) => !contract.vocabulary.declares(k));
+    if (undeclared.length > 0)
+      throw new Refusal(
+        `the feed gives ${description.label} the table kind ${undeclared.join(", ")}, which the vocabulary does not declare, so it takes no new version`,
+      );
+    if (kinds.length > 0 && (kinds.length > 1 || kinds[0] !== description.kind))
+      throw new Refusal(
+        `the feed gives ${description.label} the table kind ${kinds.join(", ")}, not ${description.kind}, which its source declares, so it takes no new version`,
+      );
     const file = await rowsFile(version, rows.triples());
     files.push(file);
     const revised = previous === undefined ? undefined : feed.labelOf(previous);
@@ -580,7 +615,7 @@ export async function build(
     });
   }
   if (outcomes.some((o) => o.version !== undefined)) {
-    const violations = await contract.feedShapes.violations(feed.triples);
+    const violations = await feedViolations(contract, feed);
     if (violations.length > 0)
       throw new Error(`the feed would not conform:\n${violations.join("\n")}`);
     const archived = [...files, ...inputFiles];

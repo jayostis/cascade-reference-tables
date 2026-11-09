@@ -10,6 +10,7 @@ import {
   build,
   type Contract,
   declarationViolations,
+  feedViolations,
   readContract,
 } from "../src/pipeline.js";
 import { type Checked, mergeChecked, publish } from "../src/publish.js";
@@ -38,8 +39,9 @@ function changed(update: string): Quad[] {
 test("the valid feed fixture and feed/feed.ttl conform", async () => {
   assert.deepEqual(await shapes.violations(valid), []);
   assert.deepEqual(
-    await shapes.violations(
-      (await Feed.read(join(ROOT, "feed", "feed.ttl"))).triples,
+    await feedViolations(
+      contract,
+      await Feed.read(join(ROOT, "feed", "feed.ttl")),
     ),
     [],
   );

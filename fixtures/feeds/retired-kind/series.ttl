@@ -1,0 +1,57 @@
+@prefix cascade: <https://ns.cascadeprotocol.org/cascade#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix pav: <http://purl.org/pav/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix spdx: <http://spdx.org/rdf/terms#> .
+@prefix sssom: <https://w3id.org/sssom/> .
+@prefix tables: <https://ns.cascadeprotocol.org/tables/v1-draft#> .
+@prefix adms: <http://www.w3.org/ns/adms#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<> dcat:dataset <urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf> .
+
+<urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf>
+    a cascade:ReferenceSeries, dcat:Dataset ;
+    cascade:tableKind cascade:NdcDrugs ;
+    dcat:hasCurrentVersion <ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ> ;
+    dcat:hasVersion <ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ> ;
+    dct:bibliographicCitation "Source: an example publisher" ;
+    dct:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+    dct:publisher <https://publisher.example/> ;
+    dct:source <urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19> ;
+    rdfs:label "Example NDC drugs" .
+
+<ni:///sha-256;QZHblAxd45Wnz4iCPrUDF4p4o6UfV-cMzRmiw2ZVUEQ>
+    a dcat:Dataset, prov:Entity, sssom:MappingSet ;
+    adms:versionNotes "3 added, 0 removed, 0 changed" ;
+    dcat:distribution <rows/4ba692c708476a8ae049fbb87b52b2d9e0beecd17df3687e5a8939f1532c668a.nq.gz> ;
+    dcat:version "1" ;
+    dct:issued "2026-10-11T00:01:45Z"^^xsd:dateTime ;
+    pav:version "1" ;
+    prov:specializationOf <urn:uuid:32deac38-90ec-4962-bb25-0f455f1cb3cf> ;
+    prov:wasAttributedTo <urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7> ;
+    prov:wasDerivedFrom <ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc> ;
+    sssom:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+    sssom:mapping_set_version "1" ;
+    sssom:mapping_tool "example" ;
+    sssom:mapping_tool_version "1" ;
+    sssom:subject_source_version "1" ;
+    tables:builderVersion "1" .
+
+<ni:///sha-256;jtNRwp88tWvt644ry4-laTH41-uI4igNyXctfT6xaXc>
+    a prov:Entity ;
+    dct:title "ndc.txt" ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "8ed351c29f3cb56bedeb8e2bcb8fa56931f8d7eb88e2280dc9772d7d3eb16977" ] .
+
+<rows/4ba692c708476a8ae049fbb87b52b2d9e0beecd17df3687e5a8939f1532c668a.nq.gz>
+    a dcat:Distribution ;
+    dcat:compressFormat <https://www.iana.org/assignments/media-types/application/gzip> ;
+    dcat:downloadURL <rows/4ba692c708476a8ae049fbb87b52b2d9e0beecd17df3687e5a8939f1532c668a.nq.gz> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-quads> ;
+    spdx:checksum [ a spdx:Checksum ; spdx:algorithm spdx:checksumAlgorithm_sha256 ; spdx:checksumValue "4ba692c708476a8ae049fbb87b52b2d9e0beecd17df3687e5a8939f1532c668a" ] .
+
+<urn:uuid:4a812e10-d71a-4ac2-a8ca-d3af6d3c31a7>
+    a tables:Builder ;
+    rdfs:label "example ndc" .
