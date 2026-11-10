@@ -91,7 +91,11 @@ describe("Recording when each source was last checked · checked.json, mergeChec
     });
 
     it("keeps every source's last check when two files are merged", () => {
-      assert.equal(Object.keys(published.checked).length, 3);
+      assert.deepEqual(Object.keys(published.checked).sort(), [
+        "urn:uuid:17cec5a9-071a-4179-9403-5c1e3886fb7d",
+        KEY,
+        "urn:uuid:8e7239fe-4ffd-4658-9a0b-9c71aaa59e19",
+      ]);
     });
   });
 

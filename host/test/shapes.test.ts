@@ -79,7 +79,7 @@ describe("Checking a feed against its shapes · Shapes.read(), shapes.violations
     });
   });
 
-  describe("given that feed with one statement changed", () => {
+  describe("given that feed with one statement deleted, added or replaced, the one a constraint's message names", () => {
     for (const [update, message] of broken)
       it(`returns a violation ending "${message}"`, async () => {
         const store = new oxigraph.Store(valid.map(toOxigraph));

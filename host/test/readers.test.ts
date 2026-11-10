@@ -54,7 +54,7 @@ async function readAll<T>(
 
 /**
  * A builder is handed its publisher's release and reads each file through one of these readers, a line, a row or an
- * element at a time, so a file of any size is read in constant memory. A file that cannot be read as asked throws a
+ * element at a time. A file that cannot be read as asked throws a
  * Refusal naming it, and the build writes nothing.
  */
 describe("Reading a release's files · csv(), delimited(), fixedWidth(), jsonLines(), xlsx(), xmlElements()", () => {
@@ -89,7 +89,10 @@ describe("Reading a release's files · csv(), delimited(), fixedWidth(), jsonLin
     });
 
     it("ignores a byte order mark and an empty line", () => {
-      assert.equal(found.length, 2);
+      assert.deepEqual(
+        found.map((record) => record.x),
+        ["a,b", "end"],
+      );
     });
 
     it("refuses an empty file", async () => {
@@ -161,13 +164,16 @@ describe("Reading a release's files · csv(), delimited(), fixedWidth(), jsonLin
       );
     });
 
-    it("refuses a gzip file cut short", async () => {
-      await refusal(
-        readAll(
-          gzipSync(text).subarray(0, 20),
-          (path) => delimited(path, "|", true),
-          "cut.txt.gz",
+    it("refuses a gzip file cut short, naming the file", async () => {
+      assert.match(
+        await refusal(
+          readAll(
+            gzipSync(text).subarray(0, 20),
+            (path) => delimited(path, "|", true),
+            "cut.txt.gz",
+          ),
         ),
+        /cut\.txt\.gz/,
       );
     });
   });
@@ -216,12 +222,15 @@ describe("Reading a release's files · csv(), delimited(), fixedWidth(), jsonLin
       ]);
     });
 
-    it("refuses a workbook whose compressed entry is corrupt", async () => {
+    it("refuses a workbook whose compressed entry is corrupt, naming the file", async () => {
       const bytes = await readFile(XLSX);
       const name = bytes.indexOf("xl/workbook.xml");
       const data = name + 15 + bytes.readUInt16LE(name - 2);
       bytes.fill(0xff, data, data + 10);
-      await refusal(readAll(bytes, xlsx, "corrupt.xlsx"));
+      assert.match(
+        await refusal(readAll(bytes, xlsx, "corrupt.xlsx")),
+        /corrupt\.xlsx/,
+      );
     });
   });
 
@@ -251,7 +260,7 @@ describe("Reading a release's files · csv(), delimited(), fixedWidth(), jsonLin
       });
     });
 
-    it("reads a zip's one XML entry as it reads the plain file", async () => {
+    it("reads a zip's one XML entry as it reads the plain file, and finds its 10 associations", async () => {
       const entry = [
         ...(await texts(MEDRT_ZIP, (n) => n.endsWith(".xml"))),
       ][0]!;
@@ -283,9 +292,12 @@ describe("Reading a release's files · csv(), delimited(), fixedWidth(), jsonLin
       );
     });
 
-    it("refuses a file named .zip that is no zip", async () => {
-      await refusal(
-        readAll("<a/>", (path) => xmlElements(path, "a"), "plain.zip"),
+    it("refuses a file named .zip that is no zip, naming the file", async () => {
+      assert.match(
+        await refusal(
+          readAll("<a/>", (path) => xmlElements(path, "a"), "plain.zip"),
+        ),
+        /plain\.zip/,
       );
     });
   });

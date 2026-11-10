@@ -156,6 +156,10 @@
       "aliases": ["precise ingredients"]
     },
     {
+      "term": "prescribable",
+      "definition": "of a drug, that a clinician can prescribe as it is named; NLM publishes the RxNorm subset of such drugs as its prescribable content."
+    },
+    {
       "term": "publisher",
       "definition": "the organisation that issues a code system's releases, such as CDC, NLM or Regenstrief.",
       "aliases": ["publishers"]
@@ -164,6 +168,11 @@
       "term": "pull request",
       "definition": "on GitHub, a proposed change that a person reads and accepts or rejects.",
       "aliases": ["pull requests"]
+    },
+    {
+      "term": "Range request",
+      "definition": "an HTTP request for a file from a given byte on, which a server answers with only the rest of the file.",
+      "aliases": ["Range"]
     },
     {
       "term": "Refusal",
