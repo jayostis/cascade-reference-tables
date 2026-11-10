@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
-import { test } from "node:test";
+import { describe, it } from "node:test";
 import { patientFetch } from "../src/patient.js";
 
 const BODY = Buffer.from("0123456789".repeat(100));
@@ -56,80 +56,106 @@ async function publisher(
   };
 }
 
-test("a download cut off, refused or answered wrongly is tried again, resumed only as the exact rest of the same version, and given whole", async () => {
-  const cases: [string, Answer[], boolean, number, number][] = [
-    ["resumed by Range", ["cut"], true, 2, 1],
-    ["read again where Range is ignored", ["cut"], false, 2, 1],
-    ["after a server error", ["error"], true, 2, 0],
-    ["a partial answer that stops short", ["cut", "short"], true, 3, 1],
-    ["a partial answer at another offset", ["cut", "offset"], true, 3, 1],
-    [
-      "a partial answer of another version",
-      ["cut", "other version"],
-      true,
-      3,
-      1,
-    ],
-    [
-      "cuts that each add bytes, more than the attempts",
-      ["cut", "cut", "cut"],
-      true,
-      4,
-      3,
-    ],
-  ];
-  for (const [name, answers, ranges, requests, resumes] of cases) {
-    const { server, url, seen } = await publisher(answers, ranges);
-    try {
-      const response = await patientFetch(fetch, { attempts: 2, delayMs: 0 })(
-        url,
-      );
-      assert.deepEqual(Buffer.from(await response.arrayBuffer()), BODY, name);
-      assert.equal(response.status, 200, name);
-      assert.equal(seen.length, requests, name);
-      assert.equal(
-        seen.filter((range) => /^bytes=[1-9]\d*-$/.test(range ?? "")).length,
-        resumes,
-        name,
-      );
-    } finally {
-      server.close();
-    }
-  }
-});
-
-test("a download is given up after attempts in a row that read nothing new, saying what the publisher answered", async () => {
-  const { server, url, seen } = await publisher(Array(20).fill("error"), true);
+/** Asks for the file of a publisher answering as `answers` say, two attempts allowed, and checks what came of it. */
+async function givesWhole(
+  answers: Answer[],
+  ranges: boolean,
+  requests: number,
+  resumes: number,
+): Promise<void> {
+  const { server, url, seen } = await publisher(answers, ranges);
   try {
-    await assert.rejects(
-      patientFetch(fetch, { attempts: 3, delayMs: 0 })(url),
-      /3 attempts in a row.*answered 503/,
+    const response = await patientFetch(fetch, { attempts: 2, delayMs: 0 })(
+      url,
     );
-    assert.equal(seen.length, 3);
+    assert.deepEqual(Buffer.from(await response.arrayBuffer()), BODY);
+    assert.equal(response.status, 200);
+    assert.equal(seen.length, requests, "requests");
+    assert.equal(
+      seen.filter((range) => /^bytes=[1-9]\d*-$/.test(range ?? "")).length,
+      resumes,
+      "resumes",
+    );
   } finally {
     server.close();
   }
-});
+}
 
-test("a download whose resume is always refused and whose full read is always cut at the same point is given up, not looped", async () => {
-  const cases: [string, Answer[]][] = [
-    ["a partial answer that always stops short", ["cut", "short"]],
-    ["a partial answer that never names its version", ["cut", "untagged"]],
-  ];
-  for (const [name, pattern] of cases) {
-    const { server, url, seen } = await publisher(
-      Array.from({ length: 100 }, (_, i) => pattern[i % 2]!),
-      true,
+/** Asks for the file of a publisher answering as `answers` say and expects it given up, in fewer than `most` requests. */
+async function givesUp(
+  answers: Answer[],
+  reason: RegExp,
+  most = Infinity,
+): Promise<void> {
+  const { server, url, seen } = await publisher(answers, true);
+  try {
+    await assert.rejects(
+      patientFetch(fetch, { attempts: 3, delayMs: 0 })(url),
+      reason,
     );
-    try {
-      await assert.rejects(
-        patientFetch(fetch, { attempts: 3, delayMs: 0 })(url),
-        /3 attempts in a row/,
-        name,
-      );
-      assert.ok(seen.length < 10, name);
-    } finally {
-      server.close();
-    }
+    assert.ok(seen.length < most, `${seen.length} requests`);
+  } finally {
+    server.close();
   }
+}
+
+/**
+ * `patientFetch()` wraps `fetch` for a publisher's large files: a download that is cut off is asked for again from
+ * where it stopped, and the caller gets one whole answer or an error. It resumes only when the publisher answers with
+ * the exact rest of the same version of the file.
+ */
+describe("Downloading a publisher's file patiently · patientFetch()", () => {
+  describe("when a download is cut off", () => {
+    it("resumes with a Range request and returns the file whole", () =>
+      givesWhole(["cut"], true, 2, 1));
+
+    it("reads the file again from its start when the publisher ignores Range", () =>
+      givesWhole(["cut"], false, 2, 1));
+
+    it("resumes after each cut that added bytes, beyond the attempts allowed", () =>
+      givesWhole(["cut", "cut", "cut"], true, 4, 3));
+  });
+
+  describe("when the publisher answers a resume wrongly", () => {
+    it("reads the file again when the partial answer stops short", () =>
+      givesWhole(["cut", "short"], true, 3, 1));
+
+    it("reads the file again when the partial answer starts at another offset", () =>
+      givesWhole(["cut", "offset"], true, 3, 1));
+
+    it("reads the file again when the partial answer is of another version", () =>
+      givesWhole(["cut", "other version"], true, 3, 1));
+  });
+
+  describe("when the publisher answers with an error", () => {
+    it("asks again and returns the file whole", () =>
+      givesWhole(["error"], true, 2, 0));
+
+    it("throws after the attempts allowed in a row, saying what the publisher answered", async () => {
+      const { server, url, seen } = await publisher(
+        Array(20).fill("error"),
+        true,
+      );
+      try {
+        await assert.rejects(
+          patientFetch(fetch, { attempts: 3, delayMs: 0 })(url),
+          /3 attempts in a row.*answered 503/,
+        );
+        assert.equal(seen.length, 3);
+      } finally {
+        server.close();
+      }
+    });
+  });
+
+  describe("when no attempt reads anything new", () => {
+    const alternating = (second: Answer): Answer[] =>
+      Array.from({ length: 100 }, (_, i) => (i % 2 === 0 ? "cut" : second));
+
+    it("throws when every resume stops short and every full read is cut at the same point", () =>
+      givesUp(alternating("short"), /3 attempts in a row/, 10));
+
+    it("throws when no partial answer names its version", () =>
+      givesUp(alternating("untagged"), /3 attempts in a row/, 10));
+  });
 });

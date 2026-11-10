@@ -10,7 +10,7 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { before, describe, test } from "node:test";
+import { before, describe, it } from "node:test";
 import { crc32, gunzipSync } from "node:zlib";
 import {
   type Build,
@@ -1735,25 +1735,39 @@ const rules = readdirSync(join(ROOT, "rules")).filter((file) =>
   file.endsWith(".feature"),
 );
 
-for (const file of rules) {
-  const examples = await readFeature(join(ROOT, "rules", file));
-  describe(`rules/${file}`, () => {
-    for (const ex of examples)
-      test(ex.name, async () => {
-        const dir = await mkdtemp(join(tmpdir(), "tables-"));
-        try {
-          await steps.run(ex, {
-            dir,
-            feed: join(dir, "feed.ttl"),
-            out: join(dir, "out"),
-            feeds: [],
-            builds: [],
-            asked: [],
-            askedHistory: [],
-          });
-        } finally {
-          await rm(dir, { recursive: true, force: true });
-        }
-      });
-  });
-}
+const examples = new Map(
+  await Promise.all(
+    rules.map(
+      async (file) =>
+        [file, await readFeature(join(ROOT, "rules", file))] as const,
+    ),
+  ),
+);
+
+/**
+ * The rules any host of the tables must follow are the feature files under `rules/`, each rule with its id (H1 to
+ * H33) and its examples; `rules/steps.md` says what each step means. Every example is run here on this host, on an
+ * empty feed, with the example builder of `fixtures/builder/`.
+ */
+describe("Rules a host follows, run on this host · rules/steps.md", () => {
+  for (const file of rules)
+    describe(`given rules/${file}`, () => {
+      for (const ex of examples.get(file)!)
+        it(`runs the example: ${ex.name}`, async () => {
+          const dir = await mkdtemp(join(tmpdir(), "tables-"));
+          try {
+            await steps.run(ex, {
+              dir,
+              feed: join(dir, "feed.ttl"),
+              out: join(dir, "out"),
+              feeds: [],
+              builds: [],
+              asked: [],
+              askedHistory: [],
+            });
+          } finally {
+            await rm(dir, { recursive: true, force: true });
+          }
+        });
+    });
+});
