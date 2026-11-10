@@ -125,7 +125,7 @@ describe("Building a version of a table · build(), Feed.rowsOf()", () => {
       assert.equal(existsSync(join(out, "rows")), false);
     });
 
-    /** Rule H14 of rules/publish.feature, whose example does not check that the retired series is still in the feed. */
+    /** Rule H14 of `rules/publish.feature`, whose example does not check that the retired series is still in the feed. */
     it("keeps a series of a dropped table kind at its current version", async () => {
       await build(contract, {
         ...options("retired-kind", "release"),

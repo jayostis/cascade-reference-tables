@@ -165,7 +165,7 @@ describe("Describing what a version changed · differences(), differenceLines(),
       );
     });
 
-    it("escapes a label GitHub would read as a mention, an issue link, a strikethrough or HTML", () => {
+    it("escapes a label GitHub would read as a mention, an issue link, crossed-out text or HTML", () => {
       assert.deepEqual(
         linesOf([], [name("a1", "@octocat ~~fixes~~ #12"), name("a2", "<b>")])
           .added,

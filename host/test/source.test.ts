@@ -246,7 +246,7 @@ describe("Declaring a source · readSource(), declarationViolations()", () => {
 
   describe("given each source the repository declares", () => {
     for (const folder of [...builders, "fixtures/carrying"])
-      it(`returns no violation for ${folder}`, async () => {
+      it(`returns no violation for \`${folder}\``, async () => {
         assert.deepEqual(await violationsAfter(folder), []);
       });
   });

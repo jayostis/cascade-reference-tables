@@ -118,7 +118,7 @@ describe("Reading a release's files · csv(), delimited(), fixedWidth(), jsonLin
   describe("delimited()", () => {
     const text = "\u{FEFF}a|b\r\n\n".concat("c|d\n".repeat(3), "e|f");
 
-    it("cuts each line at the delimiter, keeping a field's spaces and an empty last field", async () => {
+    it("cuts each line at the separator asked, keeping a field's spaces and an empty last field", async () => {
       assert.deepEqual(
         await readAll("\uFEFF08 |Hep B|Active\r\n141|flu|\r\n", (path) =>
           delimited(path, "|"),
@@ -216,7 +216,7 @@ describe("Reading a release's files · csv(), delimited(), fixedWidth(), jsonLin
       ]);
     });
 
-    it("refuses a workbook whose entry does not inflate", async () => {
+    it("refuses a workbook whose compressed entry is corrupt", async () => {
       const bytes = await readFile(XLSX);
       const name = bytes.indexOf("xl/workbook.xml");
       const data = name + 15 + bytes.readUInt16LE(name - 2);
@@ -270,7 +270,7 @@ describe("Reading a release's files · csv(), delimited(), fixedWidth(), jsonLin
       );
     });
 
-    it("refuses a file that is not well-formed XML", async () => {
+    it("refuses a file whose XML tags do not match", async () => {
       assert.match(
         await refusal(
           readAll(

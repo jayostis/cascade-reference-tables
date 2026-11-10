@@ -52,7 +52,7 @@ describe("Checking that a builder conforms · conformanceExamples(), runConforma
   });
 
   for (const folder of folders)
-    describe(`given ${folder}`, () => {
+    describe(`given \`${folder}\``, () => {
       for (const ex of examples)
         it(`runs the example: ${ex.name}`, () =>
           runConformance(contract, join(ROOT, ...folder.split("/")), ex));

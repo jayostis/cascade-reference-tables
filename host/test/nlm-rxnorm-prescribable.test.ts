@@ -87,7 +87,7 @@ describe("Drug codes from NLM's prescribable RxNorm · builders/nlm-rxnorm-presc
       ],
     ];
     for (const [what, history, reason] of unmapped)
-      /** Rule H20 of rules/carry.feature, whose example runs the example builder; this is this builder's own sentence. */
+      /** Rule H20 of `rules/carry.feature`, whose example runs the example builder; this is this builder's own sentence. */
       it(`refuses ${what}, naming the line`, async () => {
         assert.equal(await refusal(statusRows(`${history}\n`)), reason);
       });
@@ -116,7 +116,7 @@ describe("Drug codes from NLM's prescribable RxNorm · builders/nlm-rxnorm-presc
     }
   }
 
-  describe("given a release's RXNCONSO and RXNREL lines", () => {
+  describe("given a release's `RXNCONSO` and `RXNREL` lines", () => {
     it("refuses a precise ingredient whose term type is not PIN, naming the concept", async () => {
       assert.equal(
         await refusal(
@@ -129,7 +129,7 @@ describe("Drug codes from NLM's prescribable RxNorm · builders/nlm-rxnorm-presc
       );
     });
 
-    it("gives no row, and no refusal, for a precise ingredient RXNCONSO does not hold", async () => {
+    it("gives no row, and no refusal, for a precise ingredient `RXNCONSO` does not hold", async () => {
       const rows = await builtFrom(
         conso("10", "SCDC"),
         rel("1", "has_precise_ingredient", "10"),

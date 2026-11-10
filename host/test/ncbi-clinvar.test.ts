@@ -285,7 +285,7 @@ describe("Variant classifications from NCBI's ClinVar · builders/ncbi-clinvar",
     });
   });
 
-  describe("given a summary without the SCVs column, as before 2023", () => {
+  describe("given a summary without the `SCVs` column, as before 2023", () => {
     it("counts submitters, and writes no count of contributing ones", async () => {
       const { series } = await built(
         without(await text(SUMMARY), "SCVsForAggregateGermlineClassification"),
@@ -354,7 +354,7 @@ describe("Variant classifications from NCBI's ClinVar · builders/ncbi-clinvar",
     });
     after(() => removeDir());
 
-    /** Rule H25 of rules/versions.feature. */
+    /** Rule H25 of `rules/versions.feature`. */
     it("states the genes the series covers", () => {
       assert.deepEqual(feed.coversOf(feed.current(classifications)!), [
         "EPCAM",
@@ -395,7 +395,7 @@ describe("Variant classifications from NCBI's ClinVar · builders/ncbi-clinvar",
       );
     });
 
-    /** Rule H23 of rules/versions.feature. */
+    /** Rule H23 of `rules/versions.feature`. */
     it("keeps only the file NCBI does not archive in the release", async () => {
       const { files } = JSON.parse(
         await readFile(join(dir, "out", "release.json"), "utf8"),

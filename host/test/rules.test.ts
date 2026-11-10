@@ -1751,7 +1751,7 @@ const examples = new Map(
  */
 describe("Rules a host follows, run on this host · rules/steps.md", () => {
   for (const file of rules)
-    describe(`given rules/${file}`, () => {
+    describe(`given \`rules/${file}\``, () => {
       for (const ex of examples.get(file)!)
         it(`runs the example: ${ex.name}`, async () => {
           const dir = await mkdtemp(join(tmpdir(), "tables-"));

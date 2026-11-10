@@ -13,8 +13,8 @@ const ROOT = join(import.meta.dirname, "..", "..", "..");
 const KEY = "urn:uuid:5b1d3c52-7d4e-4b8a-9c61-2e5d8f0b7a14";
 
 /**
- * \`checked.json\`, published beside the feed, says for each source when it was last checked and what the check found:
- * \`new\`, \`nothing new\`, or \`not checked\` with a reason. \`shapes/checked.schema.json\` is its schema.
+ * `checked.json`, published beside the feed, says for each source when it was last checked and what the check found:
+ * `new`, `nothing new`, or `not checked` with a reason. `shapes/checked.schema.json` is its schema.
  */
 describe("Recording when each source was last checked · checked.json, mergeChecked()", () => {
   let validate: ReturnType<Ajv2020["compile"]>;

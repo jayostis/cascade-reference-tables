@@ -26,7 +26,7 @@ const RXNORM = "https://ns.cascadeprotocol.org/codes/rxnorm/";
  * row to the property its table kind now fixes.
  */
 describe("Carrying forward the rows of a code that leaves a release · carry(), withProperty()", () => {
-  /** Rule H19 of rules/carry.feature, whose example carries names; this is RxNorm's carried form. */
+  /** Rule H19 of `rules/carry.feature`, whose example carries names; this is RxNorm's carried form. */
   describe("carry()", () => {
     let carried: readonly { form: string; key: string }[] | undefined;
 
@@ -80,7 +80,7 @@ describe("Carrying forward the rows of a code that leaves a release · carry(), 
     });
   });
 
-  /** Rule H27 of rules/carry.feature, whose one example carries a vaccine group, which has no sequence. */
+  /** Rule H27 of `rules/carry.feature`, whose one example carries a vaccine group, which has no sequence. */
   describe("withProperty()", () => {
     it("names a carried panel member row over its panel, the new property, its member and its sequence", () => {
       const key = "urn:uuid:00000000-0000-8000-8000-000000000000";

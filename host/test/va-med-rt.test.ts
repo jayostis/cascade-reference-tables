@@ -105,7 +105,7 @@ const cases: [what: string, xml: string, reason: string][] = [
  * read refuses the build, naming the association by its place, relation and codes.
  */
 describe("Drug classes from VA's MED-RT · builders/va-med-rt", () => {
-  describe("given an association of authority FDASPL the builder cannot read", () => {
+  describe("given an association of authority `FDASPL` the builder cannot read", () => {
     for (const [what, xml, reason] of cases)
       it(`refuses ${what}`, async () => {
         assert.equal(await refused(xml), reason);

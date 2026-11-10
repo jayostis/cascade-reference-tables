@@ -516,7 +516,7 @@ describe("Lab codes and panels from Regenstrief's LOINC · builders/regenstrief-
       assert.deepEqual(await editedFields(labelsOf(base), membersOf(base)), []);
     });
 
-    /** Rule H2 of rules/rows.feature, as the vocabulary's vector for panel member rows holds it. */
+    /** Rule H2 of `rules/rows.feature`, as the vocabulary's vector for panel member rows holds it. */
     it("names a panel member row as the vocabulary's panel-members-1.ttl does", async () => {
       const vector = keyed(
         parseTurtle(
