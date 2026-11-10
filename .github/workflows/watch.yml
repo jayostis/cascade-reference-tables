@@ -73,9 +73,16 @@ jobs:
             if [ -n "${SOURCE:-}" ] && [ "$SOURCE" != "$name" ]; then continue; fi
             mkdir -p "build/$name"
             cp feed/feed.ttl "build/$name/feed.ttl"
-            if ! npm run --silent host -- build "$name" --out "build/$name" --feed "build/$name/feed.ttl" \
-              --releases "$GITHUB_REPOSITORY" --checked build/live-checked.json; then
-              echo "::error::$name could not be checked"
+            errors="$RUNNER_TEMP/$name.stderr"
+            ok=true
+            npm run --silent host -- build "$name" --out "build/$name" --feed "build/$name/feed.ttl" \
+              --releases "$GITHUB_REPOSITORY" --checked build/live-checked.json 2> "$errors" || ok=false
+            cat "$errors" >&2
+            if [ "$ok" = false ]; then
+              why=$(tr -d '\r' < "$errors" | awk '/^[A-Za-z]*Error: /{ sub(/^[A-Za-z]*Error: /, ""); line=$0; if (line ~ /:$/ && (getline next_line) > 0) line = line " " next_line; print line; exit }')
+              [ -n "$why" ] || why=$(tr -d '\r' < "$errors" | grep -v '^[[:space:]]*$' | tail -n 1 || true)
+              why=${why//%/%25}
+              echo "::error::$name could not be checked${why:+: $why}"
               failed="$failed $name"
               continue
             fi
@@ -171,7 +178,8 @@ jobs:
           name: checked
           path: cascade-reference-tables/build/*/checked.json
           if-no-files-found: error
-      - if: ${{ steps.build.outputs.failed != '' }}
+      - name: "Sources that could not be checked: fail the run"
+        if: ${{ steps.build.outputs.failed != '' }}
         env:
           FAILED: ${{ steps.build.outputs.failed }}
         run: |
