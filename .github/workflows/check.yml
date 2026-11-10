@@ -35,9 +35,19 @@ jobs:
           ref: ${{ steps.vocabulary.outputs.commit }}
           path: cascade-vocabulary
           persist-credentials: false
+      - name: The runtime's report writer and shape check, beside this repository
+        uses: actions/checkout@v7
+        with:
+          repository: jayostis/cascade-runtime-js
+          ref: main
+          path: cascade-runtime-js
+          sparse-checkout: |
+            scripts
+            packages/site/src
+          persist-credentials: false
       - uses: actions/setup-node@v5
         with:
-          node-version: "22"
+          node-version: "24"
           cache: npm
           cache-dependency-path: cascade-reference-tables/package-lock.json
       - run: npm ci
@@ -45,5 +55,54 @@ jobs:
         run: npm run typecheck
       - if: ${{ !cancelled() }}
         run: npm run lint
+      - name: The tests, with the report the unit-test page is made from
+        if: ${{ !cancelled() }}
+        run: |
+          npm run build
+          mkdir -p ../unit-tests
+          node --test \
+            --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=../cascade-runtime-js/scripts/junit-reporter.mjs \
+            --test-reporter-destination=../unit-tests/junit.xml \
+            "dist/host/test/**/*.test.js"
+      - name: The tests read as a specification
+        if: ${{ !cancelled() }}
+        run: node ../cascade-runtime-js/scripts/spec-shape.mjs ../unit-tests/junit.xml host/test/spec.json
       - if: ${{ !cancelled() }}
-        run: npm test
+        run: cp host/test/spec.json ../unit-tests/spec.json
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: unit-tests
+          path: unit-tests
+          if-no-files-found: error
+
+  # The package declares node >= 22; the job above runs on 24, where node:test names each test's file and line.
+  node-22:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cascade-reference-tables
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: cascade-reference-tables
+          persist-credentials: false
+      - name: The vocabulary at the commit vocabulary.json pins, beside this repository
+        id: vocabulary
+        run: |
+          echo "repository=$(jq -r '.repository | sub("^https://github.com/"; "")' vocabulary.json)" >> "$GITHUB_OUTPUT"
+          echo "commit=$(jq -r .commit vocabulary.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ steps.vocabulary.outputs.repository }}
+          ref: ${{ steps.vocabulary.outputs.commit }}
+          path: cascade-vocabulary
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: cascade-reference-tables/package-lock.json
+      - run: npm ci
+      - run: npm test

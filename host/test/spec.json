@@ -1,0 +1,288 @@
+{
+  "about": "The host that builds the project's reference tables from their publishers' releases, the builders it runs, and the feed an app reads them from.",
+  "capabilities": [
+    "Checking a feed against its shapes · Shapes.read(), shapes.violations(), feedViolations()",
+    "Recording when each source was last checked · checked.json, mergeChecked()",
+    "Reading a release's files · csv(), delimited(), fixedWidth(), jsonLines(), xlsx(), xmlElements()",
+    "Checking that a builder conforms · conformanceExamples(), runConformance()",
+    "Vaccine codes and groups from CDC's CVX files · builders/cdc-cvx",
+    "ICD-10-CM code conversions from CDC's files · builders/cdc-icd-10-cm",
+    "Drug codes from NLM's prescribable RxNorm · builders/nlm-rxnorm-prescribable",
+    "Drug classes from VA's MED-RT · builders/va-med-rt",
+    "Lab codes and panels from Regenstrief's LOINC · builders/regenstrief-loinc",
+    "Variant classifications from NCBI's ClinVar · builders/ncbi-clinvar",
+    "Declaring a source · readSource(), declarationViolations()",
+    "Building a version of a table · build(), Feed.rowsOf()",
+    "Carrying forward the rows of a code that leaves a release · carry(), withProperty()",
+    "Describing what a version changed · differences(), differenceLines(), markdown()",
+    "Downloading a publisher's file patiently · patientFetch()",
+    "Finding a rows file in GitHub releases · releaseStore()",
+    "Rules a host follows, run on this host · rules/steps.md"
+  ],
+  "build": [
+    "The published feed, held to its shapes · feed/feed.ttl",
+    "The licences the source shape lists, held to vocab/licences.ttl"
+  ],
+  "glossary": [
+    {
+      "term": "announcement",
+      "definition": "a public page on which a publisher names its versions; a source detected by its announcement is never downloaded by the host.",
+      "aliases": ["announcement page", "announcement pattern"]
+    },
+    {
+      "term": "builder",
+      "definition": "here, the code that turns one publisher's release into rows: a `build.ts` beside the `source.ttl` that declares its source. It touches no network and no file it was not handed.",
+      "aliases": ["builders"]
+    },
+    {
+      "term": "cardinality",
+      "definition": "of a mapping row, how many codes map to how many: `1:1`, `1:n` (one code became several) or `n:1` (several became one)."
+    },
+    {
+      "term": "carry",
+      "definition": "to keep, in a new version, the rows of a code the publisher's release no longer names.",
+      "aliases": ["carries", "carried", "carrying", "carried forward"]
+    },
+    {
+      "term": "chain",
+      "definition": "in ICD-10-CM's conversions, a code replaced by a code that was itself replaced later; the builder follows it to the codes in effect.",
+      "aliases": ["chains", "chained"]
+    },
+    {
+      "term": "check",
+      "definition": "here, a host asking a publisher whether it has a release newer than the feed's current versions.",
+      "aliases": ["checks", "checked"]
+    },
+    {
+      "term": "classification",
+      "definition": "ClinVar's statement of what a variant means for health, such as pathogenic or benign.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#clinvarClassification",
+      "aliases": ["classifications", "classes"]
+    },
+    {
+      "term": "ClinVar",
+      "definition": "the public archive, kept by the US National Library of Medicine, of how laboratories classify variants, from benign to pathogenic; one of the reference tables.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#VariantClassifications"
+    },
+    {
+      "term": "code system",
+      "aliases": ["code systems"],
+      "definition": "a published list of codes for one kind of thing, such as RxNorm for medicines, LOINC for lab tests and SNOMED CT for clinical findings."
+    },
+    {
+      "term": "conversion",
+      "definition": "in ICD-10-CM, CDC's statement that a code of a new year takes the place of earlier ones.",
+      "aliases": ["conversions"]
+    },
+    {
+      "term": "declaration",
+      "definition": "the RDF a source is declared in (`source.ttl`, `builder.ttl`).",
+      "aliases": ["declarations"]
+    },
+    {
+      "term": "differences",
+      "definition": "the rows a version added, removed and changed against the version it revises."
+    },
+    {
+      "term": "drug class",
+      "definition": "a group of medicines that work alike or are built alike, such as ACE inhibitors, as the US Food and Drug Administration assigns them.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#DrugClasses",
+      "aliases": ["drug classes"]
+    },
+    {
+      "term": "EPC",
+      "definition": "established pharmacologic class: FDA's name for the drug class on a medicine's label."
+    },
+    {
+      "term": "expression",
+      "definition": "a variant written in HGVS, the standard notation, such as `NM_000249.4:c.2042C>T`; a record's expression finds its row.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#hgvsExpression",
+      "aliases": ["expressions", "HGVS expression"]
+    },
+    {
+      "term": "feature file",
+      "definition": "a plain-text file that states rules, each with examples written as steps (given, when, then); this repository's are under `rules/`.",
+      "aliases": ["feature files"]
+    },
+    {
+      "term": "feed",
+      "definition": "a published list of the versions of reference tables, which an app reads to find newer ones.",
+      "aliases": ["feeds"]
+    },
+    {
+      "term": "finding",
+      "definition": "here, something a builder left out of its rows and says so, such as a term it cannot map; it is shown with the differences and does not stop the build.",
+      "aliases": ["findings"]
+    },
+    {
+      "term": "history answer",
+      "definition": "what RxNav, NLM's lookup service, says became of one code: still active, or retired and replaced by which.",
+      "aliases": ["history answers"]
+    },
+    {
+      "term": "host",
+      "definition": "here, the program that runs builders: it detects a release, downloads it, checks the rows, names the version and publishes. This repository's `host/` is one.",
+      "aliases": ["hosts"]
+    },
+    {
+      "term": "label",
+      "definition": "of a series, its name as a person reads it, such as 'Vaccine groups'; a feed gives it and a check updates it.",
+      "aliases": ["labels"]
+    },
+    {
+      "term": "mapping row",
+      "definition": "a row saying one code relates to another by a property, such as \"is a member of\".",
+      "aliases": ["mapping rows"]
+    },
+    {
+      "term": "name row",
+      "definition": "a row giving a code its name.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#CodeNames",
+      "aliases": ["name rows"]
+    },
+    {
+      "term": "NLM",
+      "definition": "the US National Library of Medicine, which publishes RxNorm and the history of its codes."
+    },
+    {
+      "term": "panel",
+      "definition": "a set of lab tests reported together, such as a thyroid panel.",
+      "aliases": ["panels"]
+    },
+    {
+      "term": "precise ingredient",
+      "definition": "a particular form of an ingredient, such as lisinopril anhydrous of lisinopril, which some medicine products are tied to.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#hasPreciseIngredient",
+      "aliases": ["precise ingredients"]
+    },
+    {
+      "term": "prescribable",
+      "definition": "of a drug, that a clinician can prescribe as it is named; NLM publishes the RxNorm subset of such drugs as its prescribable content."
+    },
+    {
+      "term": "publisher",
+      "definition": "the organisation that issues a code system's releases, such as CDC, NLM or Regenstrief.",
+      "aliases": ["publishers"]
+    },
+    {
+      "term": "pull request",
+      "definition": "on GitHub, a proposed change that a person reads and accepts or rejects.",
+      "aliases": ["pull requests"]
+    },
+    {
+      "term": "Range request",
+      "definition": "an HTTP request for a file from a given byte on, which a server answers with only the rest of the file.",
+      "aliases": ["Range"]
+    },
+    {
+      "term": "Refusal",
+      "definition": "the error thrown when the package declines a request it understood, such as a name it does not have; it has written nothing."
+    },
+    {
+      "term": "Regenstrief",
+      "definition": "the Regenstrief Institute, which publishes LOINC."
+    },
+    {
+      "term": "release",
+      "definition": "one issue of a publisher's files, such as RxNorm's of a given month. (A \"GitHub release\" is always written so.)",
+      "aliases": ["releases"]
+    },
+    {
+      "term": "release label",
+      "definition": "the short text a check gives a release to tell it from the others: its Last-Modified date or its release version; `unlabelled` when the publisher gives neither.",
+      "aliases": ["release labels", "labelled", "unlabelled"]
+    },
+    {
+      "term": "review status",
+      "definition": "ClinVar's statement of how well a classification is supported, such as `criteria provided, multiple submitters, no conflicts`.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#clinvarReviewStatus"
+    },
+    {
+      "term": "revise",
+      "definition": "of a version, to take the place of its series' current version.",
+      "aliases": ["revises", "revised"]
+    },
+    {
+      "term": "row",
+      "definition": "one line of a table: of a view, what one view entry holds, a cell per column; of a reference table, what it says of one code or variant.",
+      "aliases": ["rows"]
+    },
+    {
+      "term": "rows file",
+      "definition": "the file holding one version's rows: gzipped N-Quads, named by its checksum.",
+      "aliases": ["rows files"]
+    },
+    {
+      "term": "series",
+      "definition": "one of the reference tables across its versions, such as RxNorm's product ingredients.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#ReferenceSeries"
+    },
+    {
+      "term": "shapes",
+      "definition": "requirements on what a feed or a source's declaration must state, written in SHACL, the W3C language for checking data; each has a message saying what is wrong.",
+      "vocabulary": "https://www.w3.org/TR/shacl/"
+    },
+    {
+      "term": "source",
+      "definition": "here, one publisher's release as a host is told of it in `source.ttl`: where it is, how a new one is detected, its files, its licence and the series it fills.",
+      "aliases": ["sources"]
+    },
+    {
+      "term": "status row",
+      "definition": "a row saying a code is retired, and which codes replace it.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#RetiredCodes",
+      "aliases": ["status rows"]
+    },
+    {
+      "term": "submitter",
+      "definition": "a laboratory that sent ClinVar its classification of a variant.",
+      "aliases": ["submitters"]
+    },
+    {
+      "term": "table kind",
+      "definition": "what a reference table's rows say, such as product ingredients or vaccine groups; the vocabulary declares each kind.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#TableKind",
+      "aliases": ["table kinds"]
+    },
+    {
+      "term": "term type",
+      "definition": "RxNorm's kind of a concept: `IN` an ingredient, `PIN` a precise ingredient, `SCD`, `SBD`, `GPCK`, `BPCK` kinds of product.",
+      "aliases": ["term types"]
+    },
+    {
+      "term": "triple",
+      "definition": "one statement of RDF, made of a subject, a property and a value.",
+      "aliases": ["triples"]
+    },
+    {
+      "term": "unparsable",
+      "definition": "of text, that cannot be read as the kind of thing it should be, such as a date that is no date."
+    },
+    {
+      "term": "variant",
+      "definition": "a difference in one of a person's genes from the reference sequence, as a genetic test reports it.",
+      "vocabulary": "https://ns.cascadeprotocol.org/cascade#GeneticVariantFinding",
+      "aliases": ["variants"]
+    },
+    {
+      "term": "variation",
+      "definition": "ClinVar's record of one variant, with a number such as 90011.",
+      "aliases": ["variations"]
+    },
+    {
+      "term": "vector",
+      "definition": "in the vocabulary's tests, an input written down beside the output every implementation must give for it.",
+      "aliases": ["vectors"]
+    },
+    {
+      "term": "version",
+      "definition": "here, one series' rows as built from one release; it is named by its content and never changed once published.",
+      "aliases": ["versions", "table version", "table versions"]
+    },
+    {
+      "term": "violation",
+      "definition": "one way a feed or a declaration breaks a shape, as text ending in the shape's message.",
+      "aliases": ["violations"]
+    }
+  ]
+}

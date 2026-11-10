@@ -1,5 +1,6 @@
 {
   "name": "cascade-reference-tables",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "description": "The project's reference tables: the contract, the host, the builders and the feed.",

@@ -20,6 +20,7 @@ Table kinds and their rows are [cascade-vocabulary](https://github.com/jayostis/
 - [The Cascade hub](https://jayostis.github.io/cascade-runtime-js/): where to go for each thing, and every repository.
 - [This repository's site](https://jayostis.github.io/cascade-reference-tables/): the tables and the feed this repository publishes.
 - [Terms](https://jayostis.github.io/cascade-runtime-js/terms/): the terms the tables' codes are read with.
+- [Unit-test report](https://jayostis.github.io/cascade-runtime-js/conformance/tests/cascade-reference-tables/): each case of the host's tests, with its result, from the newest run on main.
 
 ## What the public feed cannot hold
 
