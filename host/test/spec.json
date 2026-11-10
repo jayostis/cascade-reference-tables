@@ -1,0 +1,27 @@
+{
+  "about": "The host that builds the project's reference tables from their publishers' releases, the builders it runs, and the feed an app reads them from.",
+  "capabilities": [
+    "Checking a feed against its shapes · Shapes.read(), shapes.violations(), feedViolations()",
+    "Recording when each source was last checked · checked.json, mergeChecked()",
+    "Reading a release's files · csv(), delimited(), fixedWidth(), jsonLines(), xlsx(), xmlElements()",
+    "Checking that a builder conforms · conformanceExamples(), runConformance()",
+    "Vaccine codes and groups from CDC's CVX files · builders/cdc-cvx",
+    "ICD-10-CM code conversions from CDC's files · builders/cdc-icd-10-cm",
+    "Drug codes from NLM's prescribable RxNorm · builders/nlm-rxnorm-prescribable",
+    "Drug classes from VA's MED-RT · builders/va-med-rt",
+    "Lab codes and panels from Regenstrief's LOINC · builders/regenstrief-loinc",
+    "Variant classifications from NCBI's ClinVar · builders/ncbi-clinvar",
+    "Declaring a source · readSource(), declarationViolations()",
+    "Building a version of a table · build(), Feed.rowsOf()",
+    "Carrying forward the rows of a code that leaves a release · carry(), withProperty()",
+    "Describing what a version changed · differences(), differenceLines(), markdown()",
+    "Downloading a publisher's file patiently · patientFetch()",
+    "Finding a rows file in GitHub releases · releaseStore()",
+    "Rules a host follows, run on this host · rules/steps.md"
+  ],
+  "build": [
+    "The published feed, held to its shapes · feed/feed.ttl",
+    "The licences the source shape lists, held to vocab/licences.ttl"
+  ],
+  "glossary": []
+}
