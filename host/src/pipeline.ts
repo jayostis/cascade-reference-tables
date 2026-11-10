@@ -14,7 +14,7 @@ import { type Build, Refusal } from "./builder.js";
 import { carry } from "./carry.js";
 import type { Fetch } from "./detection.js";
 import { extract, unzip } from "./archive.js";
-import { type Described, describe } from "./describe.js";
+import { type Described, differenceLines } from "./difference-lines.js";
 import {
   DCAT,
   DCT,
@@ -609,7 +609,7 @@ export async function build(
       version,
       ...(previous === undefined ? {} : { previous }),
       differences: found,
-      described: describe(beforeRows, rows.triples(), found, (concept) =>
+      described: differenceLines(beforeRows, rows.triples(), found, (concept) =>
         contract.vocabulary.labelOf(concept),
       ),
     });

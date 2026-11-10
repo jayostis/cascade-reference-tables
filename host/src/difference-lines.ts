@@ -130,7 +130,7 @@ function sorted(lines: readonly Line[]): string[] {
 }
 
 /** The rows of two versions' differences, each described by its codes rather than its record ID. */
-export function describe(
+export function differenceLines(
   before: readonly Quad[],
   after: readonly Quad[],
   found: Differences,

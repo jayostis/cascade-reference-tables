@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Row } from "../src/builder.js";
-import { describe } from "../src/describe.js";
+import { differenceLines } from "../src/difference-lines.js";
 import { differences, markdown, type Outcome } from "../src/pipeline.js";
 import { keyed, toRdf } from "../src/rows.js";
 
@@ -20,7 +20,7 @@ function outcomeOf(before: readonly Row[], after: readonly Row[]): Outcome {
     label: "Example",
     version: "ni:///sha-256;abc",
     differences: found,
-    described: describe(quadsOf(before), quadsOf(after), found),
+    described: differenceLines(quadsOf(before), quadsOf(after), found),
   };
 }
 
@@ -140,7 +140,7 @@ test("a classification row's difference names its variation, its classes by labe
   ]);
   const found = differences(keyed(before), keyed(after));
   assert.deepEqual(
-    describe(before, after, found, (iri) => labels.get(iri)).changed,
+    differenceLines(before, after, found, (iri) => labels.get(iri)).changed,
     [
       "`90011`: Likely pathogenic, Pathogenic (reviewed by expert panel), 2024-12-11, 2 expressions (was `90011`: Pathogenic (reviewed by expert panel), 2024-12-11, 1 expression)",
     ],
