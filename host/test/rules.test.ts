@@ -33,7 +33,7 @@ import {
   type Contract,
   type Outcome,
   readContract,
-  rowsOf,
+  builtRows,
   type Seen,
   type SeenInputs,
 } from "../src/pipeline.js";
@@ -1599,7 +1599,7 @@ async function classificationsGiven(
     yield* yielded;
   };
   try {
-    await rowsOf(
+    await builtRows(
       contract,
       classifications,
       code,

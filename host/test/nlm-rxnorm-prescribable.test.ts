@@ -6,7 +6,7 @@ import { test } from "node:test";
 import { type Build, Refusal } from "../src/builder.js";
 import { carry } from "../src/carry.js";
 import type { Fetch } from "../src/detection.js";
-import { readContract, rowsOf } from "../src/pipeline.js";
+import { readContract, builtRows } from "../src/pipeline.js";
 import { parseTrig } from "../src/rdf.js";
 import { releaseOf } from "../src/release.js";
 import { keyed, SeriesRows, toRdf } from "../src/rows.js";
@@ -141,7 +141,7 @@ test("a drug products row for a code that is no product is refused with the shap
     yield { series: PRODUCTS, subject: `${RXNORM}21`, termType: "IN" };
   };
   await assert.rejects(
-    rowsOf(contract, source, notProduct, join(FOLDER, "fixtures", "release")),
+    builtRows(contract, source, notProduct, join(FOLDER, "fixtures", "release")),
     (error) =>
       error instanceof Refusal &&
       error.message.includes(

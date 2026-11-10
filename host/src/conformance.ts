@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { Refusal } from "./builder.js";
 import { type Example, readFeature, Steps } from "./features.js";
-import { type Contract, declarationViolations, rowsOf } from "./pipeline.js";
+import { type Contract, declarationViolations, builtRows } from "./pipeline.js";
 import { parseTrig } from "./rdf.js";
 import { keyed, type SeriesRows } from "./rows.js";
 import { loadBuild, readSource, type Source } from "./source.js";
@@ -44,7 +44,7 @@ const steps = new Steps<World>()
     try {
       const build = await loadBuild(world.contract.root, world.source.folder);
       world.builds.push(
-        await rowsOf(
+        await builtRows(
           world.contract,
           world.source,
           build,

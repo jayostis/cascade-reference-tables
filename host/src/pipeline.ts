@@ -227,7 +227,7 @@ function archivesPublisherFiles(contract: Contract, source: Source): boolean {
  * The builder's rows of each series its source declares, every one checked; a `Refusal` names what is wrong. What the
  * builder finds worth showing is added to `findings`.
  */
-export async function rowsOf(
+export async function builtRows(
   contract: Contract,
   source: Source,
   build: Build,
@@ -472,7 +472,7 @@ export async function build(
 ): Promise<Outcome[]> {
   const { source } = options;
   const findings: string[] = [];
-  const series = await rowsOf(
+  const series = await builtRows(
     contract,
     source,
     options.build,

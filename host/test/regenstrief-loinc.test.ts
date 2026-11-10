@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { Refusal } from "../src/builder.js";
-import { readContract, rowsOf } from "../src/pipeline.js";
+import { readContract, builtRows } from "../src/pipeline.js";
 import { csv } from "../src/readers.js";
 import { OWL, parseTurtle, CASCADE, SKOS } from "../src/rdf.js";
 import { keyed, type SeriesRows, toRdf } from "../src/rows.js";
@@ -49,7 +49,7 @@ async function built(edits: Edits): Promise<Map<string, SeriesRows>> {
       const path = join(dir, file);
       await writeFile(path, edit!(await readFile(path, "utf8")));
     }
-    return await rowsOf(
+    return await builtRows(
       contract,
       await readSource(FOLDER),
       await loadBuild(ROOT, FOLDER),

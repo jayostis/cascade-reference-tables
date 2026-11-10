@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { before, test } from "node:test";
 import { gunzipSync, gzipSync } from "node:zlib";
 import { Refusal } from "../src/builder.js";
-import { build, readContract, rowsOf } from "../src/pipeline.js";
+import { build, readContract, builtRows } from "../src/pipeline.js";
 import type { Contract } from "../src/pipeline.js";
 import { DCT, CASCADE } from "../src/rdf.js";
 import { Feed } from "../src/feed.js";
@@ -48,7 +48,7 @@ async function built(
     await writeFile(join(dir, SUMMARY), gzipSync(`${summary.join("\n")}\n`));
     await writeFile(join(dir, SNAPSHOT), gzipSync(`${snapshot.join("\n")}\n`));
     const findings: string[] = [];
-    const series = await rowsOf(
+    const series = await builtRows(
       contract,
       source,
       await loadBuild(ROOT, FOLDER),

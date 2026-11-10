@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { Refusal } from "../src/builder.js";
-import { readContract, rowsOf } from "../src/pipeline.js";
+import { readContract, builtRows } from "../src/pipeline.js";
 import { loadBuild, readSource } from "../src/source.js";
 
 const ROOT = join(import.meta.dirname, "..", "..", "..");
@@ -52,7 +52,7 @@ test("CDC's files are refused, naming the line and why, when the builder cannot 
       await writeFile(join(release, "CVX.txt"), `\uFEFF${cvx}\r\n`);
       await writeFile(join(release, "VG.txt"), `${vg}\r\n`);
       await assert.rejects(
-        rowsOf(contract, source, build, release),
+        builtRows(contract, source, build, release),
         (error) => error instanceof Refusal && error.message === reason,
         reason,
       );

@@ -11,7 +11,7 @@ export {
   type Contract,
   type Outcome,
   readContract,
-  rowsOf,
+  builtRows,
   type Seen,
   type SeenInputs,
 } from "./pipeline.js";
