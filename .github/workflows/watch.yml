@@ -79,7 +79,7 @@ jobs:
               --releases "$GITHUB_REPOSITORY" --checked build/live-checked.json 2> "$errors" || ok=false
             cat "$errors" >&2
             if [ "$ok" = false ]; then
-              why=$(tr -d '\r' < "$errors" | awk '/^[A-Za-z]*Error: /{ sub(/^[A-Za-z]*Error: /, ""); line=$0; if (line ~ /:$/ && (getline next_line) > 0) line = line " " next_line; print line; exit }')
+              why=$(awk '{ gsub(/\r/, "") } /^[A-Za-z]*Error: /{ sub(/^[A-Za-z]*Error: /, ""); line=$0; if (line ~ /:$/ && (getline next_line) > 0) { gsub(/\r/, "", next_line); line = line " " next_line }; print line; exit }' "$errors" || true)
               [ -n "$why" ] || why=$(tr -d '\r' < "$errors" | grep -v '^[[:space:]]*$' | tail -n 1 || true)
               why=${why//%/%25}
               echo "::error::$name could not be checked${why:+: $why}"
