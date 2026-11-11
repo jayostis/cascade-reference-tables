@@ -17,6 +17,7 @@
     "Describing what a version changed · differences(), differenceLines(), markdown()",
     "Downloading a publisher's file patiently · patientFetch()",
     "Finding a rows file in GitHub releases · releaseStore()",
+    "Running the host from the command line · host/src/cli.ts",
     "Rules a host follows, run on this host · rules/steps.md"
   ],
   "build": [
