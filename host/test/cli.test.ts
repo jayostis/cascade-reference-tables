@@ -80,10 +80,19 @@ describe("Running the host from the command line · host/src/cli.ts", () => {
           join(empty, "out"),
         );
         assert.equal(run.code, 1);
-        assert.match(run.stderr, /^refused: /m);
+        assert.match(run.stderr, /^refused: .*no CVX\.txt/m);
       } finally {
         await rm(empty, { recursive: true });
       }
+    });
+  });
+
+  describe("given a builder that conforms", () => {
+    it("prints ok for each example and exits 0", async () => {
+      const run = await host("test", "cdc-cvx");
+      assert.equal(run.code, 0);
+      assert.match(run.stdout, /^ok /m);
+      assert.doesNotMatch(run.stdout, /^not ok /m);
     });
   });
 });
