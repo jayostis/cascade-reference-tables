@@ -2,7 +2,7 @@
 
 The project's reference tables, kept current from open publishers: the contract a table builder and its host
 follow, the host, the builders of the open sources, and the feed apps read. The design and its steps are
-[jayostis/cascade-vocabulary#60](https://github.com/jayostis/cascade-vocabulary/issues/60).
+[the-cascade-protocol/cascade-vocabulary#60](https://github.com/the-cascade-protocol/cascade-vocabulary/issues/60).
 
 **DRAFT: no compatibility is promised before a numbered v1.**
 
@@ -12,15 +12,15 @@ follow, the host, the builders of the open sources, and the feed apps read. The 
 | a host                   | [`shapes/`](shapes/) and [`rules/`](rules/)                                            |
 | an app that reads tables | [`feed/`](feed/), with [`fixtures/feeds/valid/`](fixtures/feeds/valid/) as a test feed |
 
-Table kinds and their rows are [cascade-vocabulary](https://github.com/jayostis/cascade-vocabulary)'s, at the commit
+Table kinds and their rows are [cascade-vocabulary](https://github.com/the-cascade-protocol/cascade-vocabulary)'s, at the commit
 [`vocabulary.json`](vocabulary.json) pins.
 
 ## Docs
 
-- [The Cascade hub](https://jayostis.github.io/cascade-runtime-js/): where to go for each thing, and every repository.
-- [This repository's site](https://jayostis.github.io/cascade-reference-tables/): the tables and the feed this repository publishes.
-- [Terms](https://jayostis.github.io/cascade-runtime-js/terms/): the terms the tables' codes are read with.
-- [Unit-test report](https://jayostis.github.io/cascade-runtime-js/conformance/tests/cascade-reference-tables/): each case of the host's tests, with its result, from the newest run on main.
+- [The Cascade hub](https://the-cascade-protocol.github.io/cascade-runtime-js/): where to go for each thing, and every repository.
+- [This repository's site](https://the-cascade-protocol.github.io/cascade-reference-tables/): the tables and the feed this repository publishes.
+- [Terms](https://the-cascade-protocol.github.io/cascade-runtime-js/terms/): the terms the tables' codes are read with.
+- [Unit-test report](https://the-cascade-protocol.github.io/cascade-runtime-js/conformance/tests/cascade-reference-tables/): each case of the host's tests, with its result, from the newest run on main.
 
 ## What the public feed cannot hold
 
@@ -45,9 +45,9 @@ What that costs a rule that checks a value set:
 | procedures (colonoscopy) | ~4%                                                      | nearly every colonoscopy is missed: only Medicare's screening G-codes are free (FIT, FOBT and sDNA tests are LOINC)                                                                                                       |
 
 A licensed list is published as its definition (its VSAC OID or URL and version, or ECL) and built where the licence is
-held: [#68](https://github.com/jayostis/cascade-reference-tables/issues/68).
+held: [#68](https://github.com/the-cascade-protocol/cascade-reference-tables/issues/68).
 
-This is not legal advice; the [licence reading](https://github.com/jayostis/cascade-reference-tables/issues/68) is on #68.
+This is not legal advice; the [licence reading](https://github.com/the-cascade-protocol/cascade-reference-tables/issues/68) is on #68.
 
 ## The host
 
@@ -73,7 +73,7 @@ they unzipped outside every repository. `--checked` reads what the last check sa
 `.cache/`.
 
 A Node program uses the host as a package, depending on a commit:
-`npm install --save-exact github:jayostis/cascade-reference-tables#<commit>`. It imports `readContract`,
+`npm install --save-exact github:the-cascade-protocol/cascade-reference-tables#<commit>`. It imports `readContract`,
 `readSource`, `sourceFolder`, `loadBuild` and `buildLatest` from `cascade-reference-tables`, and passes
 `readContract` the vocabulary folder it uses. A builder outside this repository imports from
 `cascade-reference-tables/builder` and is loaded from the compiled `build.js` it provides beside its
@@ -95,7 +95,7 @@ credit it asks for is each version's, and what carries a third party's copyright
 
 ## The feed
 
-**https://jayostis.github.io/cascade-reference-tables/feed.ttl**, a DRAFT. Beside it, `checked.json` says when each
+**https://the-cascade-protocol.github.io/cascade-reference-tables/feed.ttl**, a DRAFT. Beside it, `checked.json` says when each
 source was last checked, and `rows/` holds each series' current rows and the rows they revise. Every version's rows
 and the publisher's input it was built from are kept in this repository's GitHub releases, but for an input its source
 marks not archived because its publisher keeps it, and every input of a source whose licence's policy archives none. A
