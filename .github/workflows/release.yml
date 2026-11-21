@@ -92,7 +92,7 @@ jobs:
         run: |
           set -euo pipefail
           locks=""
-          for repository in jayostis/cascade-runtime-js jayostis/cascade-starter-kit; do
+          for repository in the-cascade-protocol/cascade-runtime-js the-cascade-protocol/cascade-starter-kit; do
             locks+=$(gh api "repos/$repository/contents/package-lock.json" -H "Accept: application/vnd.github.raw")
           done
           pinned=$(grep -oE 'cascade-reference-tables-0\.0\.0-commit-[0-9a-f]{40}\.tgz' <<< "$locks" | sort -u || true)

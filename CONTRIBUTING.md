@@ -17,7 +17,7 @@ cd cascade-reference-tables
 npm ci
 ```
 
-`npm ci` also compiles the TypeScript. Table kinds come from [cascade-vocabulary](https://github.com/jayostis/cascade-vocabulary)
+`npm ci` also compiles the TypeScript. Table kinds come from [cascade-vocabulary](https://github.com/the-cascade-protocol/cascade-vocabulary)
 at the commit [`vocabulary.json`](vocabulary.json) pins. The host reads it from `$CASCADE_VOCABULARY`, else from a
 checkout beside this repository named `cascade-vocabulary` (which is what CI does), else fetches the pinned commit into
 `.cache/`. Clone it beside this repository to work offline.

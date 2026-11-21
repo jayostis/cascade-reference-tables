@@ -38,7 +38,7 @@ jobs:
       - name: The runtime's report writer and shape check, beside this repository
         uses: actions/checkout@v7
         with:
-          repository: jayostis/cascade-runtime-js
+          repository: the-cascade-protocol/cascade-runtime-js
           ref: main
           path: cascade-runtime-js
           sparse-checkout: |
